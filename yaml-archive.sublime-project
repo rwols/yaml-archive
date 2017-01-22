@@ -1,27 +1,83 @@
 {
-    "cmake":
-    {
-        "build_folder": "${project_path}/build",
-        "command_line_overrides":
-        {
-            "BUILD_SHARED_LIBS": true,
-            "CMAKE_BUILD_TYPE": "Debug",
-            "CMAKE_EXPORT_COMPILE_COMMANDS": true
-        }
-    },
-    "folders":
-    [
-        {
-            "path": "."
-        }
-    ],
-    "settings":
-    {
-        "ClangFormat":
-        {
-            "based_on_style": "File",
-            "format_on_save": true
-        },
-        "tab_size": 4
-    }
+	"build_systems":
+	[
+		{
+			"file_regex": "(.+[^:]):(\\d+):(\\d+): (?:fatal )?((?:error|warning): .+)$",
+			"name": "yaml-archive",
+			"shell_cmd": "cmake --build .",
+			"variants":
+			[
+				{
+					"name": "clean",
+					"shell_cmd": "make clean -j4"
+				},
+				{
+					"name": "install",
+					"shell_cmd": "make install -j4"
+				},
+				{
+					"name": "list_install_components",
+					"shell_cmd": "make list_install_components -j4"
+				},
+				{
+					"name": "rebuild_cache",
+					"shell_cmd": "make rebuild_cache -j4"
+				},
+				{
+					"name": "install/local",
+					"shell_cmd": "make install/local -j4"
+				},
+				{
+					"name": "test",
+					"shell_cmd": "make test -j4"
+				},
+				{
+					"name": "format",
+					"shell_cmd": "make format -j4"
+				},
+				{
+					"name": "yaml-cpp",
+					"shell_cmd": "make yaml-cpp -j4"
+				},
+				{
+					"name": "releasable",
+					"shell_cmd": "make releasable -j4"
+				},
+				{
+					"name": "debuggable",
+					"shell_cmd": "make debuggable -j4"
+				},
+				{
+					"name": "yaml-archive",
+					"shell_cmd": "make yaml-archive -j4"
+				}
+			],
+			"working_dir": "${project_path}/build"
+		}
+	],
+	"cmake":
+	{
+		"build_folder": "${project_path}/build",
+		"command_line_overrides":
+		{
+			"BUILD_SHARED_LIBS": true,
+			"CMAKE_BUILD_TYPE": "Debug",
+			"CMAKE_EXPORT_COMPILE_COMMANDS": true
+		}
+	},
+	"folders":
+	[
+		{
+			"path": "."
+		}
+	],
+	"settings":
+	{
+		"ClangFormat":
+		{
+			"based_on_style": "File",
+			"format_on_save": true
+		},
+		"tab_size": 4
+	}
 }
