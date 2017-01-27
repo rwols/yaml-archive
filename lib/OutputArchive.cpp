@@ -1,12 +1,11 @@
 #define BOOST_ARCHIVE_SOURCE
 #include <YAML/OutputArchive.hpp>
-#include <boost/archive/detail/archive_serializer_map.hpp>
-#include <boost/serialization/config.hpp>
 
 using namespace YAML;
 
-OutputArchive::OutputArchive(std::ostream& output, const unsigned flags)
-    : BasicOutputArchive<OutputArchive>(output, flags)
+OutputArchive::OutputArchive(std::ostream& output, const ArchiveFlag flags,
+                             const char* tag)
+    : BasicOutputArchive<OutputArchive>(output, flags, tag)
 {
 }
 

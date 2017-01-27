@@ -115,9 +115,16 @@ class BasicInputArchive
     EnableIf<!IsPrimitive<T> && !IsMap<T> && !IsSequence<T>>
     load_override(const KeyValue<T>& t)
     {
-        load_start(t.name());
-        this->detail_common_iarchive::load_override(t.value());
-        load_end();
+        if (t.name())
+        {
+            load_start(t.name());
+            this->detail_common_iarchive::load_override(t.value());
+            load_end();
+        }
+        else
+        {
+            this->detail_common_iarchive::load_override(t.value());
+        }
     }
 
     template <class Sequence>
@@ -207,16 +214,13 @@ class BasicInputArchive
         load_end();
     }
 
-    template <class ArithmeticType>
-    ArithmeticType load_from_tag(const char identifier)
+    template <class ArithmeticType, class BoostType>
+    ArithmeticType load_from_tag(const char identifier, BoostType& boost_type)
     {
         static_assert(std::is_arithmetic<ArithmeticType>::value,
                       "ArithmeticType must be arithmetic.");
         const auto pos = top().Tag().find(identifier);
-        if (pos == std::string::npos)
-        {
-            throw std::runtime_error("failed to load meta.");
-        }
+        if (pos == std::string::npos) return false;
         const char* iter = top().Tag().data() + pos + 1;
         ArithmeticType x = 0;
         while (isdigit(*iter))
@@ -225,7 +229,8 @@ class BasicInputArchive
             x += *iter - '0';
             ++iter;
         }
-        return x;
+        boost_type = BoostType(x);
+        return true;
     }
 
     // special handling for bool
@@ -239,7 +244,7 @@ class BasicInputArchive
     void load_override(boost::archive::class_id_type& t)
     {
         // const auto x = top()["__class_id__"].template as<int>();
-        t = boost::archive::class_id_type(load_from_tag<int>('c'));
+        load_from_tag<int>('c', t);
     }
     void load_override(boost::archive::class_id_optional_type& t)
     {
@@ -250,7 +255,11 @@ class BasicInputArchive
     void load_override(boost::archive::class_id_reference_type& t)
     {
         // const auto x = top()["__class_id_ref__"].template as<int>();
-        t = boost::archive::class_id_reference_type(load_from_tag<int>('r'));
+        if (!load_from_tag<int>('r', t))
+        {
+            assert(load_from_tag<int>('c', t));
+        }
+        // t = boost::archive::class_id_reference_type(load_from_tag<int>('r'));
     }
     void load_override(boost::archive::object_id_type& t)
     {
@@ -267,12 +276,14 @@ class BasicInputArchive
     void load_override(boost::archive::version_type& t)
     {
         // const auto x = top()["__version__"].template as<unsigned>();
-        t = boost::archive::version_type(load_from_tag<unsigned>('v'));
+        // t = boost::archive::version_type(load_from_tag<unsigned>('v'));
+        load_from_tag<unsigned>('v', t);
     }
     void load_override(boost::archive::tracking_type& t)
     {
         // const auto x = top()["__tracking__"].template as<bool>();
-        t = boost::archive::tracking_type(load_from_tag<bool>('t'));
+        // t = boost::archive::tracking_type(load_from_tag<bool>('t'));
+        load_from_tag<unsigned>('t', t);
     }
     void load_override(boost::archive::class_name_type& t)
     {

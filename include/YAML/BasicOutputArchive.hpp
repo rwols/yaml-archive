@@ -25,20 +25,48 @@ class BasicOutputArchive
     : public boost::archive::detail::common_oarchive<Archive>
 {
   protected:
-    BasicOutputArchive(std::ostream& output, const unsigned flags = 0)
-        : boost::archive::detail::common_oarchive<Archive>(flags),
+    BasicOutputArchive(std::ostream& output, const ArchiveFlag flags,
+                       const char* tag)
+        : boost::archive::detail::common_oarchive<Archive>(
+              static_cast<unsigned>(flags)),
           m_emit(output)
     {
-        output << "\%YAML 1.2\n\%TAG ! tag:github.com/rwols/yaml-archive,"
-               << boost::archive::BOOST_ARCHIVE_VERSION() << ":\n";
-        m_emit << BeginDoc << BeginMap;
+        if (!check_flag(ArchiveFlag::NoHeader))
+        {
+            output << "\%YAML 1.2\n\%TAG ! tag:" << tag << ","
+                   << boost::archive::BOOST_ARCHIVE_VERSION() << ":\n";
+        }
+        if (!check_flag(ArchiveFlag::NoDocumentDelimiters))
+        {
+            m_emit << BeginDoc;
+        }
+        if (check_flag(ArchiveFlag::RootIsSequence))
+        {
+            m_emit << BeginSeq;
+        }
+        else
+        {
+            m_emit << BeginMap;
+        }
+        if (!check_flag(ArchiveFlag::NoTags))
+        {
+            m_tag.reserve(16);
+        }
     }
 
     ~BasicOutputArchive()
     {
         if (std::uncaught_exception()) return;
-        assert(m_deferred.empty());
-        m_emit << EndMap << EndDoc;
+        while (!m_deferred.empty())
+        {
+            m_emit << m_deferred.front();
+            m_deferred.pop();
+        }
+        m_emit << EndMap;
+        if (!check_flag(ArchiveFlag::NoDocumentDelimiters))
+        {
+            m_emit << EndDoc;
+        }
     }
 
     friend class boost::archive::detail::interface_oarchive<Archive>;
@@ -51,6 +79,11 @@ class BasicOutputArchive
     Emitter m_emit;
     std::string m_tag;
     std::queue<EMITTER_MANIP> m_deferred;
+
+    inline bool check_flag(const ArchiveFlag f)
+    {
+        return 1 == (static_cast<unsigned>(f) & this->get_flags());
+    }
 
     void check_tag()
     {
@@ -65,6 +98,18 @@ class BasicOutputArchive
             m_deferred.pop();
         }
     }
+
+    // void save_start(const char* key)
+    // {
+    //     if (!key) return;
+    //     check_tag();
+    //     m_emit << Key << t.name();
+    //     m_deferred.push(Value);
+    // }
+    // void save_end(const char* key)
+    // {
+
+    // }
 
     // Anything not an attribute and not a name-value pair is an
     // error and should be trapped here.
@@ -92,9 +137,9 @@ class BasicOutputArchive
     template <class T>
     EnableIf<IsPrimitive<T>> save_override(const KeyValue<T>& t)
     {
-        check_tag();
         if (t.name())
         {
+            check_tag();
             m_emit << Key << t.name() << Value << t.const_value();
         }
         else // we're in the process of serializing a pointer
@@ -108,9 +153,9 @@ class BasicOutputArchive
     EnableIf<!IsPrimitive<T>> save_override(const KeyValue<T>& t)
     {
         using namespace boost::serialization;
-        check_tag();
         if (t.name())
         {
+            check_tag();
             m_emit << Key << t.name();
             m_deferred.push(Value);
             m_deferred.push(BeginMap);
@@ -199,14 +244,17 @@ class BasicOutputArchive
     // want to trap them before the above "fall through"
     void save_override(const boost::archive::class_id_type& t)
     {
+        if (check_flag(ArchiveFlag::NoTags)) return;
         m_tag.append("c").append(std::to_string(static_cast<int>(t)));
     }
     void save_override(const boost::archive::class_id_optional_type& t)
     {
+        if (check_flag(ArchiveFlag::NoTags)) return;
         save_override(boost::archive::class_id_type(static_cast<int>(t)));
     }
     void save_override(const boost::archive::class_id_reference_type& t)
     {
+        if (check_flag(ArchiveFlag::NoTags)) return;
         m_tag.append("r").append(std::to_string(static_cast<int>(t)));
     }
     void save_override(const boost::archive::object_id_type& t)
@@ -215,10 +263,17 @@ class BasicOutputArchive
     }
     void save_override(const boost::archive::object_reference_type& t)
     {
+        while (!m_deferred.empty())
+        {
+            m_emit << m_deferred.front();
+            m_deferred.pop();
+        }
+        m_tag.clear();
         m_emit << Alias(std::to_string(static_cast<unsigned>(t)));
     }
     void save_override(const boost::archive::version_type& t)
     {
+        if (check_flag(ArchiveFlag::NoTags)) return;
         m_tag.append("v").append(std::to_string(static_cast<unsigned>(t)));
     }
     void save_override(const boost::archive::class_name_type& t)
@@ -227,7 +282,7 @@ class BasicOutputArchive
     }
     void save_override(const boost::archive::tracking_type& t)
     {
-        if (t) m_tag.append("t");
+        if (!check_flag(ArchiveFlag::NoTags) && t) m_tag.append("t");
     }
 };
 

@@ -1,10 +1,5 @@
+#define BOOST_ARCHIVE_SOURCE
 #include <YAML/InputArchive.hpp>
-#include <boost/archive/iterators/base64_from_binary.hpp>
-#include <boost/archive/iterators/transform_width.hpp>
-#include <climits>
-#include <functional>
-#include <string>
-#include <yaml-cpp/node/parse.h>
 
 using namespace YAML;
 

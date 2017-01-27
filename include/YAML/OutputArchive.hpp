@@ -7,7 +7,7 @@
 #include <YAML/nsbegin.hpp>
 
 /**
- * @brief      Serializes YAML streams with the `<<` operator.
+ * @brief      Serializes to YAML streams with the `<<` operator.
  *
  * @detail     Be sure to wrap all of your variables to be serialized into the
  *             BOOST_SERIALIZATION_NVP macro, or use the function
@@ -19,10 +19,16 @@ class OutputArchive : public BasicOutputArchive<OutputArchive>
     /**
      * @brief      Construct an OutputArchive ready for use.
      *
-     * @param      output  The stream to write YAML to.
-     * @param[in]  flags   The flags. TODO!
+     * @param[out] output  The stream to write YAML to.
+     * @param[in]  flags   The flags.
+     * @param[in]  tag     The tag that will be displayed in the `%TAG`
+     *                     directive at the "top" of the `output` stream. If
+     *                     `ArchiveFlag::NoHeader` is present in the `flags`
+     *                     variable, then this information is suppressed.
      */
-    OutputArchive(std::ostream& output, const unsigned flags = 0);
+    OutputArchive(std::ostream& output,
+                  const ArchiveFlag flags = ArchiveFlag::Null,
+                  const char* tag = "boost_serialization");
     ~OutputArchive() noexcept = default;
 
     /**

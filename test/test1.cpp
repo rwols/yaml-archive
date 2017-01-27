@@ -176,72 +176,109 @@ BOOST_AUTO_TEST_CASE(binary_blobs)
     }
 }
 
-BOOST_AUTO_TEST_CASE(naked_pointer)
+class A
 {
-    auto x = new X();
-    x->data = 42;
-    x->y = Y();
-    x->y.name = "John Doe";
-    x->y.temperature = 100;
-    std::stringstream ss;
-    std::string copy;
+  public:
+    int data = 0;
+
+    A* one = nullptr;
+    A* two = nullptr;
+    A* three = nullptr;
+
+    template <class Archive>
+    void serialize(Archive& archive, const unsigned version)
     {
-        YAML::OutputArchive archive(ss);
-        archive << BOOST_SERIALIZATION_NVP(x);
-        copy = ss.str();
+        archive& BOOST_SERIALIZATION_NVP(data) & BOOST_SERIALIZATION_NVP(one) &
+            BOOST_SERIALIZATION_NVP(two) & BOOST_SERIALIZATION_NVP(three);
     }
-    delete x;
-    x = nullptr;
-    x = new X();
+
+    bool operator==(const A& other) const noexcept
     {
-        YAML::InputArchive archive(ss);
-        archive >> BOOST_SERIALIZATION_NVP(x);
+        return data == other.data && (one && other.one)
+                   ? *one == *other.one
+                   : true && (two && other.two) ? *two == *other.two
+                                                : true && (three && other.three)
+                                                      ? *three == *other.three
+                                                      : true;
     }
-    std::cout << copy << '\n';
-    delete x;
+};
+
+std::ostream& operator<<(std::ostream& os, const A& a)
+{
+    return os << "<A, data: " << a.data << ", one: " << a.one
+              << ", two: " << a.two << ", three: " << a.three << '>';
 }
 
-BOOST_AUTO_TEST_CASE(travis_yaml_file)
+A* load_naked_pointer_reference()
 {
-    std::ifstream input("basic.yml");
-    BOOST_CHECK(static_cast<bool>(input));
-    std::string yaml(std::istreambuf_iterator<char>{input},
-                     std::istreambuf_iterator<char>{});
-    std::cout << yaml << '\n';
-    auto doc = YAML::Load(yaml);
-    BOOST_CHECK(doc.IsMap());
-    std::stack<YAML::Node> nodes;
-    nodes.push(std::move(doc));
+    A* a0 = new A();
+    A* a1 = new A();
+    A* a2 = new A();
+    a0->data = 42;
+    // a1->data = 1337;
+    // a2->data = 2017;
+    // a0->one = a1;
+    // a0->two = a2;
+    // a0->three = a1;
+    // a1->three = a2;
+    return a0;
+}
 
-    if (nodes.top()["b"])
+void save_naked_pointer(const char* filename)
+{
+    auto a = load_naked_pointer_reference();
     {
-        nodes.push(nodes.top()["b"]);
-        if (nodes.top()["__class_id__"])
-        {
-            nodes.push(nodes.top()["__class_id__"]);
-            std::cout << "__class_id__ is " << nodes.top().as<unsigned>()
-                      << std::endl;
-            nodes.pop();
-        }
-        if (nodes.top()["__tracking__"])
-        {
-            nodes.push(nodes.top()["__tracking__"]);
-            std::cout << "__tracking__ is " << nodes.top().as<bool>()
-                      << std::endl;
-            nodes.pop();
-        }
-        if (nodes.top()["data"])
-        {
-            nodes.push(nodes.top()["data"]);
-            std::cout << "data is " << nodes.top().as<int>() << std::endl;
-            nodes.pop();
-        }
-        if (nodes.top()["some_name"])
-        {
-            nodes.push(nodes.top()["some_name"]);
-            std::cout << "some_name is " << nodes.top().as<std::string>()
-                      << std::endl;
-            nodes.pop();
-        }
+        std::ofstream output(filename);
+        YAML::OutputArchive archive(output);
+        archive << BOOST_SERIALIZATION_NVP(a);
     }
+    {
+        YAML::OutputArchive archive(std::cout);
+        archive << BOOST_SERIALIZATION_NVP(a);
+    }
+    delete a;
+}
+
+A* load_naked_pointer(const char* filename)
+{
+    A* a;
+    {
+        std::ifstream input(filename);
+        YAML::InputArchive archive(input);
+        archive >> BOOST_SERIALIZATION_NVP(a);
+    }
+    return a;
+}
+
+BOOST_AUTO_TEST_CASE(naked_pointer)
+{
+    const char* filename = "naked_pointer.yml";
+    save_naked_pointer(filename);
+    auto a = load_naked_pointer(filename);
+    auto b = load_naked_pointer_reference();
+    BOOST_CHECK_EQUAL(*a, *b);
+    delete a;
+    delete b;
+
+    // auto x = new X();
+    // x->data = 42;
+    // x->y = Y();
+    // x->y.name = "John Doe";
+    // x->y.temperature = 100;
+    // std::stringstream ss;
+    // std::string copy;
+    // {
+    //     YAML::OutputArchive archive(ss);
+    //     archive << BOOST_SERIALIZATION_NVP(x);
+    //     copy = ss.str();
+    // }
+    // delete x;
+    // x = nullptr;
+    // x = new X();
+    // {
+    //     YAML::InputArchive archive(ss);
+    //     archive >> BOOST_SERIALIZATION_NVP(x);
+    // }
+    // std::cout << copy << '\n';
+    // delete x;
 }
