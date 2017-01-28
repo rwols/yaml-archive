@@ -244,6 +244,12 @@ class BasicOutputArchive
     // want to trap them before the above "fall through"
     void save_override(const boost::archive::class_id_type& t)
     {
+        if (t == NULL_POINTER_TAG)
+        {
+            check_tag();
+            m_emit << Null;
+            return;
+        }
         if (check_flag(ArchiveFlag::NoTags)) return;
         m_tag.append("c").append(std::to_string(static_cast<int>(t)));
     }

@@ -108,6 +108,30 @@
 					"shell_cmd": "cmake --build . --target include/list_install_components"
 				},
 				{
+					"name": "include/YAML/install/strip",
+					"shell_cmd": "cmake --build . --target include/YAML/install/strip"
+				},
+				{
+					"name": "include/YAML/install",
+					"shell_cmd": "cmake --build . --target include/YAML/install"
+				},
+				{
+					"name": "include/YAML/list_install_components",
+					"shell_cmd": "cmake --build . --target include/YAML/list_install_components"
+				},
+				{
+					"name": "include/YAML/rebuild_cache",
+					"shell_cmd": "cmake --build . --target include/YAML/rebuild_cache"
+				},
+				{
+					"name": "include/YAML/install/local",
+					"shell_cmd": "cmake --build . --target include/YAML/install/local"
+				},
+				{
+					"name": "include/YAML/test",
+					"shell_cmd": "cmake --build . --target include/YAML/test"
+				},
+				{
 					"name": "lib/install/strip",
 					"shell_cmd": "cmake --build . --target lib/install/strip"
 				},

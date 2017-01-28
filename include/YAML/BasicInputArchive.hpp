@@ -36,18 +36,18 @@ class BasicInputArchive
         ~KeyNotPresentError() noexcept override = default;
 
         /**
-         * @brief      The key that was not present during deserialization.
+         * @brief      A chain of keys in which the last key was not present.
          *
-         * @return     The key that was not present during deserialization.
+         * @return     A chain of keys in which the last key was not present.
          */
-        const char* key() const noexcept { return m_key; }
+        const std::vector<std::string>& keys() const noexcept { return m_keys; }
       private:
         friend class BasicInputArchive;
-        const char* m_key;
-        KeyNotPresentError(const char* whichKey) noexcept
+        std::vector<std::string> m_keys;
+        KeyNotPresentError(std::vector<std::string>&& keys) noexcept
             : boost::archive::archive_exception(
                   boost::archive::archive_exception::other_exception),
-              m_key(whichKey)
+              m_keys(std::move(keys))
         {
         }
     };
@@ -76,15 +76,29 @@ class BasicInputArchive
 
     Node& top() { return m_stack.top(); }
 
+    void throw_exception(const char* badkey)
+    {
+        std::vector<std::string> keys;
+        // while (!m_stack.empty())
+        // {
+        //     m_stack.pop();
+        //     keys.push_back(m_stack.top().template as<std::string>());
+        // }
+        keys.push_back(badkey);
+        std::reverse(keys.begin(), keys.end());
+        throw KeyNotPresentError(std::move(keys));
+    }
+
     void load_start(const char* key)
     {
-        if (top()[key])
+        auto node = top()[key];
+        if (node)
         {
-            m_stack.push(top()[key]);
+            m_stack.push(std::move(node));
         }
         else
         {
-            throw KeyNotPresentError(key);
+            throw_exception(key);
         }
     }
 
@@ -95,7 +109,15 @@ class BasicInputArchive
     template <class T>
     EnableIf<IsPrimitive<T>> load_override(const KeyValue<T>& t)
     {
-        t.value() = top()[t.name()].template as<T>();
+        const auto node = top()[t.name()];
+        if (node)
+        {
+            t.value() = node.template as<T>();
+        }
+        else
+        {
+            throw_exception(t.name());
+        }
     }
 
     template <class T> EnableIf<IsPrimitive<T>> load(T& t)
@@ -107,8 +129,6 @@ class BasicInputArchive
     {
         t = top().template as<T>();
     }
-
-    std::size_t m_seq_index = -1;
 
     // If T is not a YAML type, we invoke the serialization machinery of boost.
     template <class T>
@@ -175,13 +195,15 @@ class BasicInputArchive
         std::is_default_constructible<typename MapLike::mapped_type>::value>
     load_map(const KeyValue<MapLike>& t)
     {
+        using KeyType = typename MapLike::key_type;
+        using ValueType = typename MapLike::mapped_type;
         const Node tempcopy = top();
         for (const auto& kv : tempcopy)
         {
             m_stack.push(kv.second);
-            typename MapLike::mapped_type x;
+            ValueType x;
             this->detail_common_iarchive::load_override(x);
-            t.value().emplace(kv.first.as<std::string>(), std::move(x));
+            t.value().emplace(kv.first.as<KeyType>(), std::move(x));
             m_stack.pop();
         }
     }
@@ -190,16 +212,17 @@ class BasicInputArchive
         !std::is_default_constructible<typename MapLike::mapped_type>::value>
     load_map(const KeyValue<MapLike>& t)
     {
+        using KeyType = typename MapLike::key_type;
+        using ValueType = typename MapLike::mapped_type;
         const Node tempcopy = top();
         for (const auto& kv : tempcopy)
         {
             m_stack.push(kv.second);
             // taken from: boost/serialization/collections_load_imp.hpp
-            boost::serialization::detail::stack_construct<
-                Archive, typename MapLike::mapped_type>
-                u(*this->This(), 0);
+            boost::serialization::detail::stack_construct<Archive, ValueType> u(
+                *this->This(), 0);
             this->detail_common_iarchive::load_override(u.reference());
-            t.value().emplace(kv.second.as<std::string>(), u.reference());
+            t.value().emplace(kv.second.as<KeyType>(), u.reference());
             this->This()->reset_object_address(&t.value().back(),
                                                &u.reference());
             m_stack.pop();
@@ -215,7 +238,7 @@ class BasicInputArchive
     }
 
     template <class ArithmeticType, class BoostType>
-    ArithmeticType load_from_tag(const char identifier, BoostType& boost_type)
+    bool load_from_tag(const char identifier, BoostType& boost_type)
     {
         static_assert(std::is_arithmetic<ArithmeticType>::value,
                       "ArithmeticType must be arithmetic.");
@@ -234,9 +257,12 @@ class BasicInputArchive
     }
 
     // special handling for bool
-    bool load_from_tag(const char identifier)
+    template <class BoostType>
+    bool load_from_tag(const char identifier, BoostType& boost_type)
     {
-        return top().Tag().find(identifier) != std::string::npos;
+        boost_type =
+            BoostType(top().Tag().find(identifier) != std::string::npos);
+        return static_cast<bool>(boost_type);
     }
 
     // specific overrides for attributes - not name value pairs so we
@@ -283,7 +309,7 @@ class BasicInputArchive
     {
         // const auto x = top()["__tracking__"].template as<bool>();
         // t = boost::archive::tracking_type(load_from_tag<bool>('t'));
-        load_from_tag<unsigned>('t', t);
+        load_from_tag<bool>('t', t);
     }
     void load_override(boost::archive::class_name_type& t)
     {

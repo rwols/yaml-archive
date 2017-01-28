@@ -127,7 +127,13 @@ BOOST_AUTO_TEST_CASE(basic_struct_input_output)
         }
         catch (const YAML::InputArchive::KeyNotPresentError& e)
         {
-            std::cerr << "Key not present: " << e.key() << '\n';
+
+            std::cerr << "bad key chain: ";
+            for (const auto& key : e.keys())
+            {
+                std::cerr << key << " ";
+            }
+            std::cerr << "\n";
             BOOST_CHECK(false);
         }
     }
@@ -241,11 +247,31 @@ void save_naked_pointer(const char* filename)
 
 A* load_naked_pointer(const char* filename)
 {
+    {
+        std::ifstream input(filename);
+        auto node = YAML::Load(input);
+        std::cout << YAML::Dump(node) << '\n';
+        if (node["a"]["data"])
+        {
+            std::cout << "OK...\n";
+        }
+    }
+
     A* a;
+    try
     {
         std::ifstream input(filename);
         YAML::InputArchive archive(input);
         archive >> BOOST_SERIALIZATION_NVP(a);
+    }
+    catch (const YAML::InputArchive::KeyNotPresentError& e)
+    {
+        std::cerr << "bad key chain: ";
+        for (const auto& key : e.keys())
+        {
+            std::cerr << key << " ";
+        }
+        std::cerr << '\n';
     }
     return a;
 }
