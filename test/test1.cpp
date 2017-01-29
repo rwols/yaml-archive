@@ -221,12 +221,12 @@ A* load_naked_pointer_reference()
     A* a1 = new A();
     A* a2 = new A();
     a0->data = 42;
-    // a1->data = 1337;
-    // a2->data = 2017;
-    // a0->one = a1;
-    // a0->two = a2;
-    // a0->three = a1;
-    // a1->three = a2;
+    a1->data = 1337;
+    a2->data = 2017;
+    a0->one = a1;
+    a0->two = a2;
+    a0->three = a1;
+    a1->three = a2;
     return a0;
 }
 

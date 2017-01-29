@@ -13,6 +13,17 @@
 #include <istream>
 #include <stack>
 
+#define YAML_INPUT_ARCHIVE_DEBUG
+
+#ifdef YAML_INPUT_ARCHIVE_DEBUG
+#include <iostream>
+#define YAML_DEBUG_DUMP_TOP                                                    \
+    std::cerr << "DEBUG: Top of the stack is now:\n"                           \
+              << Dump(m_stack.top()) << '\n';
+#else
+#define YAML_DEBUG_DUMP_TOP // as nothing
+#endif
+
 #include <YAML/nsbegin.hpp>
 
 /**
@@ -61,6 +72,7 @@ class BasicInputArchive
         {
             throw std::runtime_error("expected a YAML map...");
         }
+        YAML_DEBUG_DUMP_TOP
     }
 
     ~BasicInputArchive() noexcept = default;
@@ -91,10 +103,14 @@ class BasicInputArchive
 
     void load_start(const char* key)
     {
+#ifdef YAML_INPUT_ARCHIVE_DEBUG
+        std::cerr << "DEBUG: Pushing key: " << key << '\n';
+#endif
         auto node = top()[key];
         if (node)
         {
             m_stack.push(std::move(node));
+            YAML_DEBUG_DUMP_TOP
         }
         else
         {
@@ -109,6 +125,10 @@ class BasicInputArchive
     template <class T>
     EnableIf<IsPrimitive<T>> load_override(const KeyValue<T>& t)
     {
+#ifdef YAML_INPUT_ARCHIVE_DEBUG
+        std::cerr << "DEBUG: Loading primitive key: " << t.name() << '\n';
+#endif
+        if (top().IsNull()) return;
         const auto node = top()[t.name()];
         if (node)
         {
@@ -135,6 +155,7 @@ class BasicInputArchive
     EnableIf<!IsPrimitive<T> && !IsMap<T> && !IsSequence<T>>
     load_override(const KeyValue<T>& t)
     {
+        if (top().IsNull()) return;
         if (t.name())
         {
             load_start(t.name());
@@ -242,7 +263,9 @@ class BasicInputArchive
     {
         static_assert(std::is_arithmetic<ArithmeticType>::value,
                       "ArithmeticType must be arithmetic.");
-        const auto pos = top().Tag().find(identifier);
+        auto colon = top().Tag().find_last_of(':');
+        if (colon == std::string::npos) colon = 0;
+        const auto pos = top().Tag().find(identifier, colon);
         if (pos == std::string::npos) return false;
         const char* iter = top().Tag().data() + pos + 1;
         ArithmeticType x = 0;
@@ -260,8 +283,10 @@ class BasicInputArchive
     template <class BoostType>
     bool load_from_tag(const char identifier, BoostType& boost_type)
     {
+        auto colon = top().Tag().find_last_of(':');
+        if (colon == std::string::npos) colon = 0;
         boost_type =
-            BoostType(top().Tag().find(identifier) != std::string::npos);
+            BoostType(top().Tag().find(identifier, colon) != std::string::npos);
         return static_cast<bool>(boost_type);
     }
 

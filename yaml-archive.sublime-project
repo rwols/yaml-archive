@@ -218,6 +218,11 @@
 	],
 	"settings":
 	{
+		"ClangTidy":
+		{
+			"based_on_style": "File",
+			"format_on_save": true
+		},
 		"ClangFormat":
 		{
 			"based_on_style": "File",
