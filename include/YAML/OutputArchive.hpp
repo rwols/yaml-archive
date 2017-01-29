@@ -28,7 +28,7 @@ class OutputArchive : public BasicOutputArchive<OutputArchive>
      */
     OutputArchive(std::ostream& output,
                   const ArchiveFlag flags = ArchiveFlag::Null,
-                  const char* tag = "boost_serialization");
+                  const char* tag = boost::archive::BOOST_ARCHIVE_SIGNATURE());
     ~OutputArchive() noexcept = default;
 
     /**
