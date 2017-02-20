@@ -1,7 +1,7 @@
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
 // test_non_default_ctor2.cpp
 
-// (C) Copyright 2002 Martin Ecker. 
+// (C) Copyright 2002 Martin Ecker.
 // Use, modification and distribution is subject to the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -19,18 +19,14 @@
 
 class IntValueHolder
 {
-public:
-    IntValueHolder()
-        : value(0)
-    {}
+  public:
+    IntValueHolder() : value(0) {}
 
-    IntValueHolder(int newvalue)
-        : value(newvalue)
-    {}
+    IntValueHolder(int newvalue) : value(newvalue) {}
 
     int GetValue() const { return value; }
 
-private:
+  private:
     int value;
 
     friend class boost::serialization::access;
@@ -38,24 +34,20 @@ private:
     template <class ArchiveT>
     void serialize(ArchiveT& ar, const unsigned int /* file_version */)
     {
-        ar & BOOST_SERIALIZATION_NVP(value);
+        ar& BOOST_SERIALIZATION_NVP(value);
     }
 };
 
 class FloatValueHolder
 {
-public:
-    FloatValueHolder()
-        : value(0)
-    {}
+  public:
+    FloatValueHolder() : value(0) {}
 
-    FloatValueHolder(float newvalue)
-        : value(newvalue)
-    {}
+    FloatValueHolder(float newvalue) : value(newvalue) {}
 
     float GetValue() const { return value; }
 
-private:
+  private:
     float value;
 
     friend class boost::serialization::access;
@@ -63,55 +55,50 @@ private:
     template <class ArchiveT>
     void serialize(ArchiveT& ar, const unsigned int /* file_version */)
     {
-        ar & BOOST_SERIALIZATION_NVP(value);
+        ar& BOOST_SERIALIZATION_NVP(value);
     }
 };
 
 class A
 {
-public:
+  public:
     A(const IntValueHolder& initialValue)
         : value(initialValue), floatValue(new FloatValueHolder(10.0f))
-    {}
-
-    ~A()
     {
-        delete floatValue;
     }
 
-    IntValueHolder value;
+    ~A() { delete floatValue; }
+
+    IntValueHolder    value;
     FloatValueHolder* floatValue;
 
-private:
+  private:
     friend class boost::serialization::access;
 
     template <class ArchiveT>
     void serialize(ArchiveT& ar, const unsigned int /* file_version */)
     {
-        ar & BOOST_SERIALIZATION_NVP(floatValue);
+        ar& BOOST_SERIALIZATION_NVP(floatValue);
     }
 };
 
-namespace boost { 
+namespace boost {
 namespace serialization {
 
 template <class ArchiveT>
-void save_construct_data(
-    ArchiveT& archive, 
-    const A* p, 
-    const unsigned int /*version*/
-){
-    archive & boost::serialization::make_nvp("initialValue", p->value);
+void save_construct_data(ArchiveT& archive, const A* p,
+                         const unsigned int /*version*/
+                         )
+{
+    archive& boost::serialization::make_nvp("initialValue", p->value);
 }
 
 template <class ArchiveT>
-void load_construct_data(
-    ArchiveT& archive, 
-    A* p, 
-    const unsigned int /*version*/
-){
+void load_construct_data(ArchiveT& archive, A* p, const unsigned int /*version*/
+                         )
+{
     IntValueHolder initialValue;
-    archive & boost::serialization::make_nvp("initialValue", initialValue);
+    archive&       boost::serialization::make_nvp("initialValue", initialValue);
 
     ::new (p) A(initialValue);
 }
@@ -119,14 +106,13 @@ void load_construct_data(
 } // serialization
 } // namespace boost
 
-int test_main( int /* argc */, char* /* argv */[] )
+int test_main(int /* argc */, char* /* argv */ [])
 {
-    const char * testfile = boost::archive::tmpnam(NULL);
-    BOOST_REQUIRE(NULL != testfile);
-    A* a = new A(5);
+    const char* testfile = "test_non_default_ctor2.yml";
+    A*          a = new A(5);
 
-    {   
-        test_ostream os(testfile, TEST_STREAM_FLAGS);
+    {
+        test_ostream  os(testfile, TEST_STREAM_FLAGS);
         test_oarchive oa(os, TEST_ARCHIVE_FLAGS);
         oa << BOOST_SERIALIZATION_NVP(a);
     }
@@ -134,9 +120,9 @@ int test_main( int /* argc */, char* /* argv */[] )
     A* a_new;
 
     {
-        test_istream is(testfile, TEST_STREAM_FLAGS);
+        test_istream  is(testfile, TEST_STREAM_FLAGS);
         test_iarchive ia(is, TEST_ARCHIVE_FLAGS);
-        ia >> BOOST_SERIALIZATION_NVP(a_new);
+        ia >> boost::serialization::make_nvp("a", a_new);
     }
     delete a;
     delete a_new;

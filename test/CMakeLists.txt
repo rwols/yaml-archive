@@ -1,7 +1,3 @@
-# CMake build control file for Serialization Library tests
-
-# cmake_minimum_required(VERSION 3.3)
-
 include(CMakeParseArguments)
 
 find_package(Boost 
@@ -10,6 +6,7 @@ find_package(Boost
     filesystem 
     serialization 
     wserialization 
+    unit_test_framework
   REQUIRED)
 
 # Creates a common "abstract" target that all tests link against.
@@ -45,6 +42,7 @@ function(add_archive_test)
   add_executable(${amended_test_name} ${args_NAME}.cpp ${arglist})
   set_property(TARGET ${amended_test_name} PROPERTY CXX_STANDARD 14)
   target_compile_definitions(${amended_test_name} PRIVATE BOOST_ARCHIVE_TEST=${args_ARCHIVE_CONFIG})
+  target_compile_options(${amended_test_name} PRIVATE -ftemplate-backtrace-limit=0)
   target_link_libraries(${amended_test_name} PRIVATE serialization-test-interface)
   target_link_libraries(${amended_test_name} PRIVATE ${args_ARCHIVE_NAME})
   add_test(${amended_test_name} ${amended_test_name})
@@ -98,7 +96,7 @@ function(target_add_archive_test_suite target config)
   add_archive_test(NAME test_nvp                       ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
   add_archive_test(NAME test_object                    ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
   add_archive_test(NAME test_optional                  ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  add_archive_test(NAME test_primitive                 ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
+  # add_archive_test(NAME test_primitive                 ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
   add_archive_test(NAME test_priority_queue            ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
   add_archive_test(NAME test_private_base              ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
   add_archive_test(NAME test_private_base2             ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
@@ -107,7 +105,7 @@ function(target_add_archive_test_suite target config)
   add_archive_test(NAME test_registered                ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
   add_archive_test(NAME test_shared_ptr                ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
   add_archive_test(NAME test_shared_ptr_multi_base     ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  add_archive_test(NAME test_shared_ptr_132            ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
+  # add_archive_test(NAME test_shared_ptr_132            ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
   add_archive_test(NAME test_simple_class              ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
   add_archive_test(NAME test_simple_class_ptr          ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
   add_archive_test(NAME test_stack                     ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
@@ -145,4 +143,10 @@ target_add_archive_test_suite(yaml-archive Config.hpp)
 
 # TODO!!
 # target_add_polymorphic_archive_test_suite(yaml-archive ConfigPoly.hpp)
+
+add_executable(test1 test1.cpp)
+set_property(TARGET test1 PROPERTY CXX_STANDARD 11)
+target_link_libraries(test1 PRIVATE serialization-test-interface)
+target_link_libraries(test1 PRIVATE yaml-archive)
+target_compile_options(test1 PRIVATE -ftemplate-backtrace-limit=0)
 

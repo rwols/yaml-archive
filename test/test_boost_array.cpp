@@ -28,10 +28,12 @@ namespace std{
 #include "A.hpp"
 #include "A.ipp"
 
+static unsigned counter = 0;
+
 template <class T>
 int test_boost_array(){
-    const char * testfile = boost::archive::tmpnam(NULL);
-    BOOST_REQUIRE(NULL != testfile);
+    const std::string testfile = "test_boost_array_" + std::to_string(counter) + ".yml";
+    ++counter;
 
     // test array of objects
     const boost::array<T,10> a_array = {{T(),T(),T(),T(),T(),T(),T(),T(),T(),T()}};
@@ -71,7 +73,6 @@ int test_boost_array(){
         }
         is.close();
     }
-    std::remove(testfile);
     return EXIT_SUCCESS;
 }
 

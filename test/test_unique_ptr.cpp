@@ -1,17 +1,17 @@
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
 // test_unique_ptr.cpp
 
-// (C) Copyright 2002-14 Robert Ramey - http://www.rrsd.com . 
+// (C) Copyright 2002-14 Robert Ramey - http://www.rrsd.com .
 // Use, modification and distribution is subject to the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <fstream>
-#include <cstdio> // remove, std::auto_ptr interface wrong in dinkumware
 #include <boost/config.hpp>
+#include <cstdio> // remove, std::auto_ptr interface wrong in dinkumware
+#include <fstream>
 #if defined(BOOST_NO_STDC_NAMESPACE)
-namespace std{ 
-    using ::remove;
+namespace std {
+using ::remove;
 }
 #endif
 #include <boost/serialization/nvp.hpp>
@@ -20,26 +20,29 @@ namespace std{
 
 /////////////////////////////////////////////////////////////
 // test std::unique_ptr serialization
-class A
-{
-private:
+class A {
+  private:
     friend class boost::serialization::access;
     int x;
-    template<class Archive>
-    void serialize(Archive &ar, const unsigned int /* file_version */){
-        ar & BOOST_SERIALIZATION_NVP(x);
+    template <class Archive>
+    void serialize(Archive& ar, const unsigned int /* file_version */)
+    {
+        ar& BOOST_SERIALIZATION_NVP(x);
     }
-public:
-    A(){}    // default constructor
-    ~A(){}   // default destructor
+
+  public:
+    A() {}  // default constructor
+    ~A() {} // default destructor
 };
 
 #ifndef BOOST_NO_CXX11_SMART_PTR
 #include <boost/serialization/unique_ptr.hpp>
 
-int test_main(int /* argc */, char * /* argv */[]){
-    const char * filename = boost::archive::tmpnam(NULL);
+int test_main(int /* argc */, char* /* argv */ [])
+{
+    const char* filename = boost::archive::tmpnam(NULL);
     BOOST_REQUIRE(NULL != filename);
+    std::cout << "Filename is \"" << filename << "\"\n";
 
     // create  a new auto pointer to ta new object of type A
     std::unique_ptr<A> spa(new A);
@@ -63,8 +66,6 @@ int test_main(int /* argc */, char * /* argv */[]){
 
 #else
 
-int test_main(int /* argc */, char * /* argv */[]){
-    return EXIT_SUCCESS;
-}
+int test_main(int /* argc */, char* /* argv */ []) { return EXIT_SUCCESS; }
 
 #endif // BOOST_NO_CXX11_SMART_PTR

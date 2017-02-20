@@ -1,8 +1,9 @@
 #define BOOST_TEST_MODULE test1
 
-#include <YAML/InputArchive.hpp>
-#include <YAML/OutputArchive.hpp>
+#include <boost/archive/yaml_iarchive.hpp>
+#include <boost/archive/yaml_oarchive.hpp>
 
+#include <boost/serialization/map.hpp>
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/shared_ptr.hpp>
 #include <boost/serialization/unique_ptr.hpp>
@@ -11,8 +12,7 @@
 #include <fstream>
 #include <iostream>
 
-struct Basic
-{
+struct Basic {
     int data;
     float more_data;
     std::string some_name;
@@ -42,8 +42,7 @@ std::ostream& operator<<(std::ostream& os, const Basic& b)
               << '>';
 }
 
-struct Y
-{
+struct Y {
     std::string name;
     float temperature;
 
@@ -66,12 +65,10 @@ struct Y
 
 std::ostream& operator<<(std::ostream& os, const Y& y)
 {
-    return os << "<Y obj with name: " << y.name << ", temp: " << y.temperature
-              << '>';
+    return os << "<Y name: " << y.name << ", temp: " << y.temperature << '>';
 }
 
-struct X
-{
+struct X {
     int data;
     Y y;
     std::map<std::string, int> mymap;
@@ -98,10 +95,100 @@ struct X
     }
 };
 
+template <class First, class Second>
+std::ostream& operator<<(std::ostream& os, const std::pair<First, Second>& x)
+{
+    os << "<std::pair first: " << x.first << ", second: " << x.second << '>';
+    return os;
+}
+
+template <class T, class Alloc>
+std::ostream& operator<<(std::ostream& os, const std::vector<T, Alloc>& x)
+{
+    os << "<std::vector values:";
+    for (const auto& item : x) os << ' ' << item;
+    return os << '>';
+}
+
+template <class Key, class T, class Compare, class Alloc>
+std::ostream& operator<<(std::ostream& os,
+                         const std::map<Key, T, Compare, Alloc>& x)
+{
+    os << "<std::map values:";
+    for (const auto& kv : x) os << ' ' << kv;
+    return os << '>';
+}
+
 std::ostream& operator<<(std::ostream& os, const X& x)
 {
-    return os << "<X obj with data: " << x.data << ", y: " << x.y
-              << " and more...>";
+    os << "<X data: " << x.data;
+    os << ", y: " << x.y;
+    os << ", mymap: " << x.mymap;
+    os << ", myfloats: " << x.myfloats;
+    os << ", mywhys: " << x.mywhys;
+    return os << '>';
+}
+
+BOOST_AUTO_TEST_CASE(signed_char)
+{
+    auto node = YAML::Load("-126");
+    try {
+        const auto y = node.as<signed char>();
+        std::cout << "y = " << static_cast<int>(y) << '\n';
+    }
+    catch (const YAML::TypedBadConversion<signed char>& error) {
+        std::cerr << error.what() << '\n';
+    }
+
+    signed char x;
+    x = -126;
+    {
+        std::ofstream output("signed_char.yml");
+        boost::archive::yaml_oarchive archive(output);
+        boost::archive::yaml_oarchive couttest(std::cout);
+        archive << BOOST_SERIALIZATION_NVP(x);
+        couttest << BOOST_SERIALIZATION_NVP(x);
+    }
+    {
+        std::ifstream input("signed_char.yml");
+        auto node = YAML::Load(input);
+        std::cout << YAML::Dump(node);
+    }
+    signed char another_x;
+    {
+        std::ifstream input("signed_char.yml");
+        boost::archive::yaml_iarchive archive(input);
+        archive >> boost::serialization::make_nvp("x", another_x);
+    }
+    BOOST_CHECK_EQUAL(x, another_x);
+}
+
+BOOST_AUTO_TEST_CASE(single_Y_struct)
+{
+    std::pair<Y, Y> p;
+    p.first.name = "Katy Perry";
+    p.first.temperature = 42.0f;
+    p.second.name = "John Mayer";
+    p.second.temperature = 123;
+    {
+        std::ofstream output("single_Y_struct.yml");
+        boost::archive::yaml_oarchive archive(output);
+        boost::archive::yaml_oarchive couttest(std::cout);
+        archive << BOOST_SERIALIZATION_NVP(p);
+        couttest << BOOST_SERIALIZATION_NVP(p);
+    }
+    {
+        std::ifstream input("single_Y_struct.yml");
+        auto node = YAML::Load(input);
+        std::cout << YAML::Dump(node) << '\n';
+    }
+    std::pair<Y, Y> another_p;
+    {
+        std::ifstream input("single_Y_struct.yml");
+        boost::archive::yaml_iarchive archive(input);
+        archive >> boost::serialization::make_nvp("p", another_p);
+    }
+    BOOST_CHECK_EQUAL(p, another_p);
 }
 
 BOOST_AUTO_TEST_CASE(basic_struct_input_output)
@@ -112,32 +199,31 @@ BOOST_AUTO_TEST_CASE(basic_struct_input_output)
     b.some_name = "Hello, world!";
     {
         std::ofstream output("basic_struct_input_output.yml");
-        YAML::OutputArchive archive(output);
+        boost::archive::yaml_oarchive archive(output);
         archive << BOOST_SERIALIZATION_NVP(b);
-        YAML::OutputArchive couttest(std::cout);
+        boost::archive::yaml_oarchive couttest(std::cout);
         couttest << BOOST_SERIALIZATION_NVP(b);
     }
     Basic another_b;
     {
         std::ifstream input("basic_struct_input_output.yml");
-        YAML::InputArchive archive(input);
-        try
-        {
+        boost::archive::yaml_iarchive archive(input);
+        try {
             archive >> boost::serialization::make_nvp("b", another_b);
         }
-        catch (const YAML::InputArchive::KeyNotPresentError& e)
-        {
+        catch (const std::exception& e) {
 
-            std::cerr << "bad key chain: ";
-            for (const auto& key : e.keys())
-            {
-                std::cerr << key << " ";
-            }
-            std::cerr << "\n";
+            // std::cerr << "bad key chain: ";
+            // for (const auto& key : e.keys())
+            // {
+            //     std::cerr << key << " ";
+            // }
+            // std::cerr << "\n";
             BOOST_CHECK(false);
         }
     }
     BOOST_CHECK_EQUAL(b, another_b);
+    std::cout << "OK!\n";
 }
 
 BOOST_AUTO_TEST_CASE(value_types_and_vectors_and_maps)
@@ -159,31 +245,31 @@ BOOST_AUTO_TEST_CASE(value_types_and_vectors_and_maps)
     x.myfloats = {1.0f, 2.0f, -0.3213f, -4329.432f};
     {
         std::ofstream output("value_types_and_vectors_and_maps.yml");
-        YAML::OutputArchive archive(output);
+        boost::archive::yaml_oarchive archive(output);
         archive << BOOST_SERIALIZATION_NVP(x);
-        YAML::OutputArchive couttest(std::cout);
+        boost::archive::yaml_oarchive couttest(std::cout);
         couttest << BOOST_SERIALIZATION_NVP(x);
     }
     X another_x;
     {
         std::ifstream input("value_types_and_vectors_and_maps.yml");
-        YAML::InputArchive archive(input);
+        boost::archive::yaml_iarchive archive(input);
         archive >> boost::serialization::make_nvp("x", another_x);
     }
     BOOST_CHECK_EQUAL(x, another_x);
+    std::cout << "OK!\n";
 }
 
 BOOST_AUTO_TEST_CASE(binary_blobs)
 {
     X x;
     {
-        YAML::OutputArchive archive(std::cout);
+        boost::archive::yaml_oarchive archive(std::cout);
         archive.save_binary(&x, sizeof(x));
     }
 }
 
-class A
-{
+class A {
   public:
     int data = 0;
 
@@ -235,11 +321,11 @@ void save_naked_pointer(const char* filename)
     auto a = load_naked_pointer_reference();
     {
         std::ofstream output(filename);
-        YAML::OutputArchive archive(output);
+        boost::archive::yaml_oarchive archive(output);
         archive << BOOST_SERIALIZATION_NVP(a);
     }
     {
-        YAML::OutputArchive archive(std::cout);
+        boost::archive::yaml_oarchive archive(std::cout);
         archive << BOOST_SERIALIZATION_NVP(a);
     }
     delete a;
@@ -251,28 +337,11 @@ A* load_naked_pointer(const char* filename)
         std::ifstream input(filename);
         auto node = YAML::Load(input);
         std::cout << YAML::Dump(node) << '\n';
-        if (node["a"]["data"])
-        {
-            std::cout << "OK...\n";
-        }
     }
-
-    A* a;
-    try
-    {
-        std::ifstream input(filename);
-        YAML::InputArchive archive(input);
-        archive >> BOOST_SERIALIZATION_NVP(a);
-    }
-    catch (const YAML::InputArchive::KeyNotPresentError& e)
-    {
-        std::cerr << "bad key chain: ";
-        for (const auto& key : e.keys())
-        {
-            std::cerr << key << " ";
-        }
-        std::cerr << '\n';
-    }
+    A* a = nullptr;
+    std::ifstream input(filename);
+    boost::archive::yaml_iarchive archive(input);
+    archive >> BOOST_SERIALIZATION_NVP(a);
     return a;
 }
 
@@ -285,26 +354,33 @@ BOOST_AUTO_TEST_CASE(naked_pointer)
     BOOST_CHECK_EQUAL(*a, *b);
     delete a;
     delete b;
+}
 
-    // auto x = new X();
-    // x->data = 42;
-    // x->y = Y();
-    // x->y.name = "John Doe";
-    // x->y.temperature = 100;
-    // std::stringstream ss;
-    // std::string copy;
-    // {
-    //     YAML::OutputArchive archive(ss);
-    //     archive << BOOST_SERIALIZATION_NVP(x);
-    //     copy = ss.str();
-    // }
-    // delete x;
-    // x = nullptr;
-    // x = new X();
-    // {
-    //     YAML::InputArchive archive(ss);
-    //     archive >> BOOST_SERIALIZATION_NVP(x);
-    // }
-    // std::cout << copy << '\n';
-    // delete x;
+BOOST_AUTO_TEST_CASE(unique_pointer)
+{
+    // create  a new auto pointer to ta new object of type A
+    std::unique_ptr<Y> spa(new Y);
+    spa->name = "John Doe";
+    spa->temperature = 123;
+    {
+        std::ofstream os("unique_pointer.yml");
+        boost::archive::yaml_oarchive oa(os);
+        boost::archive::yaml_oarchive couttest(std::cout);
+        oa << BOOST_SERIALIZATION_NVP(spa);
+        couttest << BOOST_SERIALIZATION_NVP(spa);
+    }
+    {
+        std::ifstream input("unique_pointer.yml");
+        auto node = YAML::Load(input);
+        std::cout << YAML::Dump(node) << '\n';
+    }
+    {
+        // reset the unique_ptr to NULL
+        // thereby destroying the object of type A
+        // note that the reset automagically maintains the reference count
+        spa.reset();
+        std::ifstream is("unique_pointer.yml");
+        boost::archive::yaml_iarchive ia(is);
+        ia >> BOOST_SERIALIZATION_NVP(spa);
+    }
 }

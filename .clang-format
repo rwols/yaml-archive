@@ -1,14 +1,38 @@
+# Start out with LLVM's format
 BasedOnStyle: LLVM
-IndentWidth: 4
-BreakBeforeBraces: Allman
+
+IndentWidth: 4 # Indent with 4
+UseTab: Never  # spaces.
+
+# The endless debate about brace wrapping ends here. Basically, wrap everything
+# except namespaces and don't indent the braces themselves.
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass: true # Wrap class definitions.
+  AfterControlStatement: true # Wrap control statements (if/for/while/switch/..).
+  AfterEnum: true # Wrap enum definitions.
+  AfterFunction: true # Wrap function definitions.
+  AfterNamespace: false # Don't wrap namespace definitions.
+  AfterObjCDeclaration: true # Wrap ObjC definitions (@autoreleasepool, interfaces, ..).
+  AfterStruct: true # Wrap struct definitions.
+  AfterUnion: true # Wrap union definitions.
+  BeforeCatch: true # Wrap before catch.
+  BeforeElse: true # Wrap before else.
+  IndentBraces: false # Don't indent the wrapped braces themselves.
+
+# Allow more compact code.
 AllowAllParametersOfDeclarationOnNextLine: true
 AllowShortFunctionsOnASingleLine: true
 AllowShortIfStatementsOnASingleLine: true
 AllowShortLoopsOnASingleLine: true
-Standard: Cpp11
-UseTab: Never
----
-Language: Cpp
-# Force pointers to the type for C++.
+
+# Pointers are part of the type, so align them to the type.
 DerivePointerAlignment: false
 PointerAlignment: Left
+
+# Alignment of consecutive decls and operands for readability.
+# Don't align consecutive assignments.
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: true
+AlignOperands: true
+

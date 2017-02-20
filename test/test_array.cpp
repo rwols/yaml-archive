@@ -28,21 +28,23 @@ namespace std{
 #include "A.hpp"
 #include "A.ipp"
 
+static int counter = 0;
+
 template <class T>
 int test_std_array(){
-    const char * testfile = boost::archive::tmpnam(NULL);
-    BOOST_REQUIRE(NULL != testfile);
+    std::string testfile = "test_array_" + std::to_string(counter) + ".yml";
+    ++counter;
 
     // test array of objects
     const std::array<T, 10> a_array = {{T(),T(),T(),T(),T(),T(),T(),T(),T(),T()}};
     {
-        test_ostream os(testfile, TEST_STREAM_FLAGS);
+        test_ostream os(testfile.c_str(), TEST_STREAM_FLAGS);
         test_oarchive oa(os, TEST_ARCHIVE_FLAGS);
         oa << boost::serialization::make_nvp("a_array", a_array);
     }
     {
         std::array<T, 10> a_array1;
-        test_istream is(testfile, TEST_STREAM_FLAGS);
+        test_istream is(testfile.c_str(), TEST_STREAM_FLAGS);
         {
             test_iarchive ia(is, TEST_ARCHIVE_FLAGS);
             ia >> boost::serialization::make_nvp("a_array", a_array1);
@@ -51,7 +53,7 @@ int test_std_array(){
     }
     {
         std::array<T, 9> a_array1;
-        test_istream is(testfile, TEST_STREAM_FLAGS);
+        test_istream is(testfile.c_str(), TEST_STREAM_FLAGS);
         {
             test_iarchive ia(is, TEST_ARCHIVE_FLAGS);
             bool exception_invoked = false;
@@ -70,7 +72,6 @@ int test_std_array(){
         }
         is.close();
     }
-    std::remove(testfile);
     return EXIT_SUCCESS;
 }
 
