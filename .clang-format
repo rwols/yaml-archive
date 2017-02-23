@@ -1,3 +1,4 @@
+---
 # Start out with LLVM's format
 BasedOnStyle: LLVM
 
@@ -35,4 +36,4 @@ PointerAlignment: Left
 AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: true
 AlignOperands: true
-
+...

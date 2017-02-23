@@ -136,20 +136,20 @@
 					"shell_cmd": "cmake --build . --target test/install/strip"
 				},
 				{
-					"name": "test/install/local",
-					"shell_cmd": "cmake --build . --target test/install/local"
+					"name": "test/install",
+					"shell_cmd": "cmake --build . --target test/install"
 				},
 				{
 					"name": "test/list_install_components",
 					"shell_cmd": "cmake --build . --target test/list_install_components"
 				},
 				{
-					"name": "test/install",
-					"shell_cmd": "cmake --build . --target test/install"
-				},
-				{
 					"name": "test/rebuild_cache",
 					"shell_cmd": "cmake --build . --target test/rebuild_cache"
+				},
+				{
+					"name": "test/install/local",
+					"shell_cmd": "cmake --build . --target test/install/local"
 				},
 				{
 					"name": "test/test",

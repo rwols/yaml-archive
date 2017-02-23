@@ -1,0 +1,18 @@
+#ifndef BOOST_ARCHIVE_TEST_CONFIG_HPP
+#define BOOST_ARCHIVE_TEST_CONFIG_HPP
+
+#include <fstream>
+#include <sstream>
+#include <@args_INPUT_ARCHIVE_HEADER@>
+#include <@args_OUTPUT_ARCHIVE_HEADER@>
+
+using test_iarchive = @args_INPUT_ARCHIVE_FULLY_QUALIFIED_NAME@;
+using test_oarchive = @args_OUTPUT_ARCHIVE_FULLY_QUALIFIED_NAME@;
+using test_istream = @args_TEST_ISTREAM@;
+using test_ostream = @args_TEST_OSTREAM@;
+
+#define ARCHIVE_FILENAME_EXTENSION ".@args_ARCHIVE_FILENAME_EXTENSION@"
+#define ARCHIVE_FLAGS @args_ARCHIVE_FLAGS@
+#define STREAM_FLAGS @args_STREAM_FLAGS@
+
+#endif // BOOST_ARCHIVE_TEST_CONFIG_HPP

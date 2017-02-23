@@ -18,6 +18,8 @@ yaml_oarchive::yaml_oarchive(std::ostream& os, const unsigned flags)
     print(YAML::BeginDoc);
     print(YAML::BeginMap);
 #endif
+    m_emit.SetFloatPrecision(std::numeric_limits<float>::digits10 + 1);
+    m_emit.SetDoublePrecision(std::numeric_limits<double>::digits10 + 1);
     m_emit << YAML::BeginDoc << YAML::BeginMap;
 }
 

@@ -50,8 +50,9 @@ template <class T> int test_native_array()
         oa << boost::serialization::make_nvp("b_array", b_array);
     }
     {
-        T            a_array1[10];
-        T            b_array1[2][3];
+        T a_array1[10];
+        T b_array1[2][3];
+
         test_istream is(testfile, TEST_STREAM_FLAGS);
         {
             test_iarchive ia(is, TEST_ARCHIVE_FLAGS);
@@ -70,8 +71,9 @@ template <class T> int test_native_array()
         BOOST_CHECK(b_array[1][0] == b_array1[1][0]);
     }
     {
-        T            a_array1[9];
-        T            b_array1[2][3];
+        T a_array1[9];
+        T b_array1[2][3];
+
         test_istream is(testfile, TEST_STREAM_FLAGS);
         {
             test_iarchive ia(is, TEST_ARCHIVE_FLAGS);

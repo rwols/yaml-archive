@@ -132,7 +132,7 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
     template <std::size_t N, class T> void load_fixed_size_array(T& t)
     {
         auto node = m_stack.top();
-        if (N < node.size())
+        if (node.size() < N)
             throw archive_exception(archive_exception::array_size_too_short);
         for (std::size_t i = 0; i != N; ++i)
         {

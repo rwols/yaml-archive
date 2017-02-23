@@ -35,7 +35,8 @@ using ::rand;
 
 ///////////////////////////////////////////////////////
 // Derived class test
-class B : public A {
+class B : public A
+{
   private:
     friend class boost::serialization::access;
     template <class Archive>
@@ -58,7 +59,8 @@ class B : public A {
     {
         // read any base class info to the archive
         ar >> BOOST_SERIALIZATION_BASE_OBJECT_NVP(A);
-        switch (file_version) {
+        switch (file_version)
+        {
         case 1:
         case 2:
             ar >> BOOST_SERIALIZATION_NVP(s);
@@ -74,12 +76,12 @@ class B : public A {
     }
 
     BOOST_SERIALIZATION_SPLIT_MEMBER()
-    signed char s;
+    signed char   s;
     unsigned char t;
-    signed int u;
-    unsigned int v;
-    float w;
-    double x;
+    signed int    u;
+    unsigned int  v;
+    float         w;
+    double        x;
 
   public:
     B();
@@ -87,21 +89,6 @@ class B : public A {
     bool operator==(const B& rhs) const;
 };
 
-B::B()
-    : s(static_cast<signed char>(std::rand())),
-      t(static_cast<unsigned char>(std::rand())), u(std::rand()),
-      v(std::rand()), w((float)std::rand() / std::rand()),
-      x((double)std::rand() / std::rand())
-{
-}
-
 BOOST_CLASS_VERSION(B, 2)
-
-inline bool B::operator==(const B& rhs) const
-{
-    return A::operator==(rhs) && s == rhs.s && t == rhs.t && u == rhs.u &&
-           v == rhs.v && std::abs(boost::math::float_distance(w, rhs.w)) < 6 &&
-           std::abs(boost::math::float_distance(x, rhs.x)) < 6;
-}
 
 #endif // BOOST_SERIALIZATION_TEST_B_HPP

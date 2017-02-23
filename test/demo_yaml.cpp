@@ -18,15 +18,14 @@
 #include <boost/config.hpp>
 #include <cstdio> // remove
 #if defined(BOOST_NO_STDC_NAMESPACE)
-namespace std
-{
+namespace std {
 using ::remove;
 }
 #endif
 
-#include <YAML/InputArchive.hpp>
-#include <YAML/OutputArchive.hpp>
 #include <boost/archive/tmpdir.hpp>
+#include <boost/archive/yaml_iarchive.hpp>
+#include <boost/archive/yaml_oarchive.hpp>
 
 #include "demo_gps.hpp"
 
@@ -35,7 +34,7 @@ void save_schedule(const bus_schedule& s, const char* filename)
     // make an archive
     std::ofstream ofs(filename);
     assert(ofs.good());
-    YAML::OutputArchive oa(ofs);
+    boost::archive::yaml_oarchive oa(ofs);
     oa << BOOST_SERIALIZATION_NVP(s);
 }
 
@@ -44,7 +43,7 @@ void restore_schedule(bus_schedule& s, const char* filename)
     // open the archive
     std::ifstream ifs(filename);
     assert(ifs.good());
-    YAML::InputArchive ia(ifs);
+    boost::archive::yaml_iarchive ia(ifs);
 
     // restore the schedule from the archive
     ia >> BOOST_SERIALIZATION_NVP(s);
