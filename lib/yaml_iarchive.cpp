@@ -1,7 +1,11 @@
 #include <boost/archive/detail/archive_serializer_map.hpp>
 #include <boost/archive/yaml_iarchive.hpp>
 
-#include <codecvt>
+#ifdef BOOST_NO_CXX11_HDR_CODECVT
+#include <boost/archive/detail/wchar_from_mb.hpp>
+#else
+#include <codecvt> // gcc version < 5 doesn't have this
+#endif
 
 #ifdef YAML_ARCHIVE_DEBUG_STACK
 #include <iostream>
@@ -67,11 +71,21 @@ void yaml_iarchive::load(wchar_t& t)
 
 void yaml_iarchive::load(std::wstring& t)
 {
+#ifdef BOOST_NO_CXX11_HDR_CODECVT
+    std::string bytes;
+    load(bytes);
+    typedef boost::archive::iterators::wchar_from_mb<std::string::iterator>
+        translator;
+    t.clear();
+    std::copy(translator(bytes.begin()), translator(bytes.end()),
+              std::back_inserter(t));
+#else
     using convert_type = std::codecvt_utf8<wchar_t>;
     std::wstring_convert<convert_type, wchar_t> converter;
     std::string bytes;
     load(bytes);
     t = converter.from_bytes(bytes);
+#endif
 }
 
 void yaml_iarchive::load(char& t)
