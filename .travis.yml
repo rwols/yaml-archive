@@ -13,7 +13,7 @@ addons:
     sources:
       - boost-latest
     packages:
-      - libboost1.63-all-dev
+      - libboost-all-dev
       - cmake
 
 script:
