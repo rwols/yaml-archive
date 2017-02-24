@@ -1,0 +1,22 @@
+language: cpp
+
+cache:
+  apt: true
+compiler:
+  - clang
+  - g++
+
+addons:
+  apt:
+    sources:
+      - boost-latest
+    packages:
+      - libboost1.63-all-dev
+      - cmake
+
+script:
+  - mkdir build
+  - cd build
+  - cmake ..
+  - make
+  - ctest
