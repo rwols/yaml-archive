@@ -1,7 +1,11 @@
 #include <boost/archive/detail/archive_serializer_map.hpp>
 #include <boost/archive/yaml_oarchive.hpp>
 
-#include <codecvt>
+#ifdef BOOST_NO_CXX11_HDR_CODECVT
+#include <boost/archive/detail/mb_from_wchar.hpp>
+#else
+#include <codecvt> // gcc version < 5 doesn't have this
+#endif
 
 #ifdef DEBUG_YAML_OARCHIVE
 #include <iostream>
@@ -18,16 +22,12 @@ yaml_oarchive::yaml_oarchive(std::ostream& os, const unsigned flags)
     print(YAML::BeginDoc);
     print(YAML::BeginMap);
 #endif
-    m_emit.SetFloatPrecision(std::numeric_limits<float>::digits10 + 1);
-    m_emit.SetDoublePrecision(std::numeric_limits<double>::digits10 + 1);
     m_emit << YAML::BeginDoc << YAML::BeginMap;
 }
 
 yaml_oarchive::~yaml_oarchive()
 {
     if (std::uncaught_exception()) return;
-    // assert(m_tag.empty() && "tag is not empty");
-    // assert(m_anchor == (unsigned)-1 && "unemitted anchor");
     while (!m_deferred.empty())
     {
         if (m_is_alias)
@@ -44,21 +44,6 @@ yaml_oarchive::~yaml_oarchive()
         }
         m_deferred.pop();
     }
-    //     else if (!m_serializing_ptr.top() && !boost::is_enum<T>::value)
-    //     {
-    //         end_preamble();
-    // #ifdef DEBUG_YAML_OARCHIVE
-    //         print(YAML::EndMap);
-    // #endif
-    //         m_emit << YAML::EndMap;
-    //     }
-    //     m_serializing_ptr.pop();
-    // #ifdef DEBUG_YAML_OARCHIVE
-    //     print(YAML::EndMap);
-    //     print(YAML::EndDoc);
-    //     assert(m_debug_map_count == 0 && "begin/end map not in balance");
-    //     assert(m_debug_seq_count == 0 && "begin/end seq not in balance");
-    // #endif
     m_emit << YAML::EndMap << YAML::EndDoc;
 }
 
@@ -72,9 +57,18 @@ void yaml_oarchive::save(const wchar_t t)
 
 void yaml_oarchive::save(const std::wstring& t)
 {
+#ifdef BOOST_NO_CXX11_HDR_CODECVT
+    std::string bytes;
+    typedef boost::archive::iterators::mb_from_wchar<std::wstring::iterator>
+        translator;
+    std::copy(translator(t.begin()), translator(t.end()),
+              std::back_inserter(bytes));
+    save(bytes);
+#else
     using convert_type = std::codecvt_utf8<wchar_t>;
     std::wstring_convert<convert_type, wchar_t> converter;
     save(converter.to_bytes(t));
+#endif
 }
 
 void yaml_oarchive::save(char t) { save(static_cast<int>(t)); }
