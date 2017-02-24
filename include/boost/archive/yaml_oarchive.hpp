@@ -6,6 +6,7 @@
 #pragma once
 
 #include <boost/archive/detail/common_oarchive.hpp>
+#include <boost/archive/detail/decl.hpp>
 #include <boost/archive/detail/is_yaml_primitive.hpp>
 #include <boost/archive/detail/register_archive.hpp>
 #include <boost/serialization/item_version_type.hpp>
