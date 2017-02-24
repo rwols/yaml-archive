@@ -1,14 +1,5 @@
 include(CMakeParseArguments)
 
-find_package(Boost 
-  COMPONENTS 
-    system 
-    filesystem 
-    serialization 
-    wserialization 
-    unit_test_framework
-  REQUIRED)
-
 # Creates a common "abstract" target that all tests link against.
 # Saves some boilerplate code.
 add_library(serialization-test-interface INTERFACE)
@@ -103,11 +94,24 @@ function(target_create_boost_archive_test_suite)
     std_forward_list.cpp
     list_pointers.cpp
     list.cpp
+    std_map.cpp
+    std_unordered_map.cpp
+    boost_unordered_map.cpp
+    std_set.cpp
 
     # unit tests -- misc
     helper_support.cpp
 
     )
+
+  find_package(Boost 
+    COMPONENTS 
+      system 
+      filesystem 
+      serialization 
+      wserialization 
+      unit_test_framework
+    REQUIRED)
 
   target_include_directories(${exe} PRIVATE ${Boost_INCLUDE_DIRS})
   target_include_directories(${exe} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
@@ -200,6 +204,15 @@ function(target_create_boost_archive_test_suite)
   add_test(NAME std_list COMMAND ${exe} --run_test=std_list)
   add_test(NAME boost_slist COMMAND ${exe} --run_test=boost_slist)
   add_test(NAME std_forward_list2 COMMAND ${exe} --run_test=std_forward_list2)
+  add_test(NAME std_map COMMAND ${exe} --run_test=std_map)
+  add_test(NAME std_map_int_ptr COMMAND ${exe} --run_test=std_map_int_ptr)
+  add_test(NAME std_multimap COMMAND ${exe} --run_test=std_multimap)
+  add_test(NAME std_unordered_map COMMAND ${exe} --run_test=std_unordered_map)
+  add_test(NAME std_unordered_multimap COMMAND ${exe} --run_test=std_unordered_multimap)
+  add_test(NAME boost_unordered_map COMMAND ${exe} --run_test=boost_unordered_map)
+  add_test(NAME boost_unordered_multimap COMMAND ${exe} --run_test=boost_unordered_multimap)
+  add_test(NAME std_set COMMAND ${exe} --run_test=std_set)
+  add_test(NAME std_multiset COMMAND ${exe} --run_test=std_multiset)
 
   # unit tests -- misc
   add_test(NAME helper_support COMMAND ${exe} --run_test=helper_support)
@@ -278,10 +291,10 @@ function(target_add_archive_test_suite target config)
   # add_archive_test(NAME test_forward_list_ptrs         ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
   # add_archive_test(NAME test_helper_support            ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
   # add_archive_test(NAME test_interrupts                ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  add_archive_test(NAME test_list                      ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  add_archive_test(NAME test_list_ptrs                 ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  add_archive_test(NAME test_map                       ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  add_archive_test(NAME test_map_boost_unordered       ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
+  # add_archive_test(NAME test_list                      ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
+  # add_archive_test(NAME test_list_ptrs                 ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
+  # add_archive_test(NAME test_map                       ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
+  # add_archive_test(NAME test_map_boost_unordered       ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
   # add_archive_test(NAME test_mi                        ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
   # add_archive_test(NAME test_multiple_ptrs             ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
   # add_archive_test(NAME test_multiple_inheritance      ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
@@ -314,14 +327,14 @@ function(target_add_archive_test_suite target config)
   add_archive_test(NAME test_valarray                  ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
   add_archive_test(NAME test_variant                   ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
   add_archive_test(NAME test_vector                    ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  add_archive_test(NAME test_set                       ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
+  # add_archive_test(NAME test_set                       ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
   add_archive_test(NAME test_set_boost_unordered       ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
   
   # This one requires C++11
   add_archive_test(NAME test_set_unordered             ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
 
   # This one requires C++11
-  add_archive_test(NAME test_map_unordered             ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
+  # add_archive_test(NAME test_map_unordered             ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
 endfunction(target_add_archive_test_suite)
 
 ################################################################################

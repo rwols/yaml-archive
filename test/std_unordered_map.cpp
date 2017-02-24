@@ -9,29 +9,15 @@
 
 // should pass compilation and execution
 
-#include <algorithm> // std::copy
-#include <cstddef>   // size_t, NULL
-#include <fstream>
-#include <vector>
-
-#include <boost/config.hpp>
-#include <boost/detail/workaround.hpp>
-
-#include <cstdio>
-#if defined(BOOST_NO_STDC_NAMESPACE)
-namespace std {
-using ::rand;
-using ::size_t;
-}
-#endif
-
-#include "test_tools.hpp"
-
-// #include <boost/serialization/map.hpp>
-// #include <boost/serialization/nvp.hpp>
-
 #include "A.hpp"
 #include "A.ipp"
+#include "io_fixture.hpp"
+#include <algorithm> // std::copy
+#include <boost/serialization/map.hpp>
+#include <boost/serialization/nvp.hpp>
+#include <boost/serialization/unordered_map.hpp>
+#include <boost/test/unit_test.hpp>
+#include <functional> // requires changeset [69520]; Ticket #5254
 
 ///////////////////////////////////////////////////////
 // a key value initialized with a random value for use
@@ -55,10 +41,7 @@ struct random_key
     }
 };
 
-#include <boost/serialization/boost_unordered_map.hpp>
-#include <functional> // requires changeset [69520]; Ticket #5254
-
-namespace boost {
+namespace std {
 template <> struct hash<random_key>
 {
     std::size_t operator()(const random_key& r) const
@@ -68,26 +51,19 @@ template <> struct hash<random_key>
 };
 } // namespace std
 
-void test_unordered_map()
+BOOST_FIXTURE_TEST_CASE(std_unordered_map, io_fixture)
 {
-    const char* testfile = "test_boost_unordered_map.yml";
-
-    BOOST_CHECKPOINT("unordered_map");
     // test unordered_map of objects
-    boost::unordered_map<random_key, A> anunordered_map;
+    std::unordered_map<random_key, A> anunordered_map;
     anunordered_map.insert(std::make_pair(random_key(), A()));
     anunordered_map.insert(std::make_pair(random_key(), A()));
     {
-        test_ostream  os(testfile, TEST_STREAM_FLAGS);
-        test_oarchive oa(os, TEST_ARCHIVE_FLAGS);
-        oa << boost::serialization::make_nvp("anunorderedmap", anunordered_map);
+        output() << BOOST_SERIALIZATION_NVP(anunordered_map);
     }
-    boost::unordered_map<random_key, A> anunordered_map1;
+    std::unordered_map<random_key, A> anunordered_map1;
     {
-        test_istream  is(testfile, TEST_STREAM_FLAGS);
-        test_iarchive ia(is, TEST_ARCHIVE_FLAGS);
-        ia >>
-            boost::serialization::make_nvp("anunorderedmap", anunordered_map1);
+        input() >>
+            boost::serialization::make_nvp("anunordered_map", anunordered_map1);
     }
 
     std::vector<std::pair<random_key, A>> tvec, tvec1;
@@ -100,31 +76,20 @@ void test_unordered_map()
     BOOST_CHECK(tvec == tvec1);
 }
 
-void test_unordered_multimap()
+BOOST_FIXTURE_TEST_CASE(std_unordered_multimap, io_fixture)
 {
-    const char* testfile = "test_boost_unordered_multimap.yml";
-    BOOST_REQUIRE(NULL != testfile);
-
-    BOOST_CHECKPOINT("unordered_multimap");
-    boost::unordered_multimap<random_key, A> anunordered_multimap;
+    std::unordered_multimap<random_key, A> anunordered_multimap;
     anunordered_multimap.insert(std::make_pair(random_key(), A()));
     anunordered_multimap.insert(std::make_pair(random_key(), A()));
     {
-        test_ostream  os(testfile, TEST_STREAM_FLAGS);
-        test_oarchive oa(os, TEST_ARCHIVE_FLAGS);
-        oa << boost::serialization::make_nvp("anunordered_multimap",
-                                             anunordered_multimap);
+        output() << BOOST_SERIALIZATION_NVP(anunordered_multimap);
     }
-    boost::unordered_multimap<random_key, A> anunordered_multimap1;
+    std::unordered_multimap<random_key, A> anunordered_multimap1;
     {
-        test_istream  is(testfile, TEST_STREAM_FLAGS);
-        test_iarchive ia(is, TEST_ARCHIVE_FLAGS);
-        ia >> boost::serialization::make_nvp("anunordered_multimap",
-                                             anunordered_multimap1);
+        input() >> boost::serialization::make_nvp("anunordered_multimap",
+                                                  anunordered_multimap1);
     }
     std::vector<std::pair<random_key, A>> tvec, tvec1;
-    tvec.clear();
-    tvec1.clear();
     std::copy(anunordered_multimap.begin(), anunordered_multimap.end(),
               std::back_inserter(tvec));
     std::sort(tvec.begin(), tvec.end());
@@ -132,12 +97,4 @@ void test_unordered_multimap()
               std::back_inserter(tvec1));
     std::sort(tvec1.begin(), tvec1.end());
     BOOST_CHECK(tvec == tvec1);
-}
-
-int test_main(int /* argc */, char* /* argv */ [])
-{
-    test_unordered_map();
-    test_unordered_multimap();
-
-    return EXIT_SUCCESS;
 }

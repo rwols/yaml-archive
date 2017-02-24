@@ -233,21 +233,51 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
     }
 
     template <class Key, class T, class Compare, class Alloc>
-    void
-        // typename std::enable_if<!detail::is_yaml_primitive<Key>::value ||
-        //                         !detail::is_yaml_primitive<T>::value>::type
-        load_value(std::map<Key, T, Compare, Alloc>& t)
+    void load_value(std::map<Key, T, Compare, Alloc>& t)
     {
         load_map(t);
     }
 
     template <class Key, class T, class Compare, class Alloc>
-    void
-        // typename std::enable_if<!detail::is_yaml_primitive<Key>::value ||
-        //                         !detail::is_yaml_primitive<T>::value>::type
-        load_value(std::multimap<Key, T, Compare, Alloc>& t)
+    void load_value(std::multimap<Key, T, Compare, Alloc>& t)
     {
         load_multimap(t);
+    }
+
+    template <class Key, class T, class Hash, class KeyEqual, class Alloc>
+    void load_value(std::unordered_map<Key, T, Hash, KeyEqual, Alloc>& t)
+    {
+        load_map(t);
+    }
+
+    template <class Key, class T, class Hash, class KeyEqual, class Alloc>
+    void load_value(std::unordered_multimap<Key, T, Hash, KeyEqual, Alloc>& t)
+    {
+        load_multimap(t);
+    }
+
+    template <class Key, class T, class Hash, class KeyEqual, class Alloc>
+    void load_value(boost::unordered_map<Key, T, Hash, KeyEqual, Alloc>& t)
+    {
+        load_map(t);
+    }
+
+    template <class Key, class T, class Hash, class KeyEqual, class Alloc>
+    void load_value(boost::unordered_multimap<Key, T, Hash, KeyEqual, Alloc>& t)
+    {
+        load_multimap(t);
+    }
+
+    template <class Key, class Compare, class Alloc>
+    void load_value(std::set<Key, Compare, Alloc>& t)
+    {
+        load_set(t);
+    }
+
+    template <class Key, class Compare, class Alloc>
+    void load_value(std::multiset<Key, Compare, Alloc>& t)
+    {
+        load_set(t);
     }
 
     // note: std::pair requires both of its template parameters to be default
@@ -389,6 +419,61 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
             reset_object_address(&(result->second), &temp.reference().second);
             hint = result;
             ++hint;
+#ifdef YAML_ARCHIVE_DEBUG_STACK
+            debug_print_stack();
+#endif
+        }
+    }
+
+    template <class T>
+    typename std::enable_if<
+        !std::is_default_constructible<typename T::value_type>::value>::type
+    load_set(T& t)
+    {
+#ifdef YAML_ARCHIVE_DEBUG_STACK
+        std::cout << "INVOKE: load_set\n";
+#endif
+        auto node = m_stack.top();
+        for (auto item : node)
+        {
+            using serialization::detail::stack_construct;
+            m_stack.push(item);
+
+            m_stack.push(m_stack.top()["construct_data"]);
+            stack_construct<yaml_iarchive, typename T::value_type> temp(
+                *this, get_library_version());
+            m_stack.pop(); // construct_data
+
+            m_stack.push(m_stack.top()["object"]);
+            load_value(temp.reference());
+            m_stack.pop(); // object
+
+            auto iter = t.insert(t.end(), temp.reference());
+            reset_object_address(&(*iter), &temp.reference());
+
+            m_stack.pop(); // item
+        }
+    }
+
+    template <class T>
+    typename std::enable_if<
+        std::is_default_constructible<typename T::value_type>::value>::type
+    load_set(T& t)
+    {
+#ifdef YAML_ARCHIVE_DEBUG_STACK
+        std::cout << "INVOKE: load_set\n";
+#endif
+        auto node = m_stack.top();
+        for (auto item : node)
+        {
+            using serialization::detail::stack_construct;
+            stack_construct<yaml_iarchive, typename T::value_type> temp(
+                *this, get_library_version());
+            m_stack.push(item);
+            load_value(temp.reference());
+            m_stack.pop(); // item
+            auto iter = t.insert(t.end(), temp.reference());
+            reset_object_address(&(*iter), &temp.reference());
 #ifdef YAML_ARCHIVE_DEBUG_STACK
             debug_print_stack();
 #endif

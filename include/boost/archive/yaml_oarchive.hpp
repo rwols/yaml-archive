@@ -26,6 +26,26 @@
 namespace boost {
 namespace archive {
 
+// template <class Archive, class T>
+// void save_yaml_value(Archive& archive, const T& t)
+// {
+//     archive.save_override(t);
+// }
+
+// template <class Archive, class T, class Alloc>
+// void save_yaml_value(Archive& archive, const std::vector<T, Alloc>& t)
+// {
+//     // must be forward-iterable; is realized as a yaml sequence
+//     archive.save_sequence(t);
+// }
+
+// template <class Archive, class T, class Alloc>
+// void load_yaml_value(Archive& archive, std::vector<T, Alloc>& t)
+// {
+//     // must have push_back; yaml sequence is expected
+//     archive.load_sequence(t);
+// }
+
 /**
  * @brief      Archive for YAML format
  */
@@ -227,6 +247,44 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive
         const boost::unordered_multimap<Key, T, Hash, KeyEqual, Alloc>& t)
     {
         save_multimap(t);
+    }
+
+    template <class Key, class Compare, class Alloc>
+    void save_value(const std::set<Key, Compare, Alloc>& t)
+    {
+        save_sequence(t);
+    }
+
+    template <class Key, class Compare, class Alloc>
+    void save_value(const std::multiset<Key, Compare, Alloc>& t)
+    {
+        save_sequence(t);
+    }
+
+    template <class Key, class Hash, class KeyEqual, class Alloc>
+    void save_value(const std::unordered_set<Key, Hash, KeyEqual, Alloc>& t)
+    {
+        save_sequence(t);
+    }
+
+    template <class Key, class Hash, class KeyEqual, class Alloc>
+    void save_value(const boost::unordered_set<Key, Hash, KeyEqual, Alloc>& t)
+    {
+        save_sequence(t);
+    }
+
+    template <class Key, class Hash, class KeyEqual, class Alloc>
+    void
+    save_value(const std::unordered_multiset<Key, Hash, KeyEqual, Alloc>& t)
+    {
+        save_sequence(t);
+    }
+
+    template <class Key, class Hash, class KeyEqual, class Alloc>
+    void
+    save_value(const boost::unordered_multiset<Key, Hash, KeyEqual, Alloc>& t)
+    {
+        save_sequence(t);
     }
 
     template <class First, class Second>
