@@ -549,10 +549,10 @@ class script(script_common):
         tar.close()
         print('Changing directory to {}'.format(self.boost_dir))
         os.chdir(self.boost_dir)
-        ext = '.bat' if os.name == 'nt' else '.sh'
-        utils.check_call('./bootstrap' + ext, '--with-libraries=system,filesystem,serialization,test')
-        link_type = 'shared' if self.build_shared_libs == 'ON' else 'static'
-        utils.check_call('./b2', '-d0', '-q', 'link={}'.format(link_type), '-j{}'.format(str(self.jobs)))
+        bootstrap = 'bootstrap.bat' if os.name == 'nt' else './bootstrap.sh'
+        link = 'link=shared' if self.build_shared_libs == 'ON' else 'link=static'
+        utils.check_call(bootstrap, '--with-libraries=system,filesystem,serialization,test')
+        utils.check_call('./b2', '-d0', '-q', link, '-j{}'.format(str(self.jobs)))
 
     def command_before_build(self):
         super(script,self).command_before_build()
@@ -568,7 +568,8 @@ class script(script_common):
             '-DBUILD_SHARED_LIBS={}'.format(self.build_shared_libs),
             '-DCMAKE_BUILD_TYPE={}'.format(self.cmake_build_type))
 
-        utils.check_call('make', '-j{}'.format(str(self.jobs)))
+        # utils.check_call('make', '-j{}'.format(str(self.jobs)))
+        utils.check_call('make')
         utils.check_call('ctest', '--output-on-failure')
 
     def command_after_success(self):
