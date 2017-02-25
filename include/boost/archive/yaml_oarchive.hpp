@@ -24,10 +24,6 @@
 #include <iostream>
 #endif
 
-#ifndef BOOST_ARCHIVE_DECL
-#define BOOST_ARCHIVE_DECL
-#endif
-
 namespace boost {
 namespace archive {
 
@@ -38,12 +34,12 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive
     : public detail::common_oarchive<yaml_oarchive>
 {
   public:
-    BOOST_ARCHIVE_DECL yaml_oarchive(std::ostream&  os,
-                                     const unsigned flags = 0);
+    BOOST_SYMBOL_VISIBLE yaml_oarchive(std::ostream&  os,
+                                       const unsigned flags = 0);
 
-    BOOST_ARCHIVE_DECL ~yaml_oarchive() override;
+    BOOST_SYMBOL_VISIBLE ~yaml_oarchive() override;
 
-    BOOST_ARCHIVE_DECL
+    BOOST_SYMBOL_VISIBLE
     void save_binary(const void* address, std::size_t count);
 
   private:
@@ -58,7 +54,7 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive
     bool                            m_is_alias = false;
     std::stack<bool>                m_saving_dereffed_ptr;
 
-    BOOST_ARCHIVE_DECL void end_preamble();
+    BOOST_SYMBOL_VISIBLE void end_preamble();
 
 #ifdef DEBUG_YAML_OARCHIVE
     void print(const YAML::EMITTER_MANIP x);
@@ -443,14 +439,14 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive
 
     // specific overrides for attributes - not name value pairs so we
     // want to trap them before the above "fall through"
-    BOOST_ARCHIVE_DECL void save_override(const class_id_type& t);
-    BOOST_ARCHIVE_DECL void save_override(const class_id_optional_type& t);
-    BOOST_ARCHIVE_DECL void save_override(const class_id_reference_type& t);
-    BOOST_ARCHIVE_DECL void save_override(const object_id_type& t);
-    BOOST_ARCHIVE_DECL void save_override(const object_reference_type& t);
-    BOOST_ARCHIVE_DECL void save_override(const version_type& t);
-    BOOST_ARCHIVE_DECL void save_override(const class_name_type& t);
-    BOOST_ARCHIVE_DECL void save_override(const tracking_type& t);
+    BOOST_SYMBOL_VISIBLE void save_override(const class_id_type& t);
+    BOOST_SYMBOL_VISIBLE void save_override(const class_id_optional_type& t);
+    BOOST_SYMBOL_VISIBLE void save_override(const class_id_reference_type& t);
+    BOOST_SYMBOL_VISIBLE void save_override(const object_id_type& t);
+    BOOST_SYMBOL_VISIBLE void save_override(const object_reference_type& t);
+    BOOST_SYMBOL_VISIBLE void save_override(const version_type& t);
+    BOOST_SYMBOL_VISIBLE void save_override(const class_name_type& t);
+    BOOST_SYMBOL_VISIBLE void save_override(const tracking_type& t);
 };
 
 } // namespace archive

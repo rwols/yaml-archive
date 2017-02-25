@@ -2,7 +2,7 @@
 #include <boost/archive/yaml_iarchive.hpp>
 
 #ifdef BOOST_NO_CXX11_HDR_CODECVT
-#include <boost/archive/detail/wchar_from_mb.hpp>
+#include <boost/archive/iterators/wchar_from_mb.hpp>
 #else
 #include <codecvt> // gcc version < 5 doesn't have this
 #endif

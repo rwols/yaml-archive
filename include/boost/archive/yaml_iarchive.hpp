@@ -17,10 +17,6 @@
 
 #include <boost/archive/detail/abi_prefix.hpp> // must be the last header
 
-#ifndef BOOST_ARCHIVE_DECL
-#define BOOST_ARCHIVE_DECL
-#endif
-
 namespace boost {
 namespace archive {
 
@@ -28,12 +24,12 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
     : public detail::common_iarchive<yaml_iarchive>
 {
   public:
-    BOOST_ARCHIVE_DECL yaml_iarchive(std::istream&  is,
-                                     const unsigned flags = 0);
+    BOOST_SYMBOL_VISIBLE yaml_iarchive(std::istream&  is,
+                                       const unsigned flags = 0);
 
-    BOOST_ARCHIVE_DECL ~yaml_iarchive() noexcept = default;
+    BOOST_SYMBOL_VISIBLE ~yaml_iarchive() noexcept = default;
 
-    BOOST_ARCHIVE_DECL
+    BOOST_SYMBOL_VISIBLE
     void load_binary(void* address, std::size_t count);
 
   private:
@@ -500,14 +496,14 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
 
     // specific overrides for attributes - not name value pairs so we
     // want to trap them before the above "fall through"
-    BOOST_ARCHIVE_DECL void load_override(class_id_type& t);
-    BOOST_ARCHIVE_DECL void load_override(class_id_optional_type& t);
-    BOOST_ARCHIVE_DECL void load_override(class_id_reference_type& t);
-    BOOST_ARCHIVE_DECL void load_override(object_id_type& t);
-    BOOST_ARCHIVE_DECL void load_override(object_reference_type& t);
-    BOOST_ARCHIVE_DECL void load_override(version_type& t);
-    BOOST_ARCHIVE_DECL void load_override(class_name_type& t);
-    BOOST_ARCHIVE_DECL void load_override(tracking_type& t);
+    BOOST_SYMBOL_VISIBLE void load_override(class_id_type& t);
+    BOOST_SYMBOL_VISIBLE void load_override(class_id_optional_type& t);
+    BOOST_SYMBOL_VISIBLE void load_override(class_id_reference_type& t);
+    BOOST_SYMBOL_VISIBLE void load_override(object_id_type& t);
+    BOOST_SYMBOL_VISIBLE void load_override(object_reference_type& t);
+    BOOST_SYMBOL_VISIBLE void load_override(version_type& t);
+    BOOST_SYMBOL_VISIBLE void load_override(class_name_type& t);
+    BOOST_SYMBOL_VISIBLE void load_override(tracking_type& t);
 };
 
 } // namespace archive
