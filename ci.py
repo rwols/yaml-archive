@@ -551,8 +551,8 @@ class script(script_common):
         os.chdir(self.boost_dir)
         bootstrap = 'bootstrap.bat' if os.name == 'nt' else './bootstrap.sh'
         link = 'link=shared' if self.build_shared_libs == 'ON' else 'link=static'
-        utils.check_call(bootstrap + ' --with-libraries=system,filesystem,serialization,test')
-        utils.check_call('./b2 -d0 -q {} -j{}'.format(link, str(self.jobs)))
+        utils.check_call(bootstrap, '--with-libraries=system,filesystem,serialization,test')
+        utils.check_call('./b2', '-d0', '-q', link, '-j{}'.format(str(self.jobs)))
 
     def command_before_build(self):
         super(script,self).command_before_build()
@@ -562,11 +562,14 @@ class script(script_common):
         print('Changing directory to {}'.format(self.build_dir))
         os.chdir(self.build_dir)
 
-        utils.check_call('cmake {} -DCMAKE_SYSTEM_INCLUDE_PATH={} -DCMAKE_SYSTEM_LIBRARY_PATH={} -DBUILD_SHARED_LIBS={} -DCMAKE_BUILD_TYPE={}'
-            .format(self.root_dir, self.boost_dir, self.boost_dir + '/stage/lib', self.build_shared_libs, self.cmake_build_type))
+        utils.check_call('cmake', 
+            self.root_dir, '-DCMAKE_SYSTEM_INCLUDE_PATH={}'.format(self.boost_dir), 
+            '-DCMAKE_SYSTEM_LIBRARY_PATH={}'.format(self.boost_dir + '/stage/lib'), 
+            '-DBUILD_SHARED_LIBS={}'.format(self.build_shared_libs),
+            '-DCMAKE_BUILD_TYPE={}'.format(self.cmake_build_type))
 
-        utils.check_call('cmake --build .')
-        utils.check_call('ctest --output-on-failure')
+        utils.check_call('cmake' '--build', '.')
+        utils.check_call('ctest', '--output-on-failure')
 
     def command_after_success(self):
         super(script,self).command_after_success()
