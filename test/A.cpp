@@ -13,7 +13,6 @@
 #include <cstddef> // size_t
 #include <cstdlib> // rand()
 
-#include <codecvt>
 #include <iostream>
 
 #include <boost/config.hpp>
