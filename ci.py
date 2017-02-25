@@ -568,7 +568,7 @@ class script(script_common):
             '-DBUILD_SHARED_LIBS={}'.format(self.build_shared_libs),
             '-DCMAKE_BUILD_TYPE={}'.format(self.cmake_build_type))
 
-        utils.check_call('cmake' '--build', '.')
+        utils.check_call('cmake', '--build', '.')
         utils.check_call('ctest', '--output-on-failure')
 
     def command_after_success(self):
