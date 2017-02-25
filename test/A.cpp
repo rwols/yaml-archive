@@ -34,7 +34,8 @@ using ::size_t;
 template <class S> void randomize(S& x)
 {
     assert(0 == x.size());
-    for (;;) {
+    for (;;)
+    {
         unsigned int i = std::rand() % 27;
         if (0 == i) break;
         x += static_cast<typename S::value_type>('a' - 1 + i);
@@ -43,9 +44,10 @@ template <class S> void randomize(S& x)
 
 template <class T> void accumulate(std::size_t& s, const T& t)
 {
-    const char* tptr = (const char*)(&t);
+    const char*  tptr = (const char*)(&t);
     unsigned int count = sizeof(t);
-    while (count-- > 0) {
+    while (count-- > 0)
+    {
         s += *tptr++;
     }
 }
@@ -125,7 +127,8 @@ bool A::operator==(const A& rhs) const
     if (t != rhs.t) return false;
     if (u != rhs.u) return false;
     if (v != rhs.v) return false;
-    if (std::abs(boost::math::float_distance(x, rhs.x)) > 1) {
+    if (std::abs(boost::math::float_distance(x, rhs.x)) > 1)
+    {
         std::cerr << "x:     "
                   << std::setprecision(std::numeric_limits<float>::digits10 + 1)
                   << x << "\nrhs.x: "
@@ -137,11 +140,13 @@ bool A::operator==(const A& rhs) const
     //     return false;
     // }
     if (std::abs(boost::math::float_distance(x, rhs.x)) > 1) return false;
-    if (0 != y.compare(rhs.y)) {
+    if (0 != y.compare(rhs.y))
+    {
         return false;
     }
 #ifndef BOOST_NO_STD_WSTRING
-    if (0 != z.compare(rhs.z)) {
+    if (0 != z.compare(rhs.z))
+    {
         return false;
     }
 #endif
@@ -208,10 +213,11 @@ std::ostream& operator<<(std::ostream& os, const A& a)
     os << ' ' << a.w;
     os << ' ' << a.x;
     os << ' ' << a.y;
-#ifndef BOOST_NO_STD_WSTRING
-    using convert_type = std::codecvt_utf8<wchar_t>;
-    std::wstring_convert<convert_type, wchar_t> converter;
-    os << ' ' << converter.to_bytes(a.z);
-#endif
+    os << "some wstring...";
+    // #ifndef BOOST_NO_STD_WSTRING
+    //     using convert_type = std::codecvt_utf8<wchar_t>;
+    //     std::wstring_convert<convert_type, wchar_t> converter;
+    //     os << ' ' << converter.to_bytes(a.z);
+    // #endif
     return os << '>';
 }
