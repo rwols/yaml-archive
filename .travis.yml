@@ -18,7 +18,7 @@ addons:
 
 install:
   - wget http://mirrors.kernel.org/ubuntu/pool/universe/b/boost-defaults/libboost-all-dev_1.58.0.1ubuntu1_amd64.deb
-  - dpkg --force-all -i libboost-all-dev_1.58.0.1ubuntu1_amd64.deb
+  - sudo dpkg --force-all -i libboost-all-dev_1.58.0.1ubuntu1_amd64.deb
 
 script:
   # Link gcc-5 and g++-5 to their standard commands
