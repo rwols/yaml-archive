@@ -10,14 +10,13 @@
 import sys
 import inspect
 import optparse
-import os.path
+import os
 import string
 import time
 import subprocess
 import codecs
 import shutil
 import threading
-import shutil
 import site
 import tarfile
 import multiprocessing
@@ -197,7 +196,7 @@ class parallel_call(threading.Thread):
 
 class script_common(object):
     '''
-    Main script to run Boost C++ Libraries continuous integration.
+    Main script to run continuous integration.
     '''
 
     def __init__(self, ci_klass, **kargs):
@@ -507,21 +506,9 @@ class ci_appveyor(object):
     def command_on_finish(self):
         pass
 
-def main(script_klass):
-    if os.getenv('TRAVIS', False):
-        script_klass(ci_travis)
-    elif os.getenv('CIRCLECI', False):
-        script_klass(ci_circleci)
-    elif os.getenv('APPVEYOR', False):
-        script_klass(ci_appveyor)
-    else:
-        script_klass(ci_cli)
-
 class script(script_common):
     '''
-    Main script to build/test Boost C++ Libraries continuous releases. This base
-    is not usable by itself, as it needs some setup for the particular CI
-    environment before execution.
+    Main script to build/test
     '''
 
     def __init__(self, ci_klass, **kargs):
@@ -536,13 +523,9 @@ class script(script_common):
     def start(self):
         super(script,self).start()
         self.boost_version_major = 1
-        self.boost_version_minor = int(os.getenv('BOOST_VERSION_MINOR'))
-        self.build_shared_libs = os.getenv('BUILD_SHARED_LIBS')
-        if not self.build_shared_libs:
-            self.build_shared_libs = 'ON'
-        self.cmake_build_type = os.getenv('CMAKE_BUILD_TYPE')
-        if not self.cmake_build_type:
-            self.cmake_build_type = 'Debug'
+        self.boost_version_minor = int(os.getenv('BOOST_VERSION_MINOR', 60))
+        self.build_shared_libs = os.getenv('BUILD_SHARED_LIBS', 'ON')
+        self.cmake_build_type = os.getenv('CMAKE_BUILD_TYPE', 'Debug')
         self.boost_version_patch = 0
         self.boost_version = '{0}.{1}.{2}'.format(self.boost_version_major, self.boost_version_minor, self.boost_version_patch)
         self.boost_version_underscores = self.boost_version.replace('.','_')
@@ -566,7 +549,8 @@ class script(script_common):
         tar.close()
         print('Changing directory to {}'.format(self.boost_dir))
         os.chdir(self.boost_dir)
-        utils.check_call('./bootstrap.sh', '--with-libraries=system,filesystem,serialization,test')
+        ext = '.bat' if os.name == 'nt' else '.sh'
+        utils.check_call('./bootstrap' + ext, '--with-libraries=system,filesystem,serialization,test')
         utils.check_call('./b2', '-d0', '-q', '-j{}'.format(str(self.jobs)))
 
     def command_before_build(self):
@@ -588,5 +572,15 @@ class script(script_common):
 
     def command_after_success(self):
         super(script,self).command_after_success()
+
+def main(script_klass):
+    if os.getenv('TRAVIS', False):
+        script_klass(ci_travis)
+    elif os.getenv('CIRCLECI', False):
+        script_klass(ci_circleci)
+    elif os.getenv('APPVEYOR', False):
+        script_klass(ci_appveyor)
+    else:
+        script_klass(ci_cli)
 
 main(script)

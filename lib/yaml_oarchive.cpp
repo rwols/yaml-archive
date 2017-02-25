@@ -59,7 +59,9 @@ void yaml_oarchive::save(const std::wstring& t)
 {
 #ifdef BOOST_NO_CXX11_HDR_CODECVT
     std::string bytes;
-    typedef boost::archive::iterators::mb_from_wchar<std::wstring::iterator>
+    bytes.reserve(2 * t.length());
+    typedef boost::archive::iterators::mb_from_wchar<
+        std::wstring::const_iterator>
         translator;
     std::copy(translator(t.begin()), translator(t.end()),
               std::back_inserter(bytes));
