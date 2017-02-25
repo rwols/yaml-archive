@@ -8,6 +8,8 @@
 
 // should pass compilation and execution
 
+#include <boost/config.hpp>
+
 #include "A.hpp"
 #include "A.ipp"
 #include "io_fixture.hpp"
@@ -70,7 +72,6 @@ BOOST_FIXTURE_TEST_CASE(std_list_pointers, io_fixture)
 BOOST_FIXTURE_TEST_CASE(boost_slist_pointers, io_fixture)
 {
 #ifdef BOOST_HAS_SLIST
-
     boost::slist<A*> aslist;
     aslist.push_front(new A);
     aslist.push_front(new A);
@@ -87,7 +88,6 @@ BOOST_FIXTURE_TEST_CASE(boost_slist_pointers, io_fixture)
 
     std::for_each(aslist.begin(), aslist.end(), boost::checked_deleter<A>());
     std::for_each(aslist1.begin(), aslist1.end(), boost::checked_deleter<A>());
-
 #endif
 }
 

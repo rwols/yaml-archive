@@ -50,7 +50,7 @@ env:
   # - CXX=g++-5 BOOST_VERSION_MINOR=60 BUILD_SHARED_LIBS=OFF CMAKE_BUILD_TYPE=Release
 
 # Fetch the scripts to do the actual building/testing.
-before_install: wget https://raw.githubusercontent.com/rwols/yaml-archive/master/ci.py
+before_install: python ci.py before_install
 install: python ci.py install
 before_script: python ci.py before_script
 script: python ci.py script
