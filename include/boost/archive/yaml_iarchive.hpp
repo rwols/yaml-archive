@@ -17,6 +17,10 @@
 
 #include <boost/archive/detail/abi_prefix.hpp> // must be the last header
 
+#ifndef BOOST_ARCHIVE_DECL
+#define BOOST_ARCHIVE_DECL
+#endif
+
 namespace boost {
 namespace archive {
 
