@@ -551,7 +551,8 @@ class script(script_common):
         os.chdir(self.boost_dir)
         ext = '.bat' if os.name == 'nt' else '.sh'
         utils.check_call('./bootstrap' + ext, '--with-libraries=system,filesystem,serialization,test')
-        utils.check_call('./b2', '-d0', '-q', '-j{}'.format(str(self.jobs)))
+        link_type = 'shared' if self.build_shared_libs == 'ON' else 'static'
+        utils.check_call('./b2', '-d0', '-q', 'link={}'.format(link_type), '-j{}'.format(str(self.jobs)))
 
     def command_before_build(self):
         super(script,self).command_before_build()
