@@ -104,12 +104,17 @@ function(target_create_boost_archive_test_suite)
 
     )
 
+  if (BUILD_SHARED_LIBS)
+      set(Boost_USE_STATIC_LIBS OFF)
+  else()
+      set(Boost_USE_STATIC_LIBS ON)
+  endif()
   find_package(Boost 
     COMPONENTS 
-      system 
-      filesystem 
-      serialization 
-      wserialization 
+      # system 
+      # filesystem 
+      # serialization 
+      # wserialization 
       unit_test_framework
     REQUIRED)
 
@@ -119,7 +124,9 @@ function(target_create_boost_archive_test_suite)
   target_link_libraries(${exe} PRIVATE ${args_LIBRARY_TARGET})
   target_link_libraries(${exe} PRIVATE ${Boost_LIBRARIES})
   
-  target_compile_definitions(${exe} PRIVATE BOOST_TEST_DYN_LINK)
+  if (BUILD_SHARED_LIBS)
+      target_compile_definitions(${exe} PRIVATE BOOST_TEST_DYN_LINK)
+  endif()
   target_compile_definitions(${exe} PRIVATE BOOST_ALL_NO_LIB)
   
   set_property(TARGET ${exe} PROPERTY CXX_STANDARD 11)

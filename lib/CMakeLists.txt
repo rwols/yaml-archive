@@ -1,4 +1,8 @@
-set(Boost_USE_STATIC_LIBS NOT ${BUILD_SHARED_LIBS})
+if (BUILD_SHARED_LIBS)
+    set(Boost_USE_STATIC_LIBS OFF)
+else()
+    set(Boost_USE_STATIC_LIBS ON)
+endif()
 find_package(Boost COMPONENTS system serialization REQUIRED)
 
 add_library(yaml-archive 
