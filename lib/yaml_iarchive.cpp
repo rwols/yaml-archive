@@ -62,8 +62,8 @@ void yaml_iarchive::debug_print_stack()
 
 void yaml_iarchive::load(wchar_t& t)
 {
-    static_assert(sizeof(wchar_t) >= sizeof(int),
-                  "wchar_t size must be >= int size");
+    static_assert(sizeof(wchar_t) <= sizeof(int),
+                  "wchar_t must fit inside an int.");
     int x;
     load(x);
     t = static_cast<wchar_t>(x);

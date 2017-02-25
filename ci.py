@@ -312,13 +312,6 @@ class ci_cli():
     '''
     
     def __init__(self,script):
-        # if sys.platform == 'darwin':
-        #     # Requirements for running on OSX:
-        #     # https://www.stack.nl/~dimitri/doxygen/download.html#srcbin
-        #     # https://tug.org/mactex/morepackages.html
-        #     doxygen_path = "/Applications/Doxygen.app/Contents/Resources"
-        #     if os.path.isdir(doxygen_path):
-        #         os.environ["PATH"] = doxygen_path+':'+os.environ['PATH']
         self.script = script
     
     def init(self, opt, kargs):
@@ -336,18 +329,6 @@ class ci_cli():
         Travis-CI is the most limiting in the sense of only fetching partial
         history of the repo.
         '''
-        # cwd = os.getcwd()
-        # self.script.root_dir = os.path.join(cwd,'boostorg','boost')
-        # self.script.build_dir = os.path.join(os.path.dirname(self.script.root_dir), "build")
-        # if not os.path.exists(os.path.join(self.script.root_dir,'.git')):
-        #     utils.check_call("git","clone","--depth=50","--branch=%s"%(self.script.branch),"https://github.com/boostorg/boost.git","boostorg/boost")
-        #     os.chdir(self.script.root_dir)
-        # else:
-        #     os.chdir(self.script.root_dir)
-        #     utils.check_call("git","pull","--quiet","--no-recurse-submodules","--depth=50")
-        # if self.script.commit:
-        #     utils.check_call("git","checkout","-qf",self.script.commit)
-        # utils.check_call("git","submodule","update","--quiet","--init","--recursive")
 
 class ci_travis(object):
     '''

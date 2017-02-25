@@ -41,7 +41,6 @@ BOOST_FIXTURE_TEST_CASE(std_list, io_fixture)
 BOOST_FIXTURE_TEST_CASE(boost_slist, io_fixture)
 {
 #ifdef BOOST_HAS_SLIST
-
     BOOST_STD_EXTENSION_NAMESPACE::slist<A> aslist, aslist1;
     aslist.push_front(A());
     aslist.push_front(A());
@@ -52,7 +51,8 @@ BOOST_FIXTURE_TEST_CASE(boost_slist, io_fixture)
         input() >> make_nvp("aslist", aslist1);
     }
     BOOST_CHECK(aslist == aslist1);
-
+#else
+    BOOST_WARN_MESSAGE(false, "boost::slist is not present.");
 #endif
 }
 
@@ -69,6 +69,8 @@ BOOST_FIXTURE_TEST_CASE(std_forward_list2, io_fixture)
         input() >> make_nvp("aslist", aslist1);
     }
     BOOST_CHECK(aslist == aslist1);
+#else
+    BOOST_WARN_MESSAGE(false, "std::forward_list header not present.");
 #endif
 }
 

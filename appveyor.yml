@@ -1,17 +1,3 @@
-branches:
-  only:
-    # - develop
-    - master
-
-# environment:
-#   matrix:
-#     - SCRIPT: ci_boost_status
-
-# init:
-#   - cd %APPVEYOR_BUILD_FOLDER%/..
-#   - appveyor DownloadFile "https://raw.githubusercontent.com/boostorg/release-tools/develop/ci_boost_common.py"
-#   - appveyor DownloadFile "https://raw.githubusercontent.com/boostorg/release-tools/develop/%SCRIPT%.py"
-#   - cd %APPVEYOR_BUILD_FOLDER%
 install: python ci.py install
 before_build: python ci.py before_build
 build_script: python ci.py build_script

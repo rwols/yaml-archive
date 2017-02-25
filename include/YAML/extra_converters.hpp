@@ -5,12 +5,21 @@
 #include <boost/unordered_map.hpp>
 #include <boost/unordered_set.hpp>
 #include <deque>
+#ifndef BOOST_NO_CXX11_HDR_FORWARD_LIST
 #include <forward_list>
+#endif
 #include <list>
 #include <map>
 #include <set>
+#ifndef BOOST_NO_CXX11_HDR_TUPLE
+#include <tuple>
+#endif
+#ifndef BOOST_NO_CXX11_HDR_UNORDERED_MAP
 #include <unordered_map>
+#endif
+#ifndef BOOST_NO_CXX11_HDR_UNORDERED_SET
 #include <unordered_set>
+#endif
 #include <vector>
 #include <yaml-cpp/node/convert.h>
 
@@ -133,6 +142,7 @@ struct convert<std::list<T, Alloc>>
 {
 };
 
+#ifndef BOOST_NO_CXX11_HDR_FORWARD_LIST
 template <class T, class Alloc> struct convert<std::forward_list<T, Alloc>>
 {
     Node encode(const std::forward_list<T, Alloc>& t)
@@ -164,26 +174,7 @@ template <class T, class Alloc> struct convert<std::forward_list<T, Alloc>>
         }
     }
 };
-
-// template <class T, std::size_t N> struct convert<std::array<T, N>>
-// {
-//     Node encode(const std::array<T, N>& t)
-//     {
-//         Node node(NodeType::Sequence);
-//         for (const auto& item : t) node.push_back(item);
-//         return node;
-//     }
-
-//     bool decode(const Node& node, std::array<N, T>& t)
-//     {
-//         if (!node.IsSequence()) return false;
-//         if (node.size() < N) return false;
-//         for (std::size_t i = 0; i != N; ++i)
-//         {
-//             t[i] = node[i].template as<T>();
-//         }
-//     }
-// };
+#endif // BOOST_NO_CXX11_HDR_FORWARD_LIST
 
 template <class T, std::size_t N> struct convert<boost::array<T, N>>
 {
@@ -211,6 +202,13 @@ struct convert<std::map<Key, T, Compare, Alloc>>
 {
 };
 
+template <class Key, class T, class Compare, class Alloc>
+struct convert<std::multimap<Key, T, Compare, Alloc>>
+    : public detail::convert_multimap<std::multimap<Key, T, Compare, Alloc>>
+{
+};
+
+#ifndef BOOST_NO_CXX11_HDR_UNORDERED_MAP
 template <class Key, class T, class Hash, class KeyEqual, class Alloc>
 struct convert<std::unordered_map<Key, T, Hash, KeyEqual, Alloc>>
     : public detail::convert_map<
@@ -219,15 +217,17 @@ struct convert<std::unordered_map<Key, T, Hash, KeyEqual, Alloc>>
 };
 
 template <class Key, class T, class Hash, class KeyEqual, class Alloc>
+struct convert<std::unordered_multimap<Key, T, Hash, KeyEqual, Alloc>>
+    : public detail::convert_map<
+          std::unordered_multimap<Key, T, Hash, KeyEqual, Alloc>>
+{
+};
+#endif // BOOST_NO_CXX11_HDR_UNORDERED_MAP
+
+template <class Key, class T, class Hash, class KeyEqual, class Alloc>
 struct convert<boost::unordered_map<Key, T, Hash, KeyEqual, Alloc>>
     : public detail::convert_map<
           boost::unordered_map<Key, T, Hash, KeyEqual, Alloc>>
-{
-};
-
-template <class Key, class T, class Compare, class Alloc>
-struct convert<std::multimap<Key, T, Compare, Alloc>>
-    : public detail::convert_multimap<std::multimap<Key, T, Compare, Alloc>>
 {
 };
 

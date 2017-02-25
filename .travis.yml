@@ -2,7 +2,7 @@ dist: trusty
 language: cpp
 compiler:
   - gcc
-  # - clang
+  - clang
 addons:
   apt:
     sources:
@@ -49,7 +49,6 @@ env:
   # - CXX=g++-5 BOOST_VERSION_MINOR=61 BUILD_SHARED_LIBS=OFF CMAKE_BUILD_TYPE=Release
   # - CXX=g++-5 BOOST_VERSION_MINOR=60 BUILD_SHARED_LIBS=OFF CMAKE_BUILD_TYPE=Release
 
-# Fetch the scripts to do the actual building/testing.
 before_install: python ci.py before_install
 install: python ci.py install
 before_script: python ci.py before_script
@@ -57,23 +56,3 @@ script: python ci.py script
 after_success: python ci.py after_success
 after_failure: python ci.py after_failure
 after_script: python ci.py after_script
-
-# install:
-#   - wget http://mirrors.kernel.org/ubuntu/pool/universe/b/boost-defaults/libboost-all-dev_1.58.0.1ubuntu1_amd64.deb
-#   - sudo dpkg --force-all -i libboost-all-dev_1.58.0.1ubuntu1_amd64.deb
-
-# script:
-#   # Link gcc-5 and g++-5 to their standard commands
-#   # - ln -s /usr/bin/gcc-5 /usr/local/bin/gcc
-#   # - ln -s /usr/bin/g++-5 /usr/local/bin/g++
-#   # Export CC and CXX to tell cmake which compiler to use
-#   # - export CC=/usr/bin/gcc-5
-#   - export CXX=/usr/local/bin/g++-5
-#   # Check versions of gcc, g++ and cmake
-#   - gcc -v && g++ -v && cmake --version
-#   # Build commands
-#   - mkdir build
-#   - cd build
-#   - cmake ..
-#   - make
-#   - ctest

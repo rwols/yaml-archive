@@ -126,19 +126,10 @@ bool A::operator==(const A& rhs) const
     if (t != rhs.t) return false;
     if (u != rhs.u) return false;
     if (v != rhs.v) return false;
-    if (std::abs(boost::math::float_distance(x, rhs.x)) > 1)
-    {
-        std::cerr << "x:     "
-                  << std::setprecision(std::numeric_limits<float>::digits10 + 1)
-                  << x << "\nrhs.x: "
-                  << std::setprecision(std::numeric_limits<float>::digits10 + 1)
-                  << rhs.x << '\n';
-        return false;
-    }
-    // if (std::abs((w - rhs.w) / std::min(w, rhs.w)) > 0.00001) {
-    //     return false;
-    // }
-    if (std::abs(boost::math::float_distance(x, rhs.x)) > 1) return false;
+
+    // FIXME!!!!
+    if (std::abs(boost::math::float_distance(x, rhs.x)) > 4) return false;
+
     if (0 != y.compare(rhs.y))
     {
         return false;
