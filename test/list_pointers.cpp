@@ -72,13 +72,13 @@ BOOST_FIXTURE_TEST_CASE(std_list_pointers, io_fixture)
 BOOST_FIXTURE_TEST_CASE(boost_slist_pointers, io_fixture)
 {
 #ifdef BOOST_HAS_SLIST
-    boost::slist<A*> aslist;
+    BOOST_STD_EXTENSION_NAMESPACE::slist<A*> aslist;
     aslist.push_front(new A);
     aslist.push_front(new A);
     {
         output() << make_nvp("aslist", aslist);
     }
-    boost::slist<A*> aslist1;
+    BOOST_STD_EXTENSION_NAMESPACE::slist<A*> aslist1;
     {
         input() >> make_nvp("aslist", aslist1);
     }
@@ -89,7 +89,7 @@ BOOST_FIXTURE_TEST_CASE(boost_slist_pointers, io_fixture)
     std::for_each(aslist.begin(), aslist.end(), boost::checked_deleter<A>());
     std::for_each(aslist1.begin(), aslist1.end(), boost::checked_deleter<A>());
 #else
-    BOOST_TEST_MESSAGE("boost::slist not present!");
+    BOOST_TEST_MESSAGE("slist not present!");
 #endif
 }
 

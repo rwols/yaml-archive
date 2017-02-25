@@ -52,7 +52,7 @@ BOOST_FIXTURE_TEST_CASE(boost_slist, io_fixture)
     }
     BOOST_CHECK(aslist == aslist1);
 #else
-    BOOST_WARN_MESSAGE(false, "boost::slist is not present.");
+    BOOST_WARN_MESSAGE(false, "slist is not present.");
 #endif
 }
 
