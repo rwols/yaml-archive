@@ -105,68 +105,6 @@ class utils:
                 time.sleep( sleep_secs )
 
     @staticmethod
-    def web_get( source_url, destination_file, proxy = None ):
-        import urllib
-
-        proxies = None
-        if proxy is not None:
-            proxies = {
-                'https' : proxy,
-                'http' : proxy
-                }
-
-        src = urllib.urlopen( source_url, proxies = proxies )
-
-        f = open( destination_file, 'wb' )
-        while True:
-            data = src.read( 16*1024 )
-            if len( data ) == 0: break
-            f.write( data )
-
-        f.close()
-        src.close()
-
-    @staticmethod
-    def unpack_archive( archive_path ):
-        utils.log( 'Unpacking archive ("%s")...' % archive_path )
-        tar = tarfile.TarFile(archive_path)
-        tar.extractall()
-        tar.close()
-
-        # if extension in ( ".tar.gz", ".tar.bz2" ):
-        #     import tarfile
-        #     import stat
-
-
-        #     mode = os.path.splitext( extension )[1][1:]
-        #     tar = tarfile.open( archive_path, 'r:%s' % mode )
-        #     for tarinfo in tar:
-        #         tar.extract( tarinfo )
-        #         if sys.platform == 'win32' and not tarinfo.isdir():
-        #             # workaround what appears to be a Win32-specific bug in 'tarfile'
-        #             # (modification times for extracted files are not set properly)
-        #             f = os.path.join( os.curdir, tarinfo.name )
-        #             os.chmod( f, stat.S_IWRITE )
-        #             os.utime( f, ( tarinfo.mtime, tarinfo.mtime ) )
-        #     tar.close()
-        # elif extension in ( ".zip" ):
-        #     import zipfile
-
-        #     z = zipfile.ZipFile( archive_path, 'r', zipfile.ZIP_DEFLATED )
-        #     for f in z.infolist():
-        #         destination_file_path = os.path.join( os.curdir, f.filename )
-        #         if destination_file_path[-1] == "/": # directory
-        #             if not os.path.exists( destination_file_path  ):
-        #                 os.makedirs( destination_file_path  )
-        #         else: # file
-        #             result = open( destination_file_path, 'wb' )
-        #             result.write( z.read( f.filename ) )
-        #             result.close()
-        #     z.close()
-        # else:
-        #     raise Exception('Do not know how to unpack archives with extension \"%s\"' % extension)
-    
-    @staticmethod
     def build_boost_libs(variant, link, jobs, with_libraries=[]):
         variant = 'variant={}'.format(variant)
         link = 'link={}'.format(link)
@@ -545,9 +483,11 @@ class script(script_common):
         boost_url_prefix = 'https://downloads.sourceforge.net/project/boost/boost'
         url = boost_url_prefix + '/' + self.boost_version + '/' + boost_tar_file
         print('Downloading {}'.format(url))
-        utils.web_get(url, boost_tar_file)
+        urllib.urlretrieve(url, boost_tar_file)
         print('Unpacking {}'.format(boost_tar_file))
-        utils.unpack_archive(boost_tar_file)
+        tar = tarfile.open(boost_tar_file, 'r:bz2')
+        tar.extractall()
+        tar.close()
         print('Changing directory to {}'.format(self.boost_dir))
         os.chdir(self.boost_dir)
         link = 'shared' if self.build_shared_libs == 'ON' else 'static'
