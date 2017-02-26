@@ -167,21 +167,24 @@ class utils:
     
     @staticmethod
     def build_boost_libs(variant, link, jobs, with_libraries=[]):
-        if os.name == 'nt':
+        variant = 'variant={}'.format(variant)
+        link = 'link={}'.format(link)
+        jobs = '-j{}'.format(str(jobs))
+        if os.name == 'nt': # windows
             utils.check_call('bootstrap.bat')
             if len(with_libraries) == 0:
-                utils.check_call('./b2', '-d0', '-q', link, '-j{}'.format(str(jobs)))
+                utils.check_call('./b2', '-d0', '-q', link, jobs)
             else:
                 for i, lib in enumerate(with_libraries):
                     with_libraries[i] = '--with-' + lib
-                utils.check_call('./b2', '-d0', '-q', 'variant={}'.format(variant), 'link={}'.format(link), '-j{}'.format(str(jobs)), *with_libraries)
-        else:
+                utils.check_call('./b2', '-d0', '-q', variant, link, jobs, *with_libraries)
+        else: # assume unix-like
             if len(with_libraries) == 0:
                 utils.check_call('./bootstrap.sh')
             else:
                 libs = '--with-libraries=' + ','.join(with_libraries)
                 utils.check_call('./bootstrap.sh', libs)
-            utils.check_call('./b2', '-d0', '-q', 'variant={}'.format(variant), 'link='.format(link), '-j{}'.format(str(jobs)))
+            utils.check_call('./b2', '-d0', '-q', variant, link, jobs)
 
     @staticmethod
     def make_file(filename, *text):
@@ -537,9 +540,9 @@ class script(script_common):
         super(script,self).command_install()
         print('Changing directory to {}'.format(self.build_dir))
         os.chdir(self.build_dir)
-        boost_tar_file = 'boost_{0}_{1}_{2}.tar.bz2'.format(self.boost_version_major, self.boost_version_minor, self.boost_version_patch)
-        boost_url_prefix = 'https://downloads.sourceforge.net/project/boost/boost'
-        url = boost_url_prefix + '/' + self.boost_version + '/' + boost_tar_file
+        boost_tar_file = 'boost-{}.tar.gz'.format(self.boost_version)
+        boost_url_prefix = 'https://github.com/boostorg/boost/archive'
+        url = boost_url_prefix + '/' + boost_tar_file
         print('Downloading {}'.format(url))
         utils.web_get(url, boost_tar_file)
         print('Unpacking {}'.format(boost_tar_file))
@@ -548,7 +551,7 @@ class script(script_common):
         os.chdir(self.boost_dir)
         link = 'shared' if self.build_shared_libs == 'ON' else 'static'
         variant = 'debug' if self.cmake_build_type == 'Debug' else 'release'
-        utils.build_boost_libs(variant, link, str(self.jobs), ['system', 'serialization', 'test'])
+        utils.build_boost_libs(variant, link, self.jobs, ['system', 'serialization', 'test'])
 
     def command_before_build(self):
         super(script,self).command_before_build()
