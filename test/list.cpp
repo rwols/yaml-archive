@@ -14,9 +14,6 @@
 #include <boost/archive/archive_exception.hpp>
 #include <boost/serialization/list.hpp>
 #include <boost/test/unit_test.hpp>
-#ifdef BOOST_HAS_SLIST
-#include <boost/serialization/slist.hpp>
-#endif
 #ifndef BOOST_NO_CXX11_HDR_FORWARD_LIST
 #include <boost/serialization/forward_list.hpp>
 #endif
@@ -36,24 +33,6 @@ BOOST_FIXTURE_TEST_CASE(std_list, io_fixture)
         input() >> make_nvp("alist", alist1);
     }
     BOOST_CHECK(alist == alist1);
-}
-
-BOOST_FIXTURE_TEST_CASE(boost_slist, io_fixture)
-{
-#ifdef BOOST_HAS_SLIST
-    BOOST_STD_EXTENSION_NAMESPACE::slist<A> aslist, aslist1;
-    aslist.push_front(A());
-    aslist.push_front(A());
-    {
-        output() << NVP(aslist);
-    }
-    {
-        input() >> make_nvp("aslist", aslist1);
-    }
-    BOOST_CHECK(aslist == aslist1);
-#else
-    BOOST_WARN_MESSAGE(false, "slist is not present.");
-#endif
 }
 
 BOOST_FIXTURE_TEST_CASE(std_forward_list2, io_fixture)

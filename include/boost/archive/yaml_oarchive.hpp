@@ -15,10 +15,6 @@
 #include <stack>
 #include <yaml-cpp/yaml.h>
 
-#ifdef BOOST_HAS_SLIST
-#include BOOST_SLIST_HEADER
-#endif
-
 #include <boost/archive/detail/abi_prefix.hpp> // must be the last header
 
 #define DEBUG_YAML_OARCHIVE
@@ -267,12 +263,6 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive
     template <class Key, class Hash, class KeyEqual, class Alloc>
     void
     save_value(const boost::unordered_multiset<Key, Hash, KeyEqual, Alloc>& t)
-    {
-        save_sequence(t);
-    }
-
-    template <class T, class Alloc>
-    void save_value(const BOOST_STD_EXTENSION_NAMESPACE::slist<T, Alloc>& t)
     {
         save_sequence(t);
     }

@@ -9,10 +9,6 @@
 #include <stack>
 #include <yaml-cpp/yaml.h>
 
-#ifdef BOOST_HAS_SLIST
-#include BOOST_SLIST_HEADER
-#endif
-
 #define YAML_ARCHIVE_DEBUG_STACK
 
 #ifdef YAML_ARCHIVE_DEBUG_STACK
@@ -179,7 +175,7 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
         if (!m_stack.top().IsScalar())
         {
             boost::serialization::throw_exception(
-                archive_exception(archive_exception::input_stream_error))
+                archive_exception(archive_exception::input_stream_error));
         }
         const auto& bits = m_stack.top().Scalar();
         t.clear();
@@ -219,31 +215,6 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
     {
 #ifdef YAML_ARCHIVE_DEBUG_STACK
         std::cout << "INVOKE: load_forward_list\n";
-#endif
-        const auto& node = m_stack.top();
-        for (std::size_t i = node.size() - 1; i != (std::size_t)-1; --i)
-        {
-            m_stack.push(node[i]);
-#ifdef YAML_ARCHIVE_DEBUG_STACK
-            debug_print_stack();
-#endif
-            boost::serialization::detail::stack_construct<yaml_iarchive, T>
-                temp(*this, get_library_version());
-            load_value(temp.reference());
-            t.push_front(temp.reference());
-            reset_object_address(&(t.front()), &temp.reference());
-            m_stack.pop();
-#ifdef YAML_ARCHIVE_DEBUG_STACK
-            debug_print_stack();
-#endif
-        }
-    }
-
-    template <class T, class Alloc>
-    void load_value(BOOST_STD_EXTENSION_NAMESPACE::slist<T, Alloc>& t)
-    {
-#ifdef YAML_ARCHIVE_DEBUG_STACK
-        std::cout << "INVOKE: load slist\n";
 #endif
         const auto& node = m_stack.top();
         for (std::size_t i = node.size() - 1; i != (std::size_t)-1; --i)

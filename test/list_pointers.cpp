@@ -23,9 +23,6 @@
 #ifndef BOOST_NO_CXX11_HDR_FORWARD_LIST
 #include <boost/serialization/forward_list.hpp>
 #endif
-#ifdef BOOST_HAS_SLIST
-#include <boost/serialization/slist.hpp>
-#endif
 
 using boost::serialization::make_nvp;
 
@@ -67,31 +64,6 @@ BOOST_FIXTURE_TEST_CASE(std_list_pointers, io_fixture)
 
     std::for_each(alist.begin(), alist.end(), boost::checked_deleter<A>());
     std::for_each(alist1.begin(), alist1.end(), boost::checked_deleter<A>());
-}
-
-BOOST_FIXTURE_TEST_CASE(boost_slist_pointers, io_fixture)
-{
-#ifdef BOOST_HAS_SLIST
-    BOOST_STD_EXTENSION_NAMESPACE::slist<A*> aslist;
-    aslist.push_front(new A);
-    aslist.push_front(new A);
-    {
-        output() << make_nvp("aslist", aslist);
-    }
-    BOOST_STD_EXTENSION_NAMESPACE::slist<A*> aslist1;
-    {
-        input() >> make_nvp("aslist", aslist1);
-    }
-    BOOST_CHECK(aslist.size() == aslist1.size() &&
-                std::equal(aslist.begin(), aslist.end(), aslist1.begin(),
-                           ptr_equal_to<A*>()));
-    for (auto ptr : aslist)
-    {
-        delete ptr;
-    }
-#else
-    BOOST_TEST_MESSAGE("slist not present!");
-#endif
 }
 
 BOOST_FIXTURE_TEST_CASE(std_forward_list_ptrs, io_fixture)
