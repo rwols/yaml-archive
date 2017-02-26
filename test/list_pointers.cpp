@@ -85,15 +85,9 @@ BOOST_FIXTURE_TEST_CASE(boost_slist_pointers, io_fixture)
     BOOST_CHECK(aslist.size() == aslist1.size() &&
                 std::equal(aslist.begin(), aslist.end(), aslist1.begin(),
                            ptr_equal_to<A*>()));
-    for (auto& ptr : aslist)
+    for (auto ptr : aslist)
     {
         delete ptr;
-        ptr = nullptr;
-    }
-    for (auto& ptr : aslist1)
-    {
-        delete ptr;
-        ptr = nullptr;
     }
 #else
     BOOST_TEST_MESSAGE("slist not present!");
