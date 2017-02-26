@@ -174,7 +174,7 @@ class utils:
             else:
                 for i, lib in enumerate(with_libraries):
                     with_libraries[i] = '--with-' + lib
-                utils.check_call('./b2', '-d0', '-q', 'variant={}'.format(variant), 'link={}'.format(link), '-j{}'.format(str(jobs)), with_libraries)
+                utils.check_call('./b2', '-d0', '-q', 'variant={}'.format(variant), 'link={}'.format(link), '-j{}'.format(str(jobs)), *with_libraries)
         else:
             if len(with_libraries) == 0:
                 utils.check_call('./bootstrap.sh')
