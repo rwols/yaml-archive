@@ -541,14 +541,14 @@ class script(script_common):
         boost_url_prefix = 'https://downloads.sourceforge.net/project/boost/boost'
         url = boost_url_prefix + '/' + self.boost_version + '/' + boost_tar_file
         print('Downloading {}'.format(url))
-        web_get(url, boost_tar_file)
+        utils.web_get(url, boost_tar_file)
         print('Unpacking {}'.format(boost_tar_file))
-        unpack_archive(boost_tar_file)
+        utils.unpack_archive(boost_tar_file)
         print('Changing directory to {}'.format(self.boost_dir))
         os.chdir(self.boost_dir)
         link = 'shared' if self.build_shared_libs == 'ON' else 'static'
         variant = 'debug' if self.cmake_build_type == 'Debug' else 'release'
-        build_boost_libs(variant, link, str(self.jobs), ['system', 'serialization', 'test'])
+        utils.build_boost_libs(variant, link, str(self.jobs), ['system', 'serialization', 'test'])
 
     def command_before_build(self):
         super(script,self).command_before_build()
