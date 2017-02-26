@@ -530,10 +530,13 @@ class script(script_common):
         tar.close()
         print('Changing directory to {}'.format(self.boost_dir))
         os.chdir(self.boost_dir)
-        bootstrap = 'bootstrap.bat' if os.name == 'nt' else './bootstrap.sh'
         link = 'link=shared' if self.build_shared_libs == 'ON' else 'link=static'
-        utils.check_call(bootstrap, '--with-libraries=system,filesystem,serialization,test')
-        utils.check_call('./b2', '-d0', '-q', link, '-j{}'.format(str(self.jobs)))
+        if os.name == 'nt':
+            utils.check_call('bootstrap.bat')
+            utils.check_call('./b2', '-d0', '-q', link, '-j{}'.format(str(self.jobs)), '--with-system', '--with-serialization', '--with-test')
+        else:
+            utils.check_call('./bootstrap.sh', '--with-libraries=system,serialization,test')
+            utils.check_call('./b2', '-d0', '-q', link, '-j{}'.format(str(self.jobs)))
 
     def command_before_build(self):
         super(script,self).command_before_build()

@@ -34,7 +34,7 @@ template <class T> struct ptr_equal_to : public std::binary_function<T, T, bool>
     BOOST_STATIC_ASSERT(::boost::is_pointer<T>::value);
     bool operator()(T const _Left, T const _Right) const
     {
-        if (NULL == _Left && NULL == _Right) return true;
+        if (nullptr == _Left && nullptr == _Right) return true;
         if (typeid(*_Left) != typeid(*_Right)) return false;
         return *_Left == *_Right;
     }
@@ -85,9 +85,16 @@ BOOST_FIXTURE_TEST_CASE(boost_slist_pointers, io_fixture)
     BOOST_CHECK(aslist.size() == aslist1.size() &&
                 std::equal(aslist.begin(), aslist.end(), aslist1.begin(),
                            ptr_equal_to<A*>()));
-
-    std::for_each(aslist.begin(), aslist.end(), boost::checked_deleter<A>());
-    std::for_each(aslist1.begin(), aslist1.end(), boost::checked_deleter<A>());
+    for (auto& ptr : aslist)
+    {
+        delete ptr;
+        ptr = nullptr;
+    }
+    for (auto& ptr : aslist1)
+    {
+        delete ptr;
+        ptr = nullptr;
+    }
 #else
     BOOST_TEST_MESSAGE("slist not present!");
 #endif
