@@ -44,9 +44,10 @@ As::As()
 
 bool As::operator==(const As& rhs) const
 {
+    // FIXME!!!
     return s == rhs.s && t == rhs.t && u == rhs.u && v == rhs.v &&
-           std::abs(boost::math::float_distance(w, rhs.w)) < 2 &&
-           std::abs(boost::math::float_distance(x, rhs.x)) < 2;
+           std::abs(boost::math::float_distance(w, rhs.w)) < 8 &&
+           std::abs(boost::math::float_distance(x, rhs.x)) < 8;
 }
 
 bool As::operator<(const As& rhs) const

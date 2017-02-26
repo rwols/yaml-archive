@@ -95,8 +95,8 @@ non_default::~non_default() { --count; }
 bool non_default::operator==(const non_default& rhs) const
 {
     return s == rhs.s && t == rhs.t && u == rhs.u && v == rhs.v &&
-           std::abs(boost::math::float_distance(w, rhs.w)) < 4 &&
-           std::abs(boost::math::float_distance(x, rhs.x)) < 4;
+           std::abs(boost::math::float_distance(w, rhs.w)) < 8 &&
+           std::abs(boost::math::float_distance(x, rhs.x)) < 8;
 }
 
 bool non_default::operator<(const non_default& rhs) const

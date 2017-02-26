@@ -27,5 +27,5 @@ BOOST_FIXTURE_TEST_CASE(float_, io_fixture)
     // requiring a float distance of at most 4, but it originally used to
     // be a requirement that the float distance be at most 1.
     //
-    BOOST_CHECK(std::abs(boost::math::float_distance(x1, x2)) < 4);
+    BOOST_CHECK(std::abs(boost::math::float_distance(x1, x2)) < 8);
 }

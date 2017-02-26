@@ -128,7 +128,7 @@ bool A::operator==(const A& rhs) const
     if (v != rhs.v) return false;
 
     // FIXME!!!!
-    if (std::abs(boost::math::float_distance(x, rhs.x)) > 4) return false;
+    if (std::abs(boost::math::float_distance(x, rhs.x)) > 8) return false;
 
     if (0 != y.compare(rhs.y))
     {

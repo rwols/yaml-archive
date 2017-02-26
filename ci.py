@@ -166,6 +166,24 @@ class utils:
             raise 'Do not know how to unpack archives with extension \"%s\"' % extension
     
     @staticmethod
+    def build_boost_libs(variant, link, jobs, with_libraries=[]):
+        if os.name == 'nt':
+            utils.check_call('bootstrap.bat')
+            if len(with_libraries) == 0:
+                utils.check_call('./b2', '-d0', '-q', link, '-j{}'.format(str(jobs)))
+            else:
+                for i, lib in enumerate(with_libraries)
+                    with_libraries[i] = '--with-' + lib
+                utils.check_call('./b2', '-d0', '-q', 'variant={}'.format(variant), 'link={}'.format(link), '-j{}'.format(str(jobs)), with_libraries)
+        else:
+            if len(with_libraries) == 0:
+                utils.check_call('./bootstrap.sh')
+            else:
+                libs = '--with-libraries=' + ','.join(with_libraries)
+                utils.check_call('./bootstrap.sh', libs)
+            utils.check_call('./b2', '-d0', '-q', 'variant={}'.format(variant), 'link='.format(link), '-j{}'.format(str(jobs)))
+
+    @staticmethod
     def make_file(filename, *text):
         f = codecs.open( filename, 'w', 'utf-8' )
         f.write( string.join( text, '\n' ) )
@@ -523,20 +541,20 @@ class script(script_common):
         boost_url_prefix = 'https://downloads.sourceforge.net/project/boost/boost'
         url = boost_url_prefix + '/' + self.boost_version + '/' + boost_tar_file
         print('Downloading {}'.format(url))
-        urllib.urlretrieve(url, boost_tar_file)
+        web_get(url, boost_tar_file)
         print('Unpacking {}'.format(boost_tar_file))
-        tar = tarfile.open(boost_tar_file, 'r:bz2')  
-        tar.extractall()
-        tar.close()
+        unpack_archive(boost_tar_file)
         print('Changing directory to {}'.format(self.boost_dir))
         os.chdir(self.boost_dir)
-        link = 'link=shared' if self.build_shared_libs == 'ON' else 'link=static'
-        if os.name == 'nt':
-            utils.check_call('bootstrap.bat')
-            utils.check_call('./b2', '-d0', '-q', link, '-j{}'.format(str(self.jobs)), '--with-system', '--with-serialization', '--with-test')
-        else:
-            utils.check_call('./bootstrap.sh', '--with-libraries=system,serialization,test')
-            utils.check_call('./b2', '-d0', '-q', link, '-j{}'.format(str(self.jobs)))
+        link = 'shared' if self.build_shared_libs == 'ON' else 'static'
+        variant = 'debug' if self.cmake_build_type == 'Debug' else 'release'
+        build_boost_libs(variant, link, str(self.jobs), ['system', 'serialization', 'test'])
+        # if os.name == 'nt':
+        #     utils.check_call('bootstrap.bat')
+        #     utils.check_call('./b2', '-d0', '-q', link, '-j{}'.format(str(self.jobs)), '--with-system', '--with-serialization', '--with-test')
+        # else:
+        #     utils.check_call('./bootstrap.sh', '--with-libraries=system,serialization,test')
+        #     utils.check_call('./b2', '-d0', '-q', link, '-j{}'.format(str(self.jobs)))
 
     def command_before_build(self):
         super(script,self).command_before_build()
