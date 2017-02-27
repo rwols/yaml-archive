@@ -107,10 +107,6 @@ class utils:
                 time.sleep( sleep_secs )
 
     @staticmethod
-    def build_boost_libs(variant, link, jobs, with_libraries=[]):
-
-
-    @staticmethod
     def make_file(filename, *text):
         f = codecs.open( filename, 'w', 'utf-8' )
         f.write( string.join( text, '\n' ) )
