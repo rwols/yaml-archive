@@ -264,6 +264,11 @@ class AppveyorBuild(BuildBase):
         utils.check_call('git', 'submodule', 'update', '--init', '--recursive')
         super(AppveyorBuild, self).before_install()
 
+    def test(self):
+        print('Changing directory to {}'.format(self.build_dir))
+        os.chdir(self.build_dir)
+        utils.check_call('ctest', '--output-on-failure', '--build-config', self.build_type)
+
     def download_file(self, url):
         utils.check_call('appveyor', 'DownloadFile', url)
 
