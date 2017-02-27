@@ -135,7 +135,7 @@ class parallel_call(threading.Thread):
         if self.result != 0:
             raise(SystemCallError(self.command, self.result))
 
-class BuildBase:
+class BuildBase(object):
 
     def __init__(self, debug_level):
         self.debug_level = debug_level
