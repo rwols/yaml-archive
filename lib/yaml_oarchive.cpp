@@ -1,11 +1,6 @@
 #include <boost/archive/detail/archive_serializer_map.hpp>
-#include <boost/archive/yaml_oarchive.hpp>
-
-#ifdef BOOST_NO_CXX11_HDR_CODECVT
 #include <boost/archive/iterators/mb_from_wchar.hpp>
-#else
-#include <codecvt> // gcc version < 5 doesn't have this
-#endif
+#include <boost/archive/yaml_oarchive.hpp>
 
 #ifdef DEBUG_YAML_OARCHIVE
 #include <iostream>
@@ -16,7 +11,7 @@ using namespace boost::archive;
 yaml_oarchive::yaml_oarchive(std::ostream& os, const unsigned flags)
     : detail::common_oarchive<yaml_oarchive>(flags), m_emit(os)
 {
-    os << "\%YAML 1.2\n\%TAG ! boost/serialization/"
+    os << "%YAML 1.2\n%TAG ! boost/serialization/"
        << boost::archive::BOOST_ARCHIVE_VERSION() << "/\n";
 #ifdef DEBUG_YAML_OARCHIVE
     print(YAML::BeginDoc);
@@ -57,7 +52,6 @@ void yaml_oarchive::save(const wchar_t t)
 
 void yaml_oarchive::save(const std::wstring& t)
 {
-#ifdef BOOST_NO_CXX11_HDR_CODECVT
     std::string bytes;
     bytes.reserve(2 * t.length());
     typedef boost::archive::iterators::mb_from_wchar<
@@ -66,11 +60,6 @@ void yaml_oarchive::save(const std::wstring& t)
     std::copy(translator(t.begin()), translator(t.end()),
               std::back_inserter(bytes));
     save(bytes);
-#else
-    using convert_type = std::codecvt_utf8<wchar_t>;
-    std::wstring_convert<convert_type, wchar_t> converter;
-    save(converter.to_bytes(t));
-#endif
 }
 
 void yaml_oarchive::save(char t) { save(static_cast<int>(t)); }

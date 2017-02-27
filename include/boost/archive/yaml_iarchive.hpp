@@ -9,7 +9,7 @@
 #include <stack>
 #include <yaml-cpp/yaml.h>
 
-#define YAML_ARCHIVE_DEBUG_STACK
+// #define YAML_ARCHIVE_DEBUG_STACK
 
 #ifdef YAML_ARCHIVE_DEBUG_STACK
 #include <iostream>

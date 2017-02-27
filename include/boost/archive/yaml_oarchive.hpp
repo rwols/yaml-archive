@@ -17,7 +17,7 @@
 
 #include <boost/archive/detail/abi_prefix.hpp> // must be the last header
 
-#define DEBUG_YAML_OARCHIVE
+// #define DEBUG_YAML_OARCHIVE
 
 #ifdef DEBUG_YAML_OARCHIVE
 #include <iostream>
