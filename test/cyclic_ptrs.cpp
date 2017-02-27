@@ -24,7 +24,7 @@ using boost::serialization::make_nvp;
 /**
  * @brief      Class with a member that refers to itself
  */
-class J : public A
+class J1 : public A
 {
   private:
     friend class boost::serialization::access;
@@ -36,35 +36,35 @@ class J : public A
     }
 
   public:
-    bool operator==(const J& rhs) const;
-    J* j;
-    J(J* _j) : j(_j) {}
-    J() : j(NULL) {}
+    bool operator==(const J1& rhs) const;
+    J1* j;
+    J1(J1* _j) : j(_j) {}
+    J1() : j(NULL) {}
 };
 
-std::ostream& operator<<(std::ostream& os, const J& j)
+std::ostream& operator<<(std::ostream& os, const J1& j)
 {
-    return os << "<J " << static_cast<const A&>(j) << ", j: " << j.j << ">";
+    return os << "<J1 " << static_cast<const A&>(j) << ", j: " << j.j << ">";
 }
 
-BOOST_CLASS_VERSION(J, 6)
+BOOST_CLASS_VERSION(J1, 6)
 
-bool J::operator==(const J& rhs) const
+bool J1::operator==(const J1& rhs) const
 {
     return static_cast<const A&>(*this) == static_cast<const A&>(rhs);
 }
 
 BOOST_FIXTURE_TEST_CASE(cyclic_pointers_1, io_fixture)
 {
-    J j;
+    J1 j;
     check_roundtrip(j);
 }
 
 BOOST_FIXTURE_TEST_CASE(cyclic_pointers_2, io_fixture)
 {
-    J* j1 = new J;
+    J1* j1 = new J1;
     j1->j = j1;
-    J* j2 = reinterpret_cast<J*>(0xBAADF00D);
+    J1* j2 = reinterpret_cast<J1*>(0xBAADF00D);
     {
         output() << NVP(j1);
     }
@@ -91,9 +91,9 @@ BOOST_FIXTURE_TEST_CASE(cyclic_pointers_2, io_fixture)
  */
 class K
 {
-    J j1;
-    J j2;
-    J j3;
+    J1 j1;
+    J1 j2;
+    J1 j3;
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive& ar, const unsigned int /* file_version */)
