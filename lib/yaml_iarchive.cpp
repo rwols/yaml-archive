@@ -1,6 +1,7 @@
 #include <boost/archive/detail/archive_serializer_map.hpp>
 #include <boost/archive/yaml_iarchive.hpp>
 #include <boost/locale/encoding_utf.hpp>
+#include <cctype>
 
 #ifdef YAML_ARCHIVE_DEBUG_STACK
 #include <iostream>
