@@ -260,6 +260,10 @@ class AppveyorBuild(BuildBase):
         os.chdir(self.build_dir)
         utils.check_call('cmake', '--build' ,'.' ,'--config', self.build_type)
 
+    def before_install(self):
+        utils.check_call('git', 'submodule', 'update', '--init', '--recursive')
+        super(AppveyorBuild, self).before_install()
+
     def download_file(self, url):
         utils.check_call('appveyor', 'DownloadFile', url)
 
