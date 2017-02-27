@@ -1,12 +1,14 @@
 #include <boost/archive/detail/archive_serializer_map.hpp>
-#include <boost/archive/iterators/wchar_from_mb.hpp>
 #include <boost/archive/yaml_iarchive.hpp>
+#include <boost/locale/encoding_utf.hpp>
 
 #ifdef YAML_ARCHIVE_DEBUG_STACK
 #include <iostream>
 #endif
 
 using namespace boost::archive;
+
+using boost::locale::conv::utf_to_utf;
 
 yaml_iarchive::yaml_iarchive(std::istream& is, const unsigned flags)
     : detail::common_iarchive<yaml_iarchive>(flags)
@@ -55,30 +57,41 @@ void yaml_iarchive::debug_print_stack()
 }
 #endif
 
+#include <iostream>
+
 void yaml_iarchive::load(wchar_t& t)
 {
-    static_assert(sizeof(wchar_t) <= sizeof(int),
-                  "wchar_t must fit inside an int.");
-    int x;
-    load(x);
-    t = static_cast<wchar_t>(x);
+    std::string utf8string;
+    load(utf8string);
+    const auto wstr = utf_to_utf<std::wstring::value_type>(utf8string);
+    std::wcout << L"Loaded wchar_t: " << wstr << L"\n";
+    if (wstr.size() != 1)
+    {
+        boost::serialization::throw_exception(
+            archive_exception(archive_exception::input_stream_error));
+    }
+    t = wstr[0];
 }
+
+#include <iostream>
 
 void yaml_iarchive::load(std::wstring& t)
 {
-    std::string bytes;
-    load(bytes);
-    typedef boost::archive::iterators::wchar_from_mb<std::string::iterator>
-        translator;
-    std::copy(translator(bytes.begin()), translator(bytes.end()),
-              std::back_inserter(t));
+    std::string utf8string;
+    load(utf8string);
+    t = utf_to_utf<std::wstring::value_type>(utf8string);
 }
 
 void yaml_iarchive::load(char& t)
 {
-    int x;
-    load(x);
-    t = static_cast<char>(x);
+    std::string str;
+    load(str);
+    if (str.size() != 1)
+    {
+        boost::serialization::throw_exception(
+            archive_exception(archive_exception::input_stream_error));
+    }
+    t = str[0];
 }
 
 void yaml_iarchive::load(signed char& t)

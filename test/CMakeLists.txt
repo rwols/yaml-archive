@@ -56,6 +56,7 @@ function(target_create_boost_archive_test_suite)
     unsigned_long_long.cpp
     float_.cpp
     double_.cpp
+    string.cpp
     binary.cpp
     object_serializable.cpp
     simple_class.cpp
@@ -145,6 +146,8 @@ function(target_create_boost_archive_test_suite)
   add_test(NAME unsigned_long_long COMMAND ${exe} --run_test=unsigned_long_long)
   add_test(NAME float COMMAND ${exe} --run_test=float_)
   add_test(NAME double COMMAND ${exe} --run_test=double_)
+  add_test(NAME string COMMAND ${exe} --run_test=string)
+  add_test(NAME wstring COMMAND ${exe} --run_test=wstring)
   add_test(NAME binary COMMAND ${exe} --run_test=binary)
   add_test(NAME object_serializable COMMAND ${exe} --run_test=object_serializable)
   add_test(NAME simple_class COMMAND ${exe} --run_test=simple_class)

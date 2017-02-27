@@ -23,14 +23,15 @@ using boost::serialization::make_nvp;
 
 BOOST_FIXTURE_TEST_CASE(std_list, io_fixture)
 {
-    std::list<A> alist, alist1;
+    std::list<A> alist;
     alist.push_back(A());
     alist.push_back(A());
+    std::list<A> alist1;
     {
-        output() << NVP(alist);
+        output() << BOOST_SERIALIZATION_NVP(alist);
     }
     {
-        input() >> make_nvp("alist", alist1);
+        input() >> boost::serialization::make_nvp("alist", alist1);
     }
     BOOST_CHECK(alist == alist1);
 }
@@ -38,16 +39,17 @@ BOOST_FIXTURE_TEST_CASE(std_list, io_fixture)
 BOOST_FIXTURE_TEST_CASE(std_forward_list2, io_fixture)
 {
 #ifndef BOOST_NO_CXX11_HDR_FORWARD_LIST
-    std::forward_list<A> aslist, aslist1;
-    aslist.push_front(A());
-    aslist.push_front(A());
+    std::forward_list<A> alist;
+    alist.push_front(A());
+    alist.push_front(A());
+    std::forward_list<A> alist1;
     {
-        output() << NVP(aslist);
+        output() << BOOST_SERIALIZATION_NVP(alist);
     }
     {
-        input() >> make_nvp("aslist", aslist1);
+        input() >> boost::serialization::make_nvp("alist", alist1);
     }
-    BOOST_CHECK(aslist == aslist1);
+    BOOST_CHECK(alist == alist1);
 #else
     BOOST_WARN_MESSAGE(false, "std::forward_list header not present.");
 #endif

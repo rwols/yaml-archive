@@ -30,17 +30,6 @@ using ::size_t;
 
 #include "A.hpp"
 
-template <class S> void randomize(S& x)
-{
-    assert(0 == x.size());
-    for (;;)
-    {
-        unsigned int i = std::rand() % 27;
-        if (0 == i) break;
-        x += static_cast<typename S::value_type>('a' - 1 + i);
-    }
-}
-
 template <class T> void accumulate(std::size_t& s, const T& t)
 {
     const char*  tptr = (const char*)(&t);
@@ -89,16 +78,11 @@ A::A()
       l(static_cast<enum h>(std::rand() % 3)), m(std::rand()), n(std::rand()),
       o(std::rand()), p(std::rand()), q(std::rand()),
 #ifndef BOOST_NO_CWCHAR
-      r(std::rand()),
+      r(L'😊'),
 #endif
-      c(0xff & std::rand()), s(0xff & std::rand()), t(0xff & std::rand()),
-      u(std::rand()), v(std::rand()), w((float)std::rand()),
-      x((double)std::rand())
+      c('x'), s(0xff & std::rand()), t(0xff & std::rand()), u(std::rand()),
+      v(std::rand()), w((float)std::rand()), x((double)std::rand())
 {
-    randomize(y);
-#ifndef BOOST_NO_STD_WSTRING
-    randomize(z);
-#endif
 }
 
 #if defined(_MSC_VER)
@@ -107,41 +91,53 @@ A::A()
 
 bool A::operator==(const A& rhs) const
 {
-    if (b != rhs.b) return false;
-    if (l != rhs.l) return false;
+    return b == rhs.b && l == rhs.l
 #ifndef BOOST_NO_INT64_T
-    if (f != rhs.f) return false;
-    if (g != rhs.g) return false;
+           && f == rhs.f && g == rhs.g
 #endif
-    if (m != rhs.m) return false;
-    if (n != rhs.n) return false;
-    if (o != rhs.o) return false;
-    if (p != rhs.p) return false;
-    if (q != rhs.q) return false;
+           && m == rhs.m && n == rhs.n && o == rhs.o && p == rhs.p && q == rhs.q
 #ifndef BOOST_NO_CWCHAR
-    if (r != rhs.r) return false;
+           && r == rhs.r
 #endif
-    if (c != rhs.c) return false;
-    if (s != rhs.s) return false;
-    if (t != rhs.t) return false;
-    if (u != rhs.u) return false;
-    if (v != rhs.v) return false;
-
-    // FIXME!!!!
-    if (std::abs(boost::math::float_distance(x, rhs.x)) > 8) return false;
-
-    if (0 != y.compare(rhs.y))
-    {
-        return false;
-    }
+           && c == rhs.c && s == rhs.s && t == rhs.t && u == rhs.u &&
+           v == rhs.v &&
+           std::abs(boost::math::float_distance(x, rhs.x)) <= 8 // FIXME!!!
+           && y == rhs.y
 #ifndef BOOST_NO_STD_WSTRING
-    if (0 != z.compare(rhs.z))
-    {
-        return false;
-    }
+           && z == rhs.z
 #endif
+        ;
 
-    return true;
+    //                if (b != rhs.b) return false;
+    //     if (l != rhs.l) return false;
+    // #ifndef BOOST_NO_INT64_T
+    //     if (f != rhs.f) return false;
+    //     if (g != rhs.g) return false;
+    // #endif
+    //     if (m != rhs.m) return false;
+    //     if (n != rhs.n) return false;
+    //     if (o != rhs.o) return false;
+    //     if (p != rhs.p) return false;
+    //     if (q != rhs.q) return false;
+    // #ifndef BOOST_NO_CWCHAR
+    //     if (r != rhs.r) return false;
+    // #endif
+    //     if (c != rhs.c) return false;
+    //     if (s != rhs.s) return false;
+    //     if (t != rhs.t) return false;
+    //     if (u != rhs.u) return false;
+    //     if (v != rhs.v) return false;
+
+    //     // FIXME!!!!
+    //     if (std::abs(boost::math::float_distance(x, rhs.x)) > 8) return
+    //     false;
+
+    //     if (y != rhs.y) return false;
+    // #ifndef BOOST_NO_STD_WSTRING
+    //     if (z != rhs.z) return false;
+    // #endif
+
+    //     return true;
 }
 
 bool A::operator!=(const A& rhs) const { return !(*this == rhs); }
@@ -203,11 +199,8 @@ std::ostream& operator<<(std::ostream& os, const A& a)
     os << ' ' << a.w;
     os << ' ' << a.x;
     os << ' ' << a.y;
-    os << "some wstring...";
-    // #ifndef BOOST_NO_STD_WSTRING
-    //     using convert_type = std::codecvt_utf8<wchar_t>;
-    //     std::wstring_convert<convert_type, wchar_t> converter;
-    //     os << ' ' << converter.to_bytes(a.z);
-    // #endif
+#ifndef BOOST_NO_STD_WSTRING
+    os << " and some wstring...";
+#endif
     return os << '>';
 }

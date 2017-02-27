@@ -47,6 +47,18 @@ class io_fixture
 
     inputter input();
 
+    const wchar_t* get_wstring_sample(const std::size_t index) const noexcept;
+
+    std::size_t get_wstring_sample_count() const noexcept;
+
+    const wchar_t* get_random_wstring_sample() const noexcept;
+
+    const char* get_string_sample(const std::size_t index) const noexcept;
+
+    std::size_t get_string_sample_count() const noexcept;
+
+    const char* get_random_string_sample() const noexcept;
+
     template <class T> void check_roundtrip(const T& t1)
     {
         using boost::serialization::make_nvp;

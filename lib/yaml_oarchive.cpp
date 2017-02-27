@@ -1,6 +1,6 @@
 #include <boost/archive/detail/archive_serializer_map.hpp>
-#include <boost/archive/iterators/mb_from_wchar.hpp>
 #include <boost/archive/yaml_oarchive.hpp>
+#include <boost/locale/encoding_utf.hpp>
 
 #ifdef DEBUG_YAML_OARCHIVE
 #include <iostream>
@@ -42,27 +42,21 @@ yaml_oarchive::~yaml_oarchive()
     m_emit << YAML::EndMap << YAML::EndDoc;
 }
 
+#include <iostream>
+
 void yaml_oarchive::save(const wchar_t t)
 {
-    static_assert(sizeof(wchar_t) <= sizeof(int),
-                  "wchar_t must fit inside an int.");
-    const auto x = static_cast<int>(t);
-    save(x);
+    const std::wstring wstr(1, t);
+    std::wcout << L"Saving wchar_t: " << t << L"\n";
+    save(boost::locale::conv::utf_to_utf<std::string::value_type>(wstr));
 }
 
 void yaml_oarchive::save(const std::wstring& t)
 {
-    std::string bytes;
-    bytes.reserve(2 * t.length());
-    typedef boost::archive::iterators::mb_from_wchar<
-        std::wstring::const_iterator>
-        translator;
-    std::copy(translator(t.begin()), translator(t.end()),
-              std::back_inserter(bytes));
-    save(bytes);
+    save(boost::locale::conv::utf_to_utf<std::string::value_type>(t));
 }
 
-void yaml_oarchive::save(char t) { save(static_cast<int>(t)); }
+void yaml_oarchive::save(char t) { save(std::string(1, t)); }
 
 void yaml_oarchive::save(signed char t) { save(static_cast<int>(t)); }
 
