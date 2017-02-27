@@ -181,22 +181,16 @@ class BuildBase(object):
         variant = 'variant={}'.format(variant)
         link = 'shared' if self.build_shared_libs == 'ON' else 'static'
         link = 'link={}'.format(link)
-        jobs = '-j{}'.format(str(jobs))
-        with_libraries =  ['system', 'serialization', 'test']
+        jobs = '-j{}'.format(str(self.jobs))
+        libs =  ['system', 'serialization', 'test']
         if os.name == 'nt': # windows
             utils.check_call('bootstrap.bat')
-            if len(with_libraries) == 0:
-                utils.check_call('./b2', '-d0', '-q', link, jobs)
-            else:
-                for i, lib in enumerate(with_libraries):
-                    with_libraries[i] = '--with-' + lib
-                utils.check_call('./b2', '-d0', '-q', variant, link, jobs, *with_libraries)
+            for i, lib in enumerate(libs):
+                libs[i] = '--with-' + lib
+            utils.check_call('./b2', '-d0', '-q', variant, link, jobs, *libs)
         else: # assume unix-like
-            if len(with_libraries) == 0:
-                utils.check_call('./bootstrap.sh')
-            else:
-                libs = '--with-libraries=' + ','.join(with_libraries)
-                utils.check_call('./bootstrap.sh', libs)
+            libs = '--with-libraries=' + ','.join(libs)
+            utils.check_call('./bootstrap.sh', libs)
             utils.check_call('./b2', '-d0', '-q', variant, link, jobs)
 
     def before_build(self):
