@@ -7,6 +7,7 @@
 # (See accompanying file LICENSE_1_0.txt or copy at
 # http://www.boost.org/LICENSE_1_0.txt)
 
+import httplib
 import argparse
 import sys
 import inspect
@@ -22,6 +23,9 @@ import site
 import tarfile
 import multiprocessing
 import urllib
+import urllib2
+# from urllib2 import urlopen # Python 2
+#from urllib.request import urlopen # Python 3
 
 class SystemCallError(Exception):
     def __init__(self, command, result):
@@ -106,6 +110,12 @@ class utils:
                 utils.log( 'Retrying (%d more attempts).' % attempts )
                 time.sleep( sleep_secs )
 
+
+
+    @staticmethod
+    def download_file(url):
+        utils.check_call('wget', url)
+
     @staticmethod
     def make_file(filename, *text):
         f = codecs.open( filename, 'w', 'utf-8' )
@@ -168,7 +178,7 @@ class BuildBase(object):
         boost_url_prefix = 'https://downloads.sourceforge.net/project/boost/boost'
         url = boost_url_prefix + '/' + self.boost_version + '/' + boost_tar_file
         print('Downloading {}'.format(url))
-        urllib.urlretrieve(url, boost_tar_file)
+        utils.download_file(url)
         print('Unpacking {}'.format(boost_tar_file))
         tar = tarfile.open(boost_tar_file, 'r:bz2')
         tar.extractall()
@@ -233,11 +243,21 @@ class TravisBuild(BuildBase):
     def __init__(self, debug_level):
         super(TravisBuild, self).__init__(debug_level)
 
+    def build(self):
+        print('Changing directory to {}'.format(self.build_dir))
+        os.chdir(self.build_dir)
+        utils.check_call('make', '-j{}'.format(str(self.jobs)))
+
 class AppveyorBuild(BuildBase):
 
     def __init__(self, debug_level):
         super(AppveyorBuild, self).__init__(debug_level)
         self.build_type = os.getenv('CONFIGURATION')
+
+    def build(self):
+        print('Changing directory to {}'.format(self.build_dir))
+        os.chdir(self.build_dir)
+        utils.check_call('cmake', '--build' ,'.' ,'--config', self.build_type)
 
 class CommandLineBuild(BuildBase):
 
@@ -259,7 +279,7 @@ def main():
 
     if not args.actions:
         parser.print_help()
-        exit(1)
+        return 1
 
     try:
         for action in args.actions:
@@ -269,11 +289,13 @@ def main():
                 action_as_method()
             else:
                 parser.print_help()
-                exit(2)
+                return 2
     except Exception as e:
         print(str(e))
-        exit(3)
+        return 3
+    return 0
 
 if __name__ == '__main__':
-    main()
+    exit_value = main()
+    exit(exit_value)
 
