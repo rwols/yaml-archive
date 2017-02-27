@@ -178,7 +178,7 @@ class BuildBase(object):
         boost_url_prefix = 'https://downloads.sourceforge.net/project/boost/boost'
         url = boost_url_prefix + '/' + self.boost_version + '/' + boost_tar_file
         print('Downloading {}'.format(url))
-        utils.download_file(url)
+        self.download_file(url)
         print('Unpacking {}'.format(boost_tar_file))
         tar = tarfile.open(boost_tar_file, 'r:bz2')
         tar.extractall()
@@ -237,16 +237,17 @@ class BuildBase(object):
     def after_failure(self):
         pass
 
+    def download_file(self, url):
+        raise Exception('download_file not implemented!')
+
 
 class TravisBuild(BuildBase):
 
     def __init__(self, debug_level):
         super(TravisBuild, self).__init__(debug_level)
 
-    def build(self):
-        print('Changing directory to {}'.format(self.build_dir))
-        os.chdir(self.build_dir)
-        utils.check_call('make', '-j{}'.format(str(self.jobs)))
+    def download_file(self, url):
+        utils.check_call('wget', url)
 
 class AppveyorBuild(BuildBase):
 
@@ -258,6 +259,9 @@ class AppveyorBuild(BuildBase):
         print('Changing directory to {}'.format(self.build_dir))
         os.chdir(self.build_dir)
         utils.check_call('cmake', '--build' ,'.' ,'--config', self.build_type)
+
+    def download_file(self, url):
+        utils.check_call('appveyor', 'DownloadFile', url)
 
 class CommandLineBuild(BuildBase):
 
