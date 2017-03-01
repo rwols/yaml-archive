@@ -19,6 +19,7 @@
 
 BOOST_FIXTURE_TEST_CASE(std_priority_queue, io_fixture)
 {
+    // FIXME!!!
     std::priority_queue<A, std::vector<A>> a_priority_queue, a_priority_queue1;
     a_priority_queue.push(A());
     a_priority_queue.push(A());

@@ -21,7 +21,7 @@ using ::remove;
 #include "A.hpp"
 #include "A.ipp"
 #include "io_fixture.hpp"
-#include <boost/serialization/yaml/vector.hpp>
+#include <boost/serialization/vector.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/test/unit_test.hpp>
 

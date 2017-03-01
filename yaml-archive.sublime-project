@@ -189,7 +189,8 @@
 	"folders":
 	[
 		{
-			"path": "."
+			"path": ".",
+			"path": ".git"
 		}
 	],
 	"settings":
