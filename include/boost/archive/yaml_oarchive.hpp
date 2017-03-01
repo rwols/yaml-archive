@@ -284,6 +284,7 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive
         m_emit << YAML::EndSeq;
     }
 
+  public:
     template <std::size_t N, class T>
     typename std::enable_if<!std::is_default_constructible<T>::value>::type
     save_fixed_size_array(const T& t)
@@ -423,6 +424,7 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive
         m_emit << YAML::EndSeq;
     }
 
+  protected:
     template <class T> void save(const T& t)
     {
         end_preamble();

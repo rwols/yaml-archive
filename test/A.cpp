@@ -8,22 +8,11 @@
 
 //  See http://www.boost.org for updates, documentation, and revision history.
 
+#include <boost/detail/workaround.hpp>
 #include <boost/math/special_functions/next.hpp>
 #include <cassert>
 #include <cstddef> // size_t
 #include <cstdlib> // rand()
-
-#include <iostream>
-
-#include <boost/config.hpp>
-#if defined(BOOST_NO_STDC_NAMESPACE)
-namespace std {
-using ::rand;
-using ::size_t;
-}
-#endif
-
-#include <boost/detail/workaround.hpp>
 #if BOOST_WORKAROUND(BOOST_DINKUMWARE_STDLIB, == 1)
 #include <boost/archive/dinkumware.hpp>
 #endif

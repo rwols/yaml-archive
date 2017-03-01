@@ -130,25 +130,6 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
         }
     }
 
-    template <std::size_t N, class T> void load_fixed_size_array(T& t)
-    {
-        auto node = m_stack.top();
-        if (node.size() < N)
-            throw archive_exception(archive_exception::array_size_too_short);
-        for (std::size_t i = 0; i != N; ++i)
-        {
-            m_stack.push(node[i]);
-#ifdef YAML_ARCHIVE_DEBUG_STACK
-            debug_print_stack();
-#endif
-            load_value(t[i]);
-            m_stack.pop();
-#ifdef YAML_ARCHIVE_DEBUG_STACK
-            debug_print_stack();
-#endif
-        }
-    }
-
     template <class T, std::size_t N> void load_value(T (&t)[N])
     {
         load_fixed_size_array<N>(t);
@@ -162,40 +143,6 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
         load_fixed_size_array<N>(t);
     }
 
-    template <class T, class Alloc>
-    void
-        // typename std::enable_if<!detail::is_yaml_primitive<T>::value>::type
-        load_value(std::vector<T, Alloc>& t)
-    {
-        load_sequence(t);
-    }
-    template <class Alloc> void load_value(std::vector<bool, Alloc>& t)
-    {
-
-        if (!m_stack.top().IsScalar())
-        {
-            boost::serialization::throw_exception(
-                archive_exception(archive_exception::input_stream_error));
-        }
-        const auto& bits = m_stack.top().Scalar();
-        t.clear();
-        t.reserve(bits.size());
-        for (const auto b : bits)
-        {
-            switch (b)
-            {
-            case '0':
-                t.push_back(false);
-                break;
-            case '1':
-                t.push_back(true);
-                break;
-            default:
-                boost::serialization::throw_exception(
-                    archive_exception(archive_exception::input_stream_error));
-            }
-        }
-    }
     template <class T, class Alloc>
     void
         // typename std::enable_if<!detail::is_yaml_primitive<T>::value>::type
@@ -283,6 +230,30 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
         load_set(t);
     }
 
+    template <class Key, class Hash, class KeyEqual, class Alloc>
+    void load_value(std::unordered_set<Key, Hash, KeyEqual, Alloc>& t)
+    {
+        load_set(t);
+    }
+
+    template <class Key, class Hash, class KeyEqual, class Alloc>
+    void load_value(std::unordered_multiset<Key, Hash, KeyEqual, Alloc>& t)
+    {
+        load_set(t);
+    }
+
+    template <class Key, class Hash, class KeyEqual, class Alloc>
+    void load_value(boost::unordered_set<Key, Hash, KeyEqual, Alloc>& t)
+    {
+        load_set(t);
+    }
+
+    template <class Key, class Hash, class KeyEqual, class Alloc>
+    void load_value(boost::unordered_multiset<Key, Hash, KeyEqual, Alloc>& t)
+    {
+        load_set(t);
+    }
+
     // note: std::pair requires both of its template parameters to be default
     // constructible, so we don't have to use this elaborate stack_construct
     // object.
@@ -299,6 +270,60 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
         m_stack.push(m_stack.top()[1]);
         load_value(t.second);
         m_stack.pop();
+    }
+
+    template <class T, class Alloc>
+    void /*typename std::enable_if<!detail::is_yaml_primitive<T>::value>::type*/
+        load_value(std::vector<T, Alloc>& t)
+    {
+        load_sequence(t);
+    }
+    template <class Alloc> void load_value(std::vector<bool, Alloc>& t)
+    {
+
+        if (!m_stack.top().IsScalar())
+        {
+            boost::serialization::throw_exception(
+                archive_exception(archive_exception::input_stream_error));
+        }
+        const auto& bits = m_stack.top().Scalar();
+        t.clear();
+        t.reserve(bits.size());
+        for (const auto b : bits)
+        {
+            switch (b)
+            {
+            case '0':
+                t.push_back(false);
+                break;
+            case '1':
+                t.push_back(true);
+                break;
+            default:
+                boost::serialization::throw_exception(
+                    archive_exception(archive_exception::input_stream_error));
+            }
+        }
+    }
+
+  public:
+    template <std::size_t N, class T> void load_fixed_size_array(T& t)
+    {
+        auto node = m_stack.top();
+        if (node.size() < N)
+            throw archive_exception(archive_exception::array_size_too_short);
+        for (std::size_t i = 0; i != N; ++i)
+        {
+            m_stack.push(node[i]);
+#ifdef YAML_ARCHIVE_DEBUG_STACK
+            debug_print_stack();
+#endif
+            load_value(t[i]);
+            m_stack.pop();
+#ifdef YAML_ARCHIVE_DEBUG_STACK
+            debug_print_stack();
+#endif
+        }
     }
 
     template <class T>
@@ -483,6 +508,7 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
         }
     }
 
+  protected:
     template <class T> void load(T& t)
     {
         t = m_stack.top().template as<typename std::remove_cv<T>::type>();

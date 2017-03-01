@@ -56,6 +56,7 @@ function(target_create_boost_archive_test_suite)
     unsigned_long_long.cpp
     float_.cpp
     double_.cpp
+    wchar_t.cpp
     string.cpp
     binary.cpp
     object_serializable.cpp
@@ -99,9 +100,20 @@ function(target_create_boost_archive_test_suite)
     std_unordered_map.cpp
     boost_unordered_map.cpp
     std_set.cpp
+    std_unordered_set.cpp
+    boost_unordered_set.cpp
+    std_vector.cpp
+    std_priority_queue.cpp
 
     # unit tests -- misc
     helper_support.cpp
+    optional.cpp
+    unique_ptr.cpp
+    shared_ptr.cpp
+    shared_ptr_multi_base.cpp
+    std_complex.cpp
+    std_bitset.cpp
+    variant.cpp
 
     )
 
@@ -110,14 +122,7 @@ function(target_create_boost_archive_test_suite)
   else()
       set(Boost_USE_STATIC_LIBS ON)
   endif()
-  find_package(Boost 
-    COMPONENTS 
-      # system 
-      # filesystem 
-      # serialization 
-      # wserialization 
-      unit_test_framework
-    REQUIRED)
+  find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
   target_include_directories(${exe} PRIVATE ${Boost_INCLUDE_DIRS})
   target_include_directories(${exe} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
@@ -147,6 +152,7 @@ function(target_create_boost_archive_test_suite)
   add_test(NAME float COMMAND ${exe} --run_test=float_)
   add_test(NAME double COMMAND ${exe} --run_test=double_)
   add_test(NAME string COMMAND ${exe} --run_test=string)
+  add_test(NAME wchar_t COMMAND ${exe} --run_test=wchar_t_)
   add_test(NAME wstring COMMAND ${exe} --run_test=wstring)
   add_test(NAME binary COMMAND ${exe} --run_test=binary)
   add_test(NAME object_serializable COMMAND ${exe} --run_test=object_serializable)
@@ -221,10 +227,56 @@ function(target_create_boost_archive_test_suite)
   add_test(NAME boost_unordered_multimap COMMAND ${exe} --run_test=boost_unordered_multimap)
   add_test(NAME std_set COMMAND ${exe} --run_test=std_set)
   add_test(NAME std_multiset COMMAND ${exe} --run_test=std_multiset)
+  add_test(NAME std_unordered_set COMMAND ${exe} --run_test=std_unordered_set)
+  add_test(NAME std_unordered_multiset COMMAND ${exe} --run_test=std_unordered_multiset)
+  add_test(NAME boost_unordered_set COMMAND ${exe} --run_test=boost_unordered_set)
+  add_test(NAME boost_unordered_multiset COMMAND ${exe} --run_test=boost_unordered_multiset)
+  add_test(NAME std_vector_int COMMAND ${exe} --run_test=std_vector_int)
+  add_test(NAME std_vector_bool COMMAND ${exe} --run_test=std_vector_bool)
+  add_test(NAME std_vector_A COMMAND ${exe} --run_test=std_vector_A)
+  add_test(NAME std_vector_non_default_ctor COMMAND ${exe} --run_test=std_vector_non_default_ctor)
+  add_test(NAME std_priority_queue COMMAND ${exe} --run_test=std_priority_queue)
 
   # unit tests -- misc
   add_test(NAME helper_support COMMAND ${exe} --run_test=helper_support)
-
+  add_test(NAME boost_optional COMMAND ${exe} --run_test=boost_optional)
+  add_test(NAME std_unique_ptr_1 COMMAND ${exe} --run_test=std_unique_ptr_1)
+  add_test(NAME std_unique_ptr_2 COMMAND ${exe} --run_test=std_unique_ptr_2)
+  add_test(NAME boost_shared_ptr_1 COMMAND ${exe} --run_test=boost_shared_ptr_1)
+  add_test(NAME boost_shared_ptr_2 COMMAND ${exe} --run_test=boost_shared_ptr_2)
+  add_test(NAME boost_shared_ptr_3 COMMAND ${exe} --run_test=boost_shared_ptr_3)
+  add_test(NAME boost_shared_ptr_4 COMMAND ${exe} --run_test=boost_shared_ptr_4)
+  add_test(NAME boost_shared_ptr_5 COMMAND ${exe} --run_test=boost_shared_ptr_5)
+  add_test(NAME boost_shared_ptr_6 COMMAND ${exe} --run_test=boost_shared_ptr_6)
+  add_test(NAME std_shared_ptr_1 COMMAND ${exe} --run_test=std_shared_ptr_1)
+  add_test(NAME std_shared_ptr_2 COMMAND ${exe} --run_test=std_shared_ptr_2)
+  add_test(NAME std_shared_ptr_3 COMMAND ${exe} --run_test=std_shared_ptr_3)
+  add_test(NAME std_shared_ptr_4 COMMAND ${exe} --run_test=std_shared_ptr_4)
+  add_test(NAME std_shared_ptr_5 COMMAND ${exe} --run_test=std_shared_ptr_5)
+  add_test(NAME std_shared_ptr_6 COMMAND ${exe} --run_test=std_shared_ptr_6)
+  add_test(NAME boost_shared_ptr_multi_base_1 COMMAND ${exe} --run_test=boost_shared_ptr_multi_base_1)
+  add_test(NAME boost_shared_ptr_multi_base_2 COMMAND ${exe} --run_test=boost_shared_ptr_multi_base_2)
+  add_test(NAME boost_shared_ptr_multi_base_3 COMMAND ${exe} --run_test=boost_shared_ptr_multi_base_3)
+  add_test(NAME boost_shared_ptr_multi_base_4 COMMAND ${exe} --run_test=boost_shared_ptr_multi_base_4)
+  add_test(NAME boost_shared_ptr_multi_base_5 COMMAND ${exe} --run_test=boost_shared_ptr_multi_base_5)
+  add_test(NAME boost_shared_ptr_multi_base_6 COMMAND ${exe} --run_test=boost_shared_ptr_multi_base_6)
+  add_test(NAME boost_shared_ptr_multi_base_7 COMMAND ${exe} --run_test=boost_shared_ptr_multi_base_7)
+  add_test(NAME std_shared_ptr_multi_base_1 COMMAND ${exe} --run_test=std_shared_ptr_multi_base_1)
+  add_test(NAME std_shared_ptr_multi_base_2 COMMAND ${exe} --run_test=std_shared_ptr_multi_base_2)
+  add_test(NAME std_shared_ptr_multi_base_3 COMMAND ${exe} --run_test=std_shared_ptr_multi_base_3)
+  add_test(NAME std_shared_ptr_multi_base_4 COMMAND ${exe} --run_test=std_shared_ptr_multi_base_4)
+  add_test(NAME std_shared_ptr_multi_base_5 COMMAND ${exe} --run_test=std_shared_ptr_multi_base_5)
+  add_test(NAME std_shared_ptr_multi_base_6 COMMAND ${exe} --run_test=std_shared_ptr_multi_base_6)
+  add_test(NAME std_shared_ptr_multi_base_7 COMMAND ${exe} --run_test=std_shared_ptr_multi_base_7)
+  add_test(NAME std_complex COMMAND ${exe} --run_test=std_complex)
+  add_test(NAME std_bitset COMMAND ${exe} --run_test=std_bitset)
+  add_test(NAME boost_variant_1 COMMAND ${exe} --run_test=boost_variant_1)
+  add_test(NAME boost_variant_2 COMMAND ${exe} --run_test=boost_variant_2)
+  add_test(NAME boost_variant_3 COMMAND ${exe} --run_test=boost_variant_3)
+  add_test(NAME boost_variant_4 COMMAND ${exe} --run_test=boost_variant_4)
+  add_test(NAME boost_variant_5 COMMAND ${exe} --run_test=boost_variant_5)
+  add_test(NAME boost_variant_6 COMMAND ${exe} --run_test=boost_variant_6)
+  add_test(NAME boost_variant_7 COMMAND ${exe} --run_test=boost_variant_7)
 
   # file(STRINGS test_archive.cpp contents)
   # foreach (line ${contents})
@@ -282,10 +334,10 @@ function(target_add_archive_test_suite target config)
   # This one requires C++11
   # add_archive_test(NAME test_array                     ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
   
-  add_archive_test(NAME test_bitset                    ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
+  # add_archive_test(NAME test_bitset                    ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
   # add_archive_test(NAME test_class_info_save           ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
   # add_archive_test(NAME test_class_info_load           ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  add_archive_test(NAME test_complex                   ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
+  # add_archive_test(NAME test_complex                   ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
   # add_archive_test(NAME test_contained_class           ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
   # add_archive_test(NAME test_cyclic_ptrs               ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
   # add_archive_test(NAME test_delete_pointer            ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
@@ -314,32 +366,32 @@ function(target_add_archive_test_suite target config)
   # add_archive_test(NAME test_null_ptr                  ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
   # add_archive_test(NAME test_nvp                       ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
   # add_archive_test(NAME test_object                    ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  add_archive_test(NAME test_optional                  ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
+  # add_archive_test(NAME test_optional                  ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
   # add_archive_test(NAME test_primitive                 ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  add_archive_test(NAME test_priority_queue            ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
+  # add_archive_test(NAME test_priority_queue            ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
   # add_archive_test(NAME test_private_base              ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
   # add_archive_test(NAME test_private_base2             ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
   add_archive_test(NAME test_queue                     ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
   # add_archive_test(NAME test_recursion                 ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
   # add_archive_test(NAME test_registered                ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  add_archive_test(NAME test_shared_ptr                ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  add_archive_test(NAME test_shared_ptr_multi_base     ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  add_archive_test(NAME test_shared_ptr_132            ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
+  # add_archive_test(NAME test_shared_ptr                ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
+  # add_archive_test(NAME test_shared_ptr_multi_base     ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
+  # add_archive_test(NAME test_shared_ptr_132            ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
   # add_archive_test(NAME test_simple_class              ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
   # add_archive_test(NAME test_simple_class_ptr          ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
   add_archive_test(NAME test_stack                     ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
   # add_archive_test(NAME test_split                     ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
   # add_archive_test(NAME test_tracking                  ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
   # add_archive_test(NAME test_unregistered              ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  add_archive_test(NAME test_unique_ptr                ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
+  # add_archive_test(NAME test_unique_ptr                ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
   add_archive_test(NAME test_valarray                  ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  add_archive_test(NAME test_variant                   ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  add_archive_test(NAME test_vector                    ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
+  # add_archive_test(NAME test_variant                   ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
+  # add_archive_test(NAME test_vector                    ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
   # add_archive_test(NAME test_set                       ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  add_archive_test(NAME test_set_boost_unordered       ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
+  # add_archive_test(NAME test_set_boost_unordered       ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
   
   # This one requires C++11
-  add_archive_test(NAME test_set_unordered             ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
+  # add_archive_test(NAME test_set_unordered             ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
 
   # This one requires C++11
   # add_archive_test(NAME test_map_unordered             ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)

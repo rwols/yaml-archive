@@ -21,16 +21,23 @@ using ::remove;
 }
 #endif
 
-#include "test_tools.hpp"
-
+#include "io_fixture.hpp"
 #include <boost/serialization/bitset.hpp>
 #include <boost/serialization/nvp.hpp>
+#include <boost/test/unit_test.hpp>
 
-int test_main(int /* argc */, char* /* argv */ [])
+template <std::size_t N>
+std::ostream& operator<<(std::ostream& os, const std::bitset<N>& bits)
 {
-    const char* testfile = "test_bitset.yml";
-    BOOST_REQUIRE(NULL != testfile);
+    for (std::size_t i = 0; i < N; ++i)
+    {
+        os << (bits[i] ? '1' : '0');
+    }
+    return os;
+}
 
+BOOST_FIXTURE_TEST_CASE(std_bitset, io_fixture)
+{
     std::bitset<8> bitsetA;
     bitsetA.set(0, false);
     bitsetA.set(1, true);
@@ -40,23 +47,14 @@ int test_main(int /* argc */, char* /* argv */ [])
     bitsetA.set(5, false);
     bitsetA.set(6, true);
     bitsetA.set(7, true);
-
     {
-        test_ostream  os(testfile, TEST_STREAM_FLAGS);
-        test_oarchive oa(os);
-        oa << boost::serialization::make_nvp("bitset", bitsetA);
+        output() << boost::serialization::make_nvp("bitset", bitsetA);
     }
-
     std::bitset<8> bitsetB;
     {
-        test_istream  is(testfile, TEST_STREAM_FLAGS);
-        test_iarchive ia(is);
-        ia >> boost::serialization::make_nvp("bitset", bitsetB);
+        input() >> boost::serialization::make_nvp("bitset", bitsetB);
     }
-
-    BOOST_CHECK(bitsetA == bitsetB);
-
-    return EXIT_SUCCESS;
+    BOOST_CHECK_EQUAL(bitsetA, bitsetB);
 }
 
 // EOF
