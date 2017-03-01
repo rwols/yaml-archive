@@ -18,6 +18,10 @@ import build
 def print_msg(msg):
     print('\n\t{}\n'.format(msg))
 
+def get_changed_files():
+    os.chdir(root_dir)
+    return subprocess.check_output(['git', 'diff-index', '--cached', 'HEAD']).decode('utf-8').splitlines()
+
 class GitStasher(object):
     """Pushes and pops unstaged changes in a Python "with" block"""
     def __init__(self):
@@ -26,7 +30,7 @@ class GitStasher(object):
     def __enter__(self):
         try:
             os.chdir(root_dir)
-            subprocess.check_call(['git', 'stash', 'save', '--keep-index'])
+            subprocess.check_call(['git', 'stash', 'save', '--keep-index', '--quiet'])
         except subprocess.CalledProcessError as e:
             print_msg('Failed to temporarily stash unstaged changes!\n\t(return code {})'.format(str(e.returncode)))
             raise Exception('Fatal error.')
@@ -34,28 +38,48 @@ class GitStasher(object):
     def __exit__(self, exception_type, exception_value, traceback):
         try:
             os.chdir(root_dir)
-            subprocess.check_call(['git', 'stash', 'pop'])
+            subprocess.check_call(['git', 'stash', 'pop', '--quiet'])
         except subprocess.CalledProcessError as e:
             print_msg('Failed to pop unstaged changes!\n\t(return code {})'.format(str(e.returncode)))
         except Exception as e:
             print_msg('Failed to pop unstaged changes! (Unknown exception)')
 
 def do_build():
+    # Run clang-format on the changed files, if present.
+    print_msg('Running clang-format on the changed files...')
+    os.chdir(root_dir)
+    changed_files = [f for f in get_changed_files() if f.endswith(('.h','.c', '.hh', '.cc', '.hpp', '.hpp', '.hxx', '.cxx'))]
+    try:
+        for file in changed_files:
+            print_msg('Formatting "{}"'.format(file))
+            subprocess.check_call(['clang-format', '-style=file', '-i', file])
+    except Exception as e:
+        # This is OK, we continue on anyway; formatting is not that important.
+        # Print an informational message that formatting failed.
+        print_msg('Failed formatting, but continuing on.')
+
+    print_msg('Building and testing the project...')
     b = build.CommandLineBuild(0)
     if b.before_build():
+        b.after_failure()
         return 1
     elif b.build():
+        b.after_failure()
         return 2
     elif b.after_build():
+        b.after_failure()
         return 3
     elif b.before_test():
+        b.after_failure()
         return 4
     elif b.test():
+        b.after_failure()
         return 5
     elif b.after_test():
+        b.after_failure()
         return 6
     else:
-        # OK!
+        b.after_success()
         return 0
 
 def main():
