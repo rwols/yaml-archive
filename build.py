@@ -172,36 +172,10 @@ class BuildBase(object):
             raise Exception('No build_shared_libs present.')
 
     def before_install(self):
-        print('Changing directory to {}'.format(self.build_dir))
-        os.chdir(self.build_dir)
-        boost_tar_file = 'boost_{0}_{1}_{2}.tar.bz2'.format(self.boost_version_major, self.boost_version_minor, self.boost_version_patch)
-        boost_url_prefix = 'https://downloads.sourceforge.net/project/boost/boost'
-        url = boost_url_prefix + '/' + self.boost_version + '/' + boost_tar_file
-        print('Downloading {}'.format(url))
-        self.download_file(url)
-        print('Unpacking {}'.format(boost_tar_file))
-        tar = tarfile.open(boost_tar_file, 'r:bz2')
-        tar.extractall()
-        tar.close()   
+        pass
 
     def install(self):
-        print('Changing directory to {}'.format(self.boost_dir))
-        os.chdir(self.boost_dir)
-        variant = 'debug' if self.build_type == 'Debug' else 'release'  
-        variant = 'variant={}'.format(variant)
-        link = 'shared' if self.build_shared_libs == 'ON' else 'static'
-        link = 'link={}'.format(link)
-        jobs = '-j{}'.format(str(self.jobs))
-        libs =  ['system', 'serialization', 'test']
-        if os.name == 'nt': # windows
-            utils.check_call('bootstrap.bat')
-            for i, lib in enumerate(libs):
-                libs[i] = '--with-' + lib
-            utils.check_call('./b2', '-d0', '-q', variant, link, jobs, *libs)
-        else: # assume unix-like
-            libs = '--with-libraries=' + ','.join(libs)
-            utils.check_call('./bootstrap.sh', libs)
-            utils.check_call('./b2', '-d0', '-q', variant, link, jobs)
+        pass
 
     def before_build(self):
         print('Changing directory to {}'.format(self.build_dir))
@@ -246,6 +220,43 @@ class TravisBuild(BuildBase):
     def __init__(self, debug_level):
         super(TravisBuild, self).__init__(debug_level)
 
+    def before_install(self):
+        # We need to download boost ourselves, travis only has an ancient
+        # boost 1.54 version installed.
+        super(TravisBuild, self).before_install()
+        print('Changing directory to {}'.format(self.build_dir))
+        os.chdir(self.build_dir)
+        boost_tar_file = 'boost_{0}_{1}_{2}.tar.bz2'.format(self.boost_version_major, self.boost_version_minor, self.boost_version_patch)
+        boost_url_prefix = 'https://downloads.sourceforge.net/project/boost/boost'
+        url = boost_url_prefix + '/' + self.boost_version + '/' + boost_tar_file
+        print('Downloading {}'.format(url))
+        self.download_file(url)
+        print('Unpacking {}'.format(boost_tar_file))
+        tar = tarfile.open(boost_tar_file, 'r:bz2')
+        tar.extractall()
+        tar.close()   
+
+    def install(self):
+        # Install the downloaded boost version in the before_install step.
+        super(TravisBuild, self).install()
+        print('Changing directory to {}'.format(self.boost_dir))
+        os.chdir(self.boost_dir)
+        variant = 'debug' if self.build_type == 'Debug' else 'release'  
+        variant = 'variant={}'.format(variant)
+        link = 'shared' if self.build_shared_libs == 'ON' else 'static'
+        link = 'link={}'.format(link)
+        jobs = '-j{}'.format(str(self.jobs))
+        libs =  ['system', 'serialization', 'test']
+        if os.name == 'nt': # windows
+            utils.check_call('bootstrap.bat')
+            for i, lib in enumerate(libs):
+                libs[i] = '--with-' + lib
+            utils.check_call('./b2', '-d0', '-q', variant, link, jobs, *libs)
+        else: # assume unix-like
+            libs = '--with-libraries=' + ','.join(libs)
+            utils.check_call('./bootstrap.sh', libs)
+            utils.check_call('./b2', '-d0', '-q', variant, link, jobs)
+
     def download_file(self, url):
         utils.check_call('wget', url)
 
@@ -254,6 +265,7 @@ class AppveyorBuild(BuildBase):
     def __init__(self, debug_level):
         super(AppveyorBuild, self).__init__(debug_level)
         self.build_type = os.getenv('CONFIGURATION')
+        self.boost_dir = 'C:\\Libraries\\boost_{}'.format(self.boost_version_underscores)
 
     def build(self):
         print('Changing directory to {}'.format(self.build_dir))
@@ -261,8 +273,23 @@ class AppveyorBuild(BuildBase):
         utils.check_call('cmake', '--build' ,'.' ,'--config', self.build_type)
 
     def before_install(self):
-        utils.check_call('git', 'submodule', 'update', '--init', '--recursive')
         super(AppveyorBuild, self).before_install()
+        # Appveyor doesn't call git clone --recursive
+        # but calls git clone instead, so we have to update our submodules
+        # manually.
+        utils.check_call('git', 'submodule', 'update', '--init', '--recursive')
+
+    def install(self):
+        # Appveyor has the following boost libraries installed:
+        # 1.63.0 (C:\Libraries\boost_1_63_0)
+        # 1.62.0 (C:\Libraries\boost_1_62_0)
+        # 1.60.0 (C:\Libraries\boost_1_60_0)
+        # 1.59.0 (C:\Libraries\boost_1_59_0)
+        # 1.58.0 (C:\Libraries\boost_1_58_0)
+        # 1.56.0 (C:\Libraries\boost)
+        #
+        # See: https://www.appveyor.com/docs/installed-software/#languages-libraries-frameworks
+        super(AppveyorBuild, self).install()
 
     def test(self):
         print('Changing directory to {}'.format(self.build_dir))
@@ -276,6 +303,14 @@ class CommandLineBuild(BuildBase):
 
     def __init(self, debug_level):
         super(CommandLineBuild, self).__init__(debug_level)
+
+    def before_build(self):
+        print('Changing directory to {}'.format(self.build_dir))
+        os.chdir(self.build_dir)
+        utils.check_call('cmake', 
+            self.root_dir, 
+            '-DBUILD_SHARED_LIBS={}'.format(self.build_shared_libs),
+            '-DCMAKE_BUILD_TYPE={}'.format(self.build_type))
 
 def main():
     parser = argparse.ArgumentParser()
@@ -298,8 +333,7 @@ def main():
         for action in args.actions:
             action = action.replace('-', '_')
             if hasattr(build, action):
-                action_as_method = getattr(build, action)
-                action_as_method()
+                getattr(build, action)()
             else:
                 parser.print_help()
                 return 2
@@ -309,6 +343,5 @@ def main():
     return 0
 
 if __name__ == '__main__':
-    exit_value = main()
-    exit(exit_value)
+    exit(main())
 
