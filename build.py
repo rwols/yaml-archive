@@ -59,11 +59,12 @@ class utils:
     
     @staticmethod
     def check_call(*command, **kargs):
-        cwd = os.getcwd()
-        # result = utils.call(*command, **kargs)
-        result = subprocess.call(command, **kargs)
-        if result != 0:
-            raise SystemCallError([cwd].extend(command), result)
+        subprocess.check_call(command, **kargs)
+        # cwd = os.getcwd()
+        # # result = utils.call(*command, **kargs)
+        # result = subprocess.call(command, **kargs)
+        # if result != 0:
+        #     raise SystemCallError([cwd].extend(command), result)
     
     @staticmethod
     def makedirs( path ):
@@ -265,12 +266,7 @@ class AppveyorBuild(BuildBase):
     def __init__(self, debug_level):
         super(AppveyorBuild, self).__init__(debug_level)
         self.build_type = os.getenv('CONFIGURATION')
-        self.boost_dir = 'C:\\Libraries\\boost_{}'.format(self.boost_version_underscores)
-
-    def build(self):
-        print('Changing directory to {}'.format(self.build_dir))
-        os.chdir(self.build_dir)
-        utils.check_call('cmake', '--build' ,'.' ,'--config', self.build_type)
+        self.boost_dir = 'C:/Libraries/boost_{}'.format(self.boost_version_underscores)
 
     def before_install(self):
         super(AppveyorBuild, self).before_install()
@@ -290,6 +286,19 @@ class AppveyorBuild(BuildBase):
         #
         # See: https://www.appveyor.com/docs/installed-software/#languages-libraries-frameworks
         super(AppveyorBuild, self).install()
+
+    def before_build(self):
+        print('Changing directory to {}'.format(self.build_dir))
+        os.chdir(self.build_dir)
+        utils.check_call('cmake', 
+            self.root_dir, '-DBOOST_ROOT={}'.format(self.boost_dir),
+            '-DBUILD_SHARED_LIBS={}'.format(self.build_shared_libs),
+            '-DCMAKE_BUILD_TYPE={}'.format(self.build_type))
+
+    def build(self):
+        print('Changing directory to {}'.format(self.build_dir))
+        os.chdir(self.build_dir)
+        utils.check_call('cmake', '--build' ,'.' ,'--config', self.build_type)
 
     def test(self):
         print('Changing directory to {}'.format(self.build_dir))
@@ -337,9 +346,12 @@ def main():
             else:
                 parser.print_help()
                 return 2
-    except Exception as e:
-        print(str(e))
+    except subprocess.CalledProcessError as e:
+        print('BUILD FAILED.')
         return 3
+    except Exception as e:
+        print('Unknown exception: {}'.format(str(e)))
+        return 4
     return 0
 
 if __name__ == '__main__':
