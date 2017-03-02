@@ -4,9 +4,112 @@ set(yaml-archive_WE_ARE_ROOT OFF CACHE INTERNAL "")
 if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     set(yaml-archive_WE_ARE_ROOT ON CACHE INTERNAL "")
 endif()
-option(yaml-archive_USE_STATIC_LIBS "Build static libraries instead of dynamic ones." ${BUILD_STATIC_LIBS})
-option(yaml-archive_BUILD_UNIT_TESTS "Build unit tests." ${yaml-archive_WE_ARE_ROOT})
-option(yaml-archive_BUILD_DOCUMENTATION "Build documentation." ${yaml-archive_WE_ARE_ROOT})
+
+################################################################################
+#                                                                              #
+#    Options                                                                   #
+#                                                                              #
+################################################################################
+
+option(yaml-archive_USE_STATIC_LIBS 
+    "Build static libraries instead of dynamic ones." 
+    ${BUILD_STATIC_LIBS})
+
+option(yaml-archive_BUILD_UNIT_TESTS 
+    "Build the unit tests?" 
+    ${yaml-archive_WE_ARE_ROOT})
+
+option(yaml-archive_BUILD_DOCUMENTATION 
+    "Build the documentation?" 
+    ${yaml-archive_WE_ARE_ROOT})
+
+option(yaml-archive_LIB_DESTINATION 
+    "Where to install the library" 
+    lib)
+
+option(yaml-archive_INCLUDE_DESTINATION 
+    "Where to install the headers" 
+    include)
+
+################################################################################
+#                                                                              #
+#    Target yaml-archive                                                       #
+#                                                                              #
+################################################################################
+
+if (BUILD_SHARED_LIBS)
+    set(Boost_USE_STATIC_LIBS OFF)
+else()
+    set(Boost_USE_STATIC_LIBS ON)
+endif()
+find_package(Boost COMPONENTS system serialization REQUIRED)
+
+add_library(yaml-archive
+
+    # Header files
+    include/boost/archive/detail/is_yaml_primitive.hpp
+    include/boost/archive/yaml_iarchive.hpp
+    include/boost/archive/yaml_oarchive.hpp
+    include/YAML/extra_converters.hpp
+    include/YAML/extra_emitter_overloads.hpp
+
+    # Implementation files
+    lib/yaml_iarchive.cpp
+    lib/yaml_oarchive.cpp)
+
+set_target_properties(yaml-archive PROPERTIES CXX_STANDARD 11)
+target_include_directories(yaml-archive PUBLIC include)
+target_include_directories(yaml-archive PUBLIC ext/yaml-cpp/include)
+target_include_directories(yaml-archive PUBLIC ${Boost_INCLUDE_DIR})
+
+include(GenerateExportHeader)
+generate_export_header(yaml-archive)
+
+install(TARGETS yaml-archive
+    EXPORT yaml-archive-targets
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION include)
+
+target_link_libraries(yaml-archive PUBLIC yaml-cpp)
+target_link_libraries(yaml-archive PUBLIC ${Boost_LIBRARIES})
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/yaml-archive-config-version.cmake"
+  VERSION 1.0.0
+  COMPATIBILITY AnyNewerVersion
+)
+
+export(EXPORT yaml-archive-targets
+  FILE "${CMAKE_CURRENT_BINARY_DIR}/yaml-archive-config-version.cmake"
+  NAMESPACE Upstream::
+)
+# configure_file(cmake/ClimbingStatsConfig.cmake
+#   "${CMAKE_CURRENT_BINARY_DIR}/ClimbingStats/ClimbingStatsConfig.cmake"
+#   COPYONLY
+# )
+
+set(ConfigPackageLocation lib/cmake/yaml-archive)
+install(EXPORT yaml-archive-targets
+  FILE
+    yaml-archive-targets.cmake
+  NAMESPACE
+    Upstream::
+  DESTINATION
+    ${ConfigPackageLocation}
+)
+install(
+  FILES
+    cmake/ClimbingStatsConfig.cmake
+    "${CMAKE_CURRENT_BINARY_DIR}/ClimbingStats/ClimbingStatsConfigVersion.cmake"
+  DESTINATION
+    ${ConfigPackageLocation}
+  COMPONENT
+    Devel
+)
+
 add_subdirectory(ext)
 add_subdirectory(include)
 add_subdirectory(lib)
