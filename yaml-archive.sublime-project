@@ -182,7 +182,8 @@
 		{
 			"BUILD_SHARED_LIBS": true,
 			"CMAKE_BUILD_TYPE": "Debug",
-			"CMAKE_EXPORT_COMPILE_COMMANDS": true
+			"CMAKE_EXPORT_COMPILE_COMMANDS": true,
+			"CMAKE_INSTALL_PREFIX": "${project_path}/build/install-test"
 		},
 		"generator": "Ninja"
 	},
