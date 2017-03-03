@@ -220,7 +220,7 @@ class TravisBuild(BuildBase):
 
     def __init__(self, debug_level):
         super(TravisBuild, self).__init__(debug_level)
-        self.boost_dir = os.path.join(os.getenv('TRAVIS_BUILD_DIR'), '..', 'boost')
+        self.boost_dir = os.path.join(os.getenv('TRAVIS_BUILD_DIR'), '..', 'boost_{}'.format(self.boost_version_underscores))
         self.boost_dir = os.path.abspath(self.boost_dir)
 
 
@@ -228,10 +228,10 @@ class TravisBuild(BuildBase):
         # We need to download boost ourselves, travis only has an ancient
         # boost 1.54 version installed.
         super(TravisBuild, self).before_install()
-        print('Changing directory to {}'.format(self.build_dir))
-        utils.makedirs(self.boost_dir)
-        os.chdir(self.build_dir)
-        boost_tar_file = 'boost_{0}_{1}_{2}.tar.bz2'.format(self.boost_version_major, self.boost_version_minor, self.boost_version_patch)
+        download_dir = os.path.abspath(os.path.join(os.getenv('TRAVIS_BUILD_DIR'), '..'))
+        print('Changing directory to {}'.format(download_dir))
+        os.chdir(download_dir)
+        boost_tar_file = 'boost_{0}.tar.bz2'.format(self.boost_version_underscores)
         boost_url_prefix = 'https://downloads.sourceforge.net/project/boost/boost'
         url = boost_url_prefix + '/' + self.boost_version + '/' + boost_tar_file
         print('Downloading {}'.format(url))
@@ -245,6 +245,7 @@ class TravisBuild(BuildBase):
         # Install the downloaded boost version in the before_install step.
         super(TravisBuild, self).install()
         print('Changing directory to {}'.format(self.boost_dir))
+        utils.makedirs(self.boost_dir)
         os.chdir(self.boost_dir)
         variant = 'debug' if self.build_type == 'Debug' else 'release'  
         variant = 'variant={}'.format(variant)
