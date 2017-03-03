@@ -5,6 +5,7 @@
 			"file_regex": "(.+[^:]):(\\d+):(\\d+): (?:fatal )?((?:error|warning): .+)$",
 			"name": "yaml-archive",
 			"shell_cmd": "cmake --build .",
+			"syntax": "Packages/CMakeBuilder/Syntax/Ninja.sublime-syntax",
 			"variants":
 			[
 				{
@@ -92,6 +93,10 @@
 					"shell_cmd": "cmake --build . --target include/install"
 				},
 				{
+					"name": "include/list_install_components",
+					"shell_cmd": "cmake --build . --target include/list_install_components"
+				},
+				{
 					"name": "include/rebuild_cache",
 					"shell_cmd": "cmake --build . --target include/rebuild_cache"
 				},
@@ -102,10 +107,6 @@
 				{
 					"name": "include/test",
 					"shell_cmd": "cmake --build . --target include/test"
-				},
-				{
-					"name": "include/list_install_components",
-					"shell_cmd": "cmake --build . --target include/list_install_components"
 				},
 				{
 					"name": "lib/install/strip",
@@ -132,20 +133,8 @@
 					"shell_cmd": "cmake --build . --target lib/test"
 				},
 				{
-					"name": "test/install/strip",
-					"shell_cmd": "cmake --build . --target test/install/strip"
-				},
-				{
-					"name": "test/install",
-					"shell_cmd": "cmake --build . --target test/install"
-				},
-				{
 					"name": "test/list_install_components",
 					"shell_cmd": "cmake --build . --target test/list_install_components"
-				},
-				{
-					"name": "test/rebuild_cache",
-					"shell_cmd": "cmake --build . --target test/rebuild_cache"
 				},
 				{
 					"name": "test/install/local",
@@ -156,16 +145,28 @@
 					"shell_cmd": "cmake --build . --target test/test"
 				},
 				{
+					"name": "test/rebuild_cache",
+					"shell_cmd": "cmake --build . --target test/rebuild_cache"
+				},
+				{
+					"name": "test/install/strip",
+					"shell_cmd": "cmake --build . --target test/install/strip"
+				},
+				{
+					"name": "test/install",
+					"shell_cmd": "cmake --build . --target test/install"
+				},
+				{
 					"name": "format",
 					"shell_cmd": "cmake --build . --target format"
 				},
 				{
-					"name": "libyaml-archive",
-					"shell_cmd": "cmake --build . --target libyaml-archive.dylib"
-				},
-				{
 					"name": "libyaml-cpp",
 					"shell_cmd": "cmake --build . --target libyaml-cpp.dylib"
+				},
+				{
+					"name": "yaml-archive",
+					"shell_cmd": "cmake --build . --target yaml-archive"
 				},
 				{
 					"name": "clean",
