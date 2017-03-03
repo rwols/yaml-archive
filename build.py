@@ -220,6 +220,7 @@ class TravisBuild(BuildBase):
 
     def __init__(self, debug_level):
         super(TravisBuild, self).__init__(debug_level)
+        self.boost_dir = os.path.join(os.getenv('TRAVIS_BUILD_DIR'), '..', 'boost')
 
     def before_install(self):
         # We need to download boost ourselves, travis only has an ancient
