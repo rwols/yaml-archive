@@ -148,7 +148,7 @@ bool load_tag(const std::string& tag, const char identifier, BoostType& t)
     return true;
 }
 
-#if BOOST_VERSION > 104800
+#if BOOST_VERSION > 105800
 void yaml_iarchive::load_override(class_id_type& t)
 #else
 void yaml_iarchive::load_override(class_id_type& t, int)
@@ -157,14 +157,14 @@ void yaml_iarchive::load_override(class_id_type& t, int)
     load_tag<int>(m_stack.top().Tag(), 'c', t);
 }
 
-#if BOOST_VERSION > 104800
+#if BOOST_VERSION > 105800
 void yaml_iarchive::load_override(class_id_optional_type& t)
 #else
 void yaml_iarchive::load_override(class_id_optional_type& t, int)
 #endif
 {
     class_id_type x;
-#if BOOST_VERSION > 104800
+#if BOOST_VERSION > 105800
     load_override(x);
 #else
     load_override(x, 0);
@@ -172,14 +172,14 @@ void yaml_iarchive::load_override(class_id_optional_type& t, int)
     t = class_id_optional_type(x);
 }
 
-#if BOOST_VERSION > 104800
+#if BOOST_VERSION > 105800
 void yaml_iarchive::load_override(class_id_reference_type& t)
 #else
 void yaml_iarchive::load_override(class_id_reference_type& t, int)
 #endif
 {
     class_id_type x;
-#if BOOST_VERSION > 104800
+#if BOOST_VERSION > 105800
     load_override(x);
 #else
     load_override(x, 0);
@@ -187,7 +187,7 @@ void yaml_iarchive::load_override(class_id_reference_type& t, int)
     t = class_id_reference_type(x);
 }
 
-#if BOOST_VERSION > 104800
+#if BOOST_VERSION > 105800
 void yaml_iarchive::load_override(object_id_type& t)
 #else
 void yaml_iarchive::load_override(object_id_type& t, int)
@@ -196,7 +196,7 @@ void yaml_iarchive::load_override(object_id_type& t, int)
     load_tag<unsigned>(m_stack.top().Tag(), 'o', t);
 }
 
-#if BOOST_VERSION > 104800
+#if BOOST_VERSION > 105800
 void yaml_iarchive::load_override(object_reference_type& t)
 #else
 void yaml_iarchive::load_override(object_reference_type& t, int)
@@ -207,7 +207,7 @@ void yaml_iarchive::load_override(object_reference_type& t, int)
     t = object_reference_type(r);
 }
 
-#if BOOST_VERSION > 104800
+#if BOOST_VERSION > 105800
 void yaml_iarchive::load_override(version_type& t)
 #else
 void yaml_iarchive::load_override(version_type& t, int)
@@ -216,7 +216,7 @@ void yaml_iarchive::load_override(version_type& t, int)
     load_tag<unsigned>(m_stack.top().Tag(), 'v', t);
 }
 
-#if BOOST_VERSION > 104800
+#if BOOST_VERSION > 105800
 void yaml_iarchive::load_override(class_name_type& t)
 #else
 void yaml_iarchive::load_override(class_name_type& t, int)
@@ -240,7 +240,7 @@ void yaml_iarchive::load_override(class_name_type& t, int)
     }
 }
 
-#if BOOST_VERSION > 104800
+#if BOOST_VERSION > 105800
 void yaml_iarchive::load_override(tracking_type& t)
 #else
 void yaml_iarchive::load_override(tracking_type& t, int)

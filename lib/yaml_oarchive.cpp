@@ -103,7 +103,7 @@ void yaml_oarchive::end_preamble()
     }
 }
 
-#if BOOST_VERSION > 104800
+#if BOOST_VERSION > 105800
 void yaml_oarchive::save_override(const class_id_type& t)
 #else
 void yaml_oarchive::save_override(const class_id_type& t, int)
@@ -126,7 +126,7 @@ void yaml_oarchive::save_override(const class_id_type& t, int)
     m_tag.append("c").append(std::to_string(static_cast<int>(t)));
 }
 
-#if BOOST_VERSION > 104800
+#if BOOST_VERSION > 105800
 void yaml_oarchive::save_override(const class_id_optional_type& t)
 #else
 void yaml_oarchive::save_override(const class_id_optional_type& t, int)
@@ -135,7 +135,7 @@ void yaml_oarchive::save_override(const class_id_optional_type& t, int)
     m_tag.append("c").append(std::to_string(static_cast<int>(t)));
 }
 
-#if BOOST_VERSION > 104800
+#if BOOST_VERSION > 105800
 void yaml_oarchive::save_override(const class_id_reference_type& t)
 #else
 void yaml_oarchive::save_override(const class_id_reference_type& t, int)
@@ -144,7 +144,7 @@ void yaml_oarchive::save_override(const class_id_reference_type& t, int)
     m_tag.append("r").append(std::to_string(static_cast<int>(t)));
 }
 
-#if BOOST_VERSION > 104800
+#if BOOST_VERSION > 105800
 void yaml_oarchive::save_override(const object_id_type& t)
 #else
 void yaml_oarchive::save_override(const object_id_type& t, int)
@@ -154,7 +154,7 @@ void yaml_oarchive::save_override(const object_id_type& t, int)
     m_tag.append("o").append(std::to_string(static_cast<unsigned>(t)));
 }
 
-#if BOOST_VERSION > 104800
+#if BOOST_VERSION > 105800
 void yaml_oarchive::save_override(const object_reference_type& t)
 #else
 void yaml_oarchive::save_override(const object_reference_type& t, int)
@@ -173,7 +173,7 @@ void yaml_oarchive::save_override(const object_reference_type& t, int)
     m_is_alias = true;
 }
 
-#if BOOST_VERSION > 104800
+#if BOOST_VERSION > 105800
 void yaml_oarchive::save_override(const version_type& t)
 #else
 void yaml_oarchive::save_override(const version_type& t, int)
@@ -182,7 +182,7 @@ void yaml_oarchive::save_override(const version_type& t, int)
     m_tag.append("v").append(std::to_string(static_cast<unsigned>(t)));
 }
 
-#if BOOST_VERSION > 104800
+#if BOOST_VERSION > 105800
 void yaml_oarchive::save_override(const class_name_type& t)
 #else
 void yaml_oarchive::save_override(const class_name_type& t, int)
@@ -192,7 +192,7 @@ void yaml_oarchive::save_override(const class_name_type& t, int)
     m_pending_class = static_cast<const char*>(t);
 }
 
-#if BOOST_VERSION > 104800
+#if BOOST_VERSION > 105800
 void yaml_oarchive::save_override(const tracking_type& t)
 #else
 void yaml_oarchive::save_override(const tracking_type& t, int)

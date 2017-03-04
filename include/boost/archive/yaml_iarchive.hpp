@@ -46,7 +46,7 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
     using base = detail::common_iarchive<yaml_iarchive>;
     template <class T> using nvp = boost::serialization::nvp<T>;
 
-#if BOOST_VERSION > 104800
+#if BOOST_VERSION > 105800
 
     // Anything not an attribute and not a name-value pair is an
     // error and should be trapped here.
@@ -96,7 +96,7 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
     BOOST_SYMBOL_VISIBLE void load_override(class_name_type& t);
     BOOST_SYMBOL_VISIBLE void load_override(tracking_type& t);
 
-#else // BOOST_VERSION <= 104800
+#else // BOOST_VERSION <= 105800
 
     // Anything not an attribute and not a name-value pair is an
     // error and should be trapped here.
