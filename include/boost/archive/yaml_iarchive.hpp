@@ -23,6 +23,10 @@ namespace archive {
 
 class BOOST_SYMBOL_VISIBLE yaml_iarchive
     : public detail::common_iarchive<yaml_iarchive>
+#if BOOST_VERSION < 105600
+      ,
+      public detail::shared_ptr_helper
+#endif
 {
   public:
     BOOST_SYMBOL_VISIBLE yaml_iarchive(std::istream&  is,

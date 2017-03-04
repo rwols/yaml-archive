@@ -26,6 +26,10 @@ namespace archive {
  */
 class BOOST_SYMBOL_VISIBLE yaml_oarchive
     : public detail::common_oarchive<yaml_oarchive>
+#if BOOST_VERSION < 105600
+      ,
+      public detail::shared_ptr_helper
+#endif
 {
   public:
     BOOST_SYMBOL_VISIBLE yaml_oarchive(std::ostream&  os,
