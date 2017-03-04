@@ -4,6 +4,9 @@
 #include <boost/archive/detail/decl.hpp>
 #include <boost/archive/detail/is_yaml_primitive.hpp>
 #include <boost/archive/detail/register_archive.hpp>
+#if BOOST_VERSION < 105600
+#include <boost/archive/detail/shared_ptr_helper.hpp>
+#endif
 #include <boost/serialization/detail/stack_constructor.hpp>
 #include <boost/serialization/item_version_type.hpp>
 #include <boost/version.hpp>
