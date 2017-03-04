@@ -148,43 +148,79 @@ bool load_tag(const std::string& tag, const char identifier, BoostType& t)
     return true;
 }
 
+#if BOOST_VERSION > 104800
 void yaml_iarchive::load_override(class_id_type& t)
+#else
+void yaml_iarchive::load_override(class_id_type& t, int)
+#endif
 {
     load_tag<int>(m_stack.top().Tag(), 'c', t);
 }
 
+#if BOOST_VERSION > 104800
 void yaml_iarchive::load_override(class_id_optional_type& t)
+#else
+void yaml_iarchive::load_override(class_id_optional_type& t, int)
+#endif
 {
     class_id_type x;
+#if BOOST_VERSION > 104800
     load_override(x);
+#else
+    load_override(x, 0);
+#endif
     t = class_id_optional_type(x);
 }
 
+#if BOOST_VERSION > 104800
 void yaml_iarchive::load_override(class_id_reference_type& t)
+#else
+void yaml_iarchive::load_override(class_id_reference_type& t, int)
+#endif
 {
     class_id_type x;
+#if BOOST_VERSION > 104800
     load_override(x);
+#else
+    load_override(x, 0);
+#endif
     t = class_id_reference_type(x);
 }
 
+#if BOOST_VERSION > 104800
 void yaml_iarchive::load_override(object_id_type& t)
+#else
+void yaml_iarchive::load_override(object_id_type& t, int)
+#endif
 {
     load_tag<unsigned>(m_stack.top().Tag(), 'o', t);
 }
 
+#if BOOST_VERSION > 104800
 void yaml_iarchive::load_override(object_reference_type& t)
+#else
+void yaml_iarchive::load_override(object_reference_type& t, int)
+#endif
 {
     object_id_type r;
     load_tag<unsigned>(m_stack.top().Tag(), 'r', r);
     t = object_reference_type(r);
 }
 
+#if BOOST_VERSION > 104800
 void yaml_iarchive::load_override(version_type& t)
+#else
+void yaml_iarchive::load_override(version_type& t, int)
+#endif
 {
     load_tag<unsigned>(m_stack.top().Tag(), 'v', t);
 }
 
+#if BOOST_VERSION > 104800
 void yaml_iarchive::load_override(class_name_type& t)
+#else
+void yaml_iarchive::load_override(class_name_type& t, int)
+#endif
 {
     const auto cls = m_stack.top()["__class__"];
     if (cls)
@@ -204,7 +240,11 @@ void yaml_iarchive::load_override(class_name_type& t)
     }
 }
 
+#if BOOST_VERSION > 104800
 void yaml_iarchive::load_override(tracking_type& t)
+#else
+void yaml_iarchive::load_override(tracking_type& t, int)
+#endif
 {
     auto pos = m_stack.top().Tag().rfind('/');
     if (pos == std::string::npos) pos = 0;

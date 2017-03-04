@@ -6,6 +6,7 @@
 #include <boost/archive/detail/register_archive.hpp>
 #include <boost/serialization/detail/stack_constructor.hpp>
 #include <boost/serialization/item_version_type.hpp>
+#include <boost/version.hpp>
 #include <stack>
 #include <yaml-cpp/yaml.h>
 
@@ -45,6 +46,8 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
     using base = detail::common_iarchive<yaml_iarchive>;
     template <class T> using nvp = boost::serialization::nvp<T>;
 
+#if BOOST_VERSION > 104800
+
     // Anything not an attribute and not a name-value pair is an
     // error and should be trapped here.
     template <class T> void load_override(T& t)
@@ -81,6 +84,69 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
 #endif
         }
     }
+
+    // specific overrides for attributes - not name value pairs so we
+    // want to trap them before the above "fall through"
+    BOOST_SYMBOL_VISIBLE void load_override(class_id_type& t);
+    BOOST_SYMBOL_VISIBLE void load_override(class_id_optional_type& t);
+    BOOST_SYMBOL_VISIBLE void load_override(class_id_reference_type& t);
+    BOOST_SYMBOL_VISIBLE void load_override(object_id_type& t);
+    BOOST_SYMBOL_VISIBLE void load_override(object_reference_type& t);
+    BOOST_SYMBOL_VISIBLE void load_override(version_type& t);
+    BOOST_SYMBOL_VISIBLE void load_override(class_name_type& t);
+    BOOST_SYMBOL_VISIBLE void load_override(tracking_type& t);
+
+#else // BOOST_VERSION <= 104800
+
+    // Anything not an attribute and not a name-value pair is an
+    // error and should be trapped here.
+    template <class T> void load_override(T& t, BOOST_PFTO int)
+    {
+        // If your program fails to compile here, its most likely due to
+        // not specifying an nvp wrapper around the variable to
+        // be serialized.
+        static_assert(serialization::is_wrapper<T>::type::value,
+                      "wrap your values to be serialized in the "
+                      "BOOST_SERIALIZATION_NVP wrapper, or use the function "
+                      "boost::serialization::make_nvp");
+        base::load_override(t, 0);
+    }
+
+    // "main" entry point into the archive.
+    // except for special attributes, see below.
+    template <class T> void load_override(const nvp<T>& t)
+    {
+        if (t.name() != nullptr)
+        {
+            m_stack.push(m_stack.top()[t.name()]);
+#ifdef YAML_ARCHIVE_DEBUG_STACK
+            std::cout << "PUSHED: " << t.name() << '\n';
+            debug_print_stack();
+#endif
+        }
+        load_value(t.value());
+        if (t.name() != nullptr)
+        {
+            m_stack.pop();
+#ifdef YAML_ARCHIVE_DEBUG_STACK
+            std::cout << "POPPED: " << t.name() << '\n';
+            debug_print_stack();
+#endif
+        }
+    }
+
+    // specific overrides for attributes - not name value pairs so we
+    // want to trap them before the above "fall through"
+    BOOST_SYMBOL_VISIBLE void load_override(class_id_type& t, int);
+    BOOST_SYMBOL_VISIBLE void load_override(class_id_optional_type& t, int);
+    BOOST_SYMBOL_VISIBLE void load_override(class_id_reference_type& t, int);
+    BOOST_SYMBOL_VISIBLE void load_override(object_id_type& t, int);
+    BOOST_SYMBOL_VISIBLE void load_override(object_reference_type& t, int);
+    BOOST_SYMBOL_VISIBLE void load_override(version_type& t, int);
+    BOOST_SYMBOL_VISIBLE void load_override(class_name_type& t, int);
+    BOOST_SYMBOL_VISIBLE void load_override(tracking_type& t, int);
+
+#endif // BOOST_VERSION
 
     // If T is a yaml primitive, cast the YAML::Node at the top of the stack to
     // T right away.
@@ -521,17 +587,6 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
     void load(unsigned char& t);
     void load(boost::serialization::item_version_type& t);
     void load(boost::serialization::collection_size_type& t);
-
-    // specific overrides for attributes - not name value pairs so we
-    // want to trap them before the above "fall through"
-    BOOST_SYMBOL_VISIBLE void load_override(class_id_type& t);
-    BOOST_SYMBOL_VISIBLE void load_override(class_id_optional_type& t);
-    BOOST_SYMBOL_VISIBLE void load_override(class_id_reference_type& t);
-    BOOST_SYMBOL_VISIBLE void load_override(object_id_type& t);
-    BOOST_SYMBOL_VISIBLE void load_override(object_reference_type& t);
-    BOOST_SYMBOL_VISIBLE void load_override(version_type& t);
-    BOOST_SYMBOL_VISIBLE void load_override(class_name_type& t);
-    BOOST_SYMBOL_VISIBLE void load_override(tracking_type& t);
 };
 
 } // namespace archive
