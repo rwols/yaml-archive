@@ -45,6 +45,8 @@ BOOST_SERIALIZATION_SPLIT_FREE(my_string)
 namespace boost {
 namespace serialization {
 
+#if BOOST_VERSION > 105500
+
 template <class Archive>
 void save(Archive& ar, const my_string& str, const unsigned int /* version */)
 {
@@ -93,11 +95,14 @@ void load(Archive& ar, my_string& str, const unsigned int /* version */)
     }
 }
 
+#endif // BOOST_VERSION
+
 } // namespace serialization
 } // namespace boost
 
 BOOST_FIXTURE_TEST_CASE(helper_support, io_fixture)
 {
+#if BOOST_VERSION > 105500
     std::vector<my_string> v1, v2;
     for (int i = 0; i < 1000; ++i)
     {
@@ -110,6 +115,9 @@ BOOST_FIXTURE_TEST_CASE(helper_support, io_fixture)
         input() >> boost::serialization::make_nvp("vector", v2);
     }
     BOOST_CHECK(v1 == v2);
+#else
+    BOOST_TEST_MESSAGE("helper support was added in versions of boost >= 1.56");
+#endif
 }
 
 // EOF
