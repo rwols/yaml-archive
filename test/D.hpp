@@ -18,7 +18,12 @@
 
 #include <cstddef> // NULL
 
+#include <boost/version.hpp>
+#if BOOST_VERSION < 1005600
 #include <boost/detail/no_exceptions_support.hpp>
+#else
+#include <boost/core/no_exceptions_support.hpp>
+#endif
 #include <boost/serialization/split_member.hpp>
 #include <boost/serialization/throw_exception.hpp>
 

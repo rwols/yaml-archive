@@ -8,9 +8,13 @@
 
 // should pass compilation and execution
 
-#include "io_fixture.hpp"
+#include "io_fixture.hpp" // includes boost/version.hpp
 #include <boost/archive/archive_exception.hpp>
+#if BOOST_VERSION < 1005600
+#include <boost/detail/no_exceptions_support.hpp>
+#else
 #include <boost/core/no_exceptions_support.hpp>
+#endif
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/test/unit_test.hpp>

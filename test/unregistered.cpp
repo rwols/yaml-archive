@@ -10,7 +10,11 @@
 
 #include "io_fixture.hpp"
 #include <boost/archive/archive_exception.hpp>
+#if BOOST_VERSION < 1005600
+#include <boost/detail/no_exceptions_support.hpp>
+#else
 #include <boost/core/no_exceptions_support.hpp>
+#endif
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/type_info_implementation.hpp>
 #include <boost/test/unit_test.hpp>

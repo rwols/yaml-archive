@@ -8,15 +8,18 @@
 
 // should pass compilation and execution
 
-#include <boost/core/no_exceptions_support.hpp>
-#include <boost/test/unit_test.hpp>
-
 #include "A.hpp"
 #include "A.ipp"
 #include "io_fixture.hpp"
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/version.hpp>
+#include <boost/test/unit_test.hpp>
+#if BOOST_VERSION < 1005600
+#include <boost/detail/no_exceptions_support.hpp>
+#else
+#include <boost/core/no_exceptions_support.hpp>
+#endif
 
 #define NVP(name) BOOST_SERIALIZATION_NVP(name)
 using boost::serialization::make_nvp;
