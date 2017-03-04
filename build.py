@@ -224,13 +224,12 @@ class TravisBuild(BuildBase):
         # self.boost_dir = os.path.join(os.getenv('TRAVIS_BUILD_DIR'), '..', 'boost_{}'.format(self.boost_version_underscores))
         # self.boost_dir = os.path.abspath(self.boost_dir)
 
-
     def before_install(self):
         # We need to download boost ourselves, travis only has an ancient
         # boost 1.54 version installed.
         super(TravisBuild, self).before_install()
-        if self.os_name == 'osx':
-            utils.check_call('brew', 'install', 'boost')
+        # if self.os_name == 'osx':
+        #     utils.check_call('brew', 'install', 'boost')
         # download_dir = os.path.abspath(os.path.join(os.getenv('TRAVIS_BUILD_DIR'), '..'))
         # print('Changing directory to {}'.format(download_dir))
         # os.chdir(download_dir)
