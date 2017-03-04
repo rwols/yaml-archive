@@ -220,48 +220,59 @@ class TravisBuild(BuildBase):
 
     def __init__(self, debug_level):
         super(TravisBuild, self).__init__(debug_level)
-        self.boost_dir = os.path.join(os.getenv('TRAVIS_BUILD_DIR'), '..', 'boost_{}'.format(self.boost_version_underscores))
-        self.boost_dir = os.path.abspath(self.boost_dir)
+        self.os_name = os.getenv('TRAVIS_OS_NAME')
+        # self.boost_dir = os.path.join(os.getenv('TRAVIS_BUILD_DIR'), '..', 'boost_{}'.format(self.boost_version_underscores))
+        # self.boost_dir = os.path.abspath(self.boost_dir)
 
 
     def before_install(self):
         # We need to download boost ourselves, travis only has an ancient
         # boost 1.54 version installed.
         super(TravisBuild, self).before_install()
-        download_dir = os.path.abspath(os.path.join(os.getenv('TRAVIS_BUILD_DIR'), '..'))
-        print('Changing directory to {}'.format(download_dir))
-        os.chdir(download_dir)
-        boost_tar_file = 'boost_{0}.tar.bz2'.format(self.boost_version_underscores)
-        boost_url_prefix = 'https://downloads.sourceforge.net/project/boost/boost'
-        url = boost_url_prefix + '/' + self.boost_version + '/' + boost_tar_file
-        print('Downloading {}'.format(url))
-        self.download_file(url)
-        print('Unpacking {}'.format(boost_tar_file))
-        tar = tarfile.open(boost_tar_file, 'r:bz2')
-        tar.extractall()
-        tar.close()   
+        if self.os_name == 'osx':
+            utils.check_call('brew', 'install' 'boost')
+        # download_dir = os.path.abspath(os.path.join(os.getenv('TRAVIS_BUILD_DIR'), '..'))
+        # print('Changing directory to {}'.format(download_dir))
+        # os.chdir(download_dir)
+        # boost_tar_file = 'boost_{0}.tar.bz2'.format(self.boost_version_underscores)
+        # boost_url_prefix = 'https://downloads.sourceforge.net/project/boost/boost'
+        # url = boost_url_prefix + '/' + self.boost_version + '/' + boost_tar_file
+        # print('Downloading {}'.format(url))
+        # self.download_file(url)
+        # print('Unpacking {}'.format(boost_tar_file))
+        # tar = tarfile.open(boost_tar_file, 'r:bz2')
+        # tar.extractall()
+        # tar.close()   
 
-    def install(self):
-        # Install the downloaded boost version in the before_install step.
-        super(TravisBuild, self).install()
-        print('Changing directory to {}'.format(self.boost_dir))
-        utils.makedirs(self.boost_dir)
-        os.chdir(self.boost_dir)
-        variant = 'debug' if self.build_type == 'Debug' else 'release'  
-        variant = 'variant={}'.format(variant)
-        link = 'shared' if self.build_shared_libs == 'ON' else 'static'
-        link = 'link={}'.format(link)
-        jobs = '-j{}'.format(str(self.jobs))
-        libs =  ['system', 'serialization', 'test']
-        if os.name == 'nt': # windows
-            utils.check_call('bootstrap.bat')
-            for i, lib in enumerate(libs):
-                libs[i] = '--with-' + lib
-            utils.check_call('./b2', '-d0', '-q', variant, link, jobs, *libs)
-        else: # assume unix-like
-            libs = '--with-libraries=' + ','.join(libs)
-            utils.check_call('./bootstrap.sh', libs)
-            utils.check_call('./b2', '-d0', '-q', variant, link, jobs)
+    # def install(self):
+    #     # Install the downloaded boost version in the before_install step.
+    #     super(TravisBuild, self).install()
+    #     print('Changing directory to {}'.format(self.boost_dir))
+    #     utils.makedirs(self.boost_dir)
+    #     os.chdir(self.boost_dir)
+    #     variant = 'debug' if self.build_type == 'Debug' else 'release'  
+    #     variant = 'variant={}'.format(variant)
+    #     link = 'shared' if self.build_shared_libs == 'ON' else 'static'
+    #     link = 'link={}'.format(link)
+    #     jobs = '-j{}'.format(str(self.jobs))
+    #     libs =  ['system', 'serialization', 'test']
+    #     if os.name == 'nt': # windows
+    #         utils.check_call('bootstrap.bat')
+    #         for i, lib in enumerate(libs):
+    #             libs[i] = '--with-' + lib
+    #         utils.check_call('./b2', '-d0', '-q', variant, link, jobs, *libs)
+    #     else: # assume unix-like
+    #         libs = '--with-libraries=' + ','.join(libs)
+    #         utils.check_call('./bootstrap.sh', libs)
+    #         utils.check_call('./b2', '-d0', '-q', variant, link, jobs)
+
+    def before_build(self):
+        print('Changing directory to {}'.format(self.build_dir))
+        os.chdir(self.build_dir)
+        utils.check_call('cmake', 
+            self.root_dir, 
+            '-DBUILD_SHARED_LIBS={}'.format(self.build_shared_libs),
+            '-DCMAKE_BUILD_TYPE={}'.format(self.build_type))
 
     def download_file(self, url):
         utils.check_call('wget', url)
