@@ -13,12 +13,15 @@
 
 #include "A.hpp"
 #include "A.ipp"
-#include "io_fixture.hpp"
+#include "io_fixture.hpp" // includes boost/version.hpp
+#if BOOST_VERSION > 105500
 #include <boost/serialization/priority_queue.hpp>
+#endif
 #include <boost/test/unit_test.hpp>
 
 BOOST_FIXTURE_TEST_CASE(std_priority_queue, io_fixture)
 {
+#if BOOST_VERSION > 105500
     // FIXME!!!
     std::priority_queue<A, std::vector<A>> a_priority_queue, a_priority_queue1;
     a_priority_queue.push(A());
@@ -40,6 +43,10 @@ BOOST_FIXTURE_TEST_CASE(std_priority_queue, io_fixture)
         a_priority_queue.pop();
         a_priority_queue1.pop();
     }
+#else
+    BOOST_TEST_MESSAGE("serialization of std::priority_queue requires at least "
+                       "boost version 1.56!");
+#endif
 }
 
 // EOF
