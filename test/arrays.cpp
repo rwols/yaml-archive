@@ -50,7 +50,7 @@ BOOST_FIXTURE_TEST_CASE(native_array_2d_A, io_fixture)
     {
         for (int j = 0; j < 3; ++j)
         {
-            BOOST_TEST(array[i][j] == array1[i][j]);
+            BOOST_CHECK_EQUAL(array[i][j], array1[i][j]);
         }
     }
 }
@@ -84,7 +84,7 @@ BOOST_FIXTURE_TEST_CASE(native_array_1d_int, io_fixture)
     }
     for (int i = 0; i < 10; ++i)
     {
-        BOOST_TEST(array[i] == array1[i]);
+        BOOST_CHECK_EQUAL(array[i], array1[i]);
     }
 }
 

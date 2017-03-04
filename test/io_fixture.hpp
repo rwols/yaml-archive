@@ -91,7 +91,7 @@ class io_fixture
         auto i2 = t2.begin();
         while (i1 != t1.end())
         {
-            BOOST_TEST(*i1 == *i2);
+            BOOST_CHECK_EQUAL(*i1, *i2);
             ++i1;
             ++i2;
         }
