@@ -199,15 +199,21 @@ BOOST_FIXTURE_TEST_CASE(boost_shared_ptr_6, io_fixture)
 
 BOOST_FIXTURE_TEST_CASE(std_shared_ptr_1, io_fixture)
 {
+#if BOOST_VERSION >= 105600
     {
         std::shared_ptr<Acount> ptr;
         check_roundtrip(ptr);
     }
     BOOST_CHECK_EQUAL(0, Acount::count);
+#else
+    BOOST_TEST_MESSAGE(
+        "serialization of std::shared_ptr requires boost version >= 1.56");
+#endif
 }
 
 BOOST_FIXTURE_TEST_CASE(std_shared_ptr_2, io_fixture)
 {
+#if BOOST_VERSION >= 105600
     {
         std::shared_ptr<Acount> ptr(new Acount());
         std::shared_ptr<Acount> ptr1;
@@ -220,10 +226,15 @@ BOOST_FIXTURE_TEST_CASE(std_shared_ptr_2, io_fixture)
         BOOST_CHECK(*ptr == *ptr1);
     }
     BOOST_CHECK_EQUAL(0, Acount::count);
+#else
+    BOOST_TEST_MESSAGE(
+        "serialization of std::shared_ptr requires boost version >= 1.56");
+#endif
 }
 
 BOOST_FIXTURE_TEST_CASE(std_shared_ptr_3, io_fixture)
 {
+#if BOOST_VERSION >= 105600
     {
         std::shared_ptr<Acount> ptr1(new Acount());
         std::shared_ptr<Acount> ptr2 = ptr1;
@@ -240,10 +251,15 @@ BOOST_FIXTURE_TEST_CASE(std_shared_ptr_3, io_fixture)
         BOOST_CHECK(ptr1 == ptr2);
     }
     BOOST_CHECK_EQUAL(0, Acount::count);
+#else
+    BOOST_TEST_MESSAGE(
+        "serialization of std::shared_ptr requires boost version >= 1.56");
+#endif
 }
 
 BOOST_FIXTURE_TEST_CASE(std_shared_ptr_4, io_fixture)
 {
+#if BOOST_VERSION >= 105600
     {
         std::shared_ptr<Acount> ptr1(new Bcount());
         std::shared_ptr<Acount> ptr2 = ptr1;
@@ -261,10 +277,15 @@ BOOST_FIXTURE_TEST_CASE(std_shared_ptr_4, io_fixture)
     }
     BOOST_CHECK_EQUAL(0, Acount::count);
     BOOST_CHECK_EQUAL(0, Bcount::count);
+#else
+    BOOST_TEST_MESSAGE(
+        "serialization of std::shared_ptr requires boost version >= 1.56");
+#endif
 }
 
 BOOST_FIXTURE_TEST_CASE(std_shared_ptr_5, io_fixture)
 {
+#if BOOST_VERSION >= 105600
     {
         std::shared_ptr<Acount> ptr1(new Acount());
         std::shared_ptr<Acount> ptr2 = ptr1;
@@ -289,10 +310,15 @@ BOOST_FIXTURE_TEST_CASE(std_shared_ptr_5, io_fixture)
         BOOST_CHECK(ptr1 == weak.lock());
     }
     BOOST_CHECK_EQUAL(0, Acount::count);
+#else
+    BOOST_TEST_MESSAGE(
+        "serialization of std::shared_ptr requires boost version >= 1.56");
+#endif
 }
 
 BOOST_FIXTURE_TEST_CASE(std_shared_ptr_6, io_fixture)
 {
+#if BOOST_VERSION >= 105600
     {
         std::shared_ptr<Ccount> ptr(new Ccount());
         std::shared_ptr<Ccount> ptr1;
@@ -305,4 +331,8 @@ BOOST_FIXTURE_TEST_CASE(std_shared_ptr_6, io_fixture)
         BOOST_CHECK(*ptr == *ptr1);
     }
     BOOST_CHECK_EQUAL(0, Ccount::count);
+#else
+    BOOST_TEST_MESSAGE(
+        "serialization of std::shared_ptr requires boost version >= 1.56");
+#endif
 }

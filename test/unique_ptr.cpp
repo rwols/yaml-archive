@@ -7,19 +7,19 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include "A.hpp"
-#include "io_fixture.hpp"
+#include "io_fixture.hpp" // includes boost/version.hpp
 #include <boost/serialization/nvp.hpp>
 #include <boost/test/unit_test.hpp>
 
 #include <boost/config.hpp>
 
-#ifndef BOOST_NO_CXX11_SMART_PTR
+#if BOOST_VERSION >= 105600
 #include <boost/serialization/unique_ptr.hpp>
 #endif
 
 BOOST_FIXTURE_TEST_CASE(std_unique_ptr_1, io_fixture)
 {
-#ifndef BOOST_NO_CXX11_SMART_PTR
+#if BOOST_VERSION >= 105600
     // create  a new auto pointer to ta new object of type A
     std::unique_ptr<A> spa(new A);
     {
@@ -32,13 +32,14 @@ BOOST_FIXTURE_TEST_CASE(std_unique_ptr_1, io_fixture)
         input() >> BOOST_SERIALIZATION_NVP(spa);
     }
 #else
-    BOOST_TEST_MESSAGE("no support for std::unique_ptr on this compiler");
+    BOOST_TEST_MESSAGE(
+        "no support for std::unique_ptr on this version of boost");
 #endif
 }
 
 BOOST_FIXTURE_TEST_CASE(std_unique_ptr_2, io_fixture)
 {
-#ifndef BOOST_NO_CXX11_SMART_PTR
+#if BOOST_VERSION >= 105600
     // create  a new auto pointer to ta new object of type A
     std::unique_ptr<A> spa(new A);
     std::unique_ptr<A> spa1;
@@ -50,6 +51,7 @@ BOOST_FIXTURE_TEST_CASE(std_unique_ptr_2, io_fixture)
     }
     BOOST_CHECK(*spa == *spa1);
 #else
-    BOOST_TEST_MESSAGE("no support for std::unique_ptr on this compiler");
+    BOOST_TEST_MESSAGE(
+        "no support for std::unique_ptr on this version of boost");
 #endif
 }

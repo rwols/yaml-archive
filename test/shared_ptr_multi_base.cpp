@@ -248,7 +248,7 @@ BOOST_FIXTURE_TEST_CASE(boost_shared_ptr_multi_base_7,
 BOOST_FIXTURE_TEST_CASE(std_shared_ptr_multi_base_1,
                         shared_ptr_multi_base_fixture)
 {
-#ifndef BOOST_NO_CXX11_SMART_PTR
+#if BOOST_VERSION >= 105600
     std::shared_ptr<SubMulti> ptr(new SubMulti(10));
     std::weak_ptr<SubMulti>   weak(ptr);
     do_test1(ptr, weak);
@@ -257,14 +257,14 @@ BOOST_FIXTURE_TEST_CASE(std_shared_ptr_multi_base_1,
     BOOST_CHECK(0 == SubMulti::count);
 #else
     BOOST_TEST_MESSAGE(
-        "No std::shared_ptr present; test will automatically pass.");
+        "No std::shared_ptr support; test will automatically pass.");
 #endif
 }
 
 BOOST_FIXTURE_TEST_CASE(std_shared_ptr_multi_base_2,
                         shared_ptr_multi_base_fixture)
 {
-#ifndef BOOST_NO_CXX11_SMART_PTR
+#if BOOST_VERSION >= 105600
     std::shared_ptr<SubMulti> ptr(new SubMulti(10));
     std::weak_ptr<Base1>      weak(ptr);
     do_test1(ptr, weak);
@@ -273,14 +273,14 @@ BOOST_FIXTURE_TEST_CASE(std_shared_ptr_multi_base_2,
     BOOST_CHECK(0 == SubMulti::count);
 #else
     BOOST_TEST_MESSAGE(
-        "No std::shared_ptr present; test will automatically pass.");
+        "No std::shared_ptr support; test will automatically pass.");
 #endif
 }
 
 BOOST_FIXTURE_TEST_CASE(std_shared_ptr_multi_base_3,
                         shared_ptr_multi_base_fixture)
 {
-#ifndef BOOST_NO_CXX11_SMART_PTR
+#if BOOST_VERSION >= 105600
     std::shared_ptr<SubMulti> ptr(new SubMulti(10));
     std::weak_ptr<Base2>      weak(ptr);
     do_test1(ptr, weak);
@@ -289,14 +289,14 @@ BOOST_FIXTURE_TEST_CASE(std_shared_ptr_multi_base_3,
     BOOST_CHECK(0 == SubMulti::count);
 #else
     BOOST_TEST_MESSAGE(
-        "No std::shared_ptr present; test will automatically pass.");
+        "No std::shared_ptr support; test will automatically pass.");
 #endif
 }
 
 BOOST_FIXTURE_TEST_CASE(std_shared_ptr_multi_base_4,
                         shared_ptr_multi_base_fixture)
 {
-#ifndef BOOST_NO_CXX11_SMART_PTR
+#if BOOST_VERSION >= 105600
     std::shared_ptr<SubMulti> ptr(new SubMulti(10));
     std::weak_ptr<Base3>      weak(ptr);
     do_test1(ptr, weak);
@@ -305,14 +305,14 @@ BOOST_FIXTURE_TEST_CASE(std_shared_ptr_multi_base_4,
     BOOST_CHECK(0 == SubMulti::count);
 #else
     BOOST_TEST_MESSAGE(
-        "No std::shared_ptr present; test will automatically pass.");
+        "No std::shared_ptr support; test will automatically pass.");
 #endif
 }
 
 BOOST_FIXTURE_TEST_CASE(std_shared_ptr_multi_base_5,
                         shared_ptr_multi_base_fixture)
 {
-#ifndef BOOST_NO_CXX11_SMART_PTR
+#if BOOST_VERSION >= 105600
     std::shared_ptr<SubMulti> ptr_tmp(new SubMulti(10));
     std::shared_ptr<Base1>    ptr(ptr_tmp);
     std::weak_ptr<Base2>      weak(ptr_tmp);
@@ -323,14 +323,14 @@ BOOST_FIXTURE_TEST_CASE(std_shared_ptr_multi_base_5,
     BOOST_CHECK(0 == SubMulti::count);
 #else
     BOOST_TEST_MESSAGE(
-        "No std::shared_ptr present; test will automatically pass.");
+        "No std::shared_ptr support; test will automatically pass.");
 #endif
 }
 
 BOOST_FIXTURE_TEST_CASE(std_shared_ptr_multi_base_6,
                         shared_ptr_multi_base_fixture)
 {
-#ifndef BOOST_NO_CXX11_SMART_PTR
+#if BOOST_VERSION >= 105600
     std::shared_ptr<SubMulti> ptr_tmp(new SubMulti(10));
     std::shared_ptr<Base2>    ptr(ptr_tmp);
     std::weak_ptr<Base3>      weak(ptr_tmp);
@@ -341,14 +341,14 @@ BOOST_FIXTURE_TEST_CASE(std_shared_ptr_multi_base_6,
     BOOST_CHECK(0 == SubMulti::count);
 #else
     BOOST_TEST_MESSAGE(
-        "No std::shared_ptr present; test will automatically pass.");
+        "No std::shared_ptr support; test will automatically pass.");
 #endif
 }
 
 BOOST_FIXTURE_TEST_CASE(std_shared_ptr_multi_base_7,
                         shared_ptr_multi_base_fixture)
 {
-#ifndef BOOST_NO_CXX11_SMART_PTR
+#if BOOST_VERSION >= 105600
     std::shared_ptr<SubMulti> ptr_tmp(new SubMulti(10));
     std::shared_ptr<Base3>    ptr(ptr_tmp);
     std::weak_ptr<Base1>      weak(ptr_tmp);
@@ -359,6 +359,6 @@ BOOST_FIXTURE_TEST_CASE(std_shared_ptr_multi_base_7,
     BOOST_CHECK(0 == SubMulti::count);
 #else
     BOOST_TEST_MESSAGE(
-        "No std::shared_ptr present; test will automatically pass.");
+        "No std::shared_ptr support; test will automatically pass.");
 #endif
 }
