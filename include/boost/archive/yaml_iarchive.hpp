@@ -98,6 +98,27 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
         base::load_override(t);
     }
 
+    // Otherwise, invoke the boost::serialization machinery, pointer version
+    template <class T>
+    typename std::enable_if<
+        !detail::is_yaml_primitive<typename std::remove_cv<T>::type>::value &&
+        boost::is_pointer<T>::value>::type
+    load_value(T& t)
+    {
+#ifdef YAML_ARCHIVE_DEBUG_STACK
+        std::cout
+            << "INVOKE: boost::serialization machinery (pointer version)\n";
+#endif
+        if (m_stack.top().IsNull())
+        {
+            t = nullptr;
+        }
+        else
+        {
+            base::load_override(t);
+        }
+    }
+
     // specific overrides for attributes - not name value pairs so we
     // want to trap them before the above "fall through"
     BOOST_SYMBOL_VISIBLE void load_override(class_id_type& t);
@@ -161,6 +182,27 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
         base::load_override(t, 0);
     }
 
+    // Otherwise, invoke the boost::serialization machinery, pointer version
+    template <class T>
+    typename std::enable_if<
+        !detail::is_yaml_primitive<typename std::remove_cv<T>::type>::value &&
+        boost::is_pointer<T>::value>::type
+    load_value(T& t)
+    {
+#ifdef YAML_ARCHIVE_DEBUG_STACK
+        std::cout
+            << "INVOKE: boost::serialization machinery (pointer version)\n";
+#endif
+        if (m_stack.top().IsNull())
+        {
+            t = nullptr;
+        }
+        else
+        {
+            base::load_override(t, 0);
+        }
+    }
+
     // specific overrides for attributes - not name value pairs so we
     // want to trap them before the above "fall through"
     BOOST_SYMBOL_VISIBLE void load_override(class_id_type& t, int);
@@ -185,27 +227,6 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
         std::cout << "INVOKE: YAML::Node::as\n";
 #endif
         load(t);
-    }
-
-    // Otherwise, invoke the boost::serialization machinery, pointer version
-    template <class T>
-    typename std::enable_if<
-        !detail::is_yaml_primitive<typename std::remove_cv<T>::type>::value &&
-        boost::is_pointer<T>::value>::type
-    load_value(T& t)
-    {
-#ifdef YAML_ARCHIVE_DEBUG_STACK
-        std::cout
-            << "INVOKE: boost::serialization machinery (pointer version)\n";
-#endif
-        if (m_stack.top().IsNull())
-        {
-            t = nullptr;
-        }
-        else
-        {
-            base::load_override(t);
-        }
     }
 
     template <class T, std::size_t N> void load_value(T (&t)[N])
@@ -235,6 +256,8 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
     {
         load_sequence(t);
     }
+
+#ifndef BOOST_NO_CXX11_HDR_FORWARD_LIST
     template <class T, class Alloc>
     void load_value(std::forward_list<T, Alloc>& t)
     {
@@ -259,6 +282,7 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
 #endif
         }
     }
+#endif
 
     template <class Key, class T, class Compare, class Alloc>
     void load_value(std::map<Key, T, Compare, Alloc>& t)
@@ -272,6 +296,7 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
         load_multimap(t);
     }
 
+#ifndef BOOST_NO_CXX11_HDR_UNORDERED_MAP
     template <class Key, class T, class Hash, class KeyEqual, class Alloc>
     void load_value(std::unordered_map<Key, T, Hash, KeyEqual, Alloc>& t)
     {
@@ -283,6 +308,7 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
     {
         load_multimap(t);
     }
+#endif
 
     template <class Key, class T, class Hash, class KeyEqual, class Alloc>
     void load_value(boost::unordered_map<Key, T, Hash, KeyEqual, Alloc>& t)
@@ -308,6 +334,7 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
         load_set(t);
     }
 
+#ifndef BOOST_NO_CXX11_HDR_UNORDERED_SET
     template <class Key, class Hash, class KeyEqual, class Alloc>
     void load_value(std::unordered_set<Key, Hash, KeyEqual, Alloc>& t)
     {
@@ -319,6 +346,7 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
     {
         load_set(t);
     }
+#endif
 
     template <class Key, class Hash, class KeyEqual, class Alloc>
     void load_value(boost::unordered_set<Key, Hash, KeyEqual, Alloc>& t)

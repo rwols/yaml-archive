@@ -239,6 +239,7 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive
         for (const auto b : t) bits.push_back(b ? '1' : '0');
         save(bits);
     }
+
     template <class T, class Alloc>
     typename std::enable_if<!detail::is_yaml_primitive<
         typename std::remove_cv<T>::type>::value>::type
@@ -246,6 +247,7 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive
     {
         save_sequence(t);
     }
+
     template <class T, class Alloc>
     typename std::enable_if<!detail::is_yaml_primitive<
         typename std::remove_cv<T>::type>::value>::type
@@ -253,6 +255,8 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive
     {
         save_sequence(t);
     }
+
+#ifndef BOOST_NO_CXX11_HDR_FORWARD_LIST
     template <class T, class Alloc>
     typename std::enable_if<!detail::is_yaml_primitive<
         typename std::remove_cv<T>::type>::value>::type
@@ -260,6 +264,7 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive
     {
         save_sequence(t);
     }
+#endif
 
     template <class Key, class T, class Compare, class Alloc>
     void save_value(const std::map<Key, T, Compare, Alloc>& t)
@@ -267,11 +272,13 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive
         save_map(t);
     }
 
+#ifndef BOOST_NO_CXX11_HDR_UNORDERED_MAP
     template <class Key, class T, class Hash, class KeyEqual, class Alloc>
     void save_value(const std::unordered_map<Key, T, Hash, KeyEqual, Alloc>& t)
     {
         save_map(t);
     }
+#endif
 
     template <class Key, class T, class Hash, class KeyEqual, class Alloc>
     void
@@ -286,12 +293,14 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive
         save_multimap(t);
     }
 
+#ifndef BOOST_NO_CXX11_HDR_UNORDERED_MAP
     template <class Key, class T, class Hash, class KeyEqual, class Alloc>
     void
     save_value(const std::unordered_multimap<Key, T, Hash, KeyEqual, Alloc>& t)
     {
         save_multimap(t);
     }
+#endif
 
     template <class Key, class T, class Hash, class KeyEqual, class Alloc>
     void save_value(
@@ -312,11 +321,13 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive
         save_sequence(t);
     }
 
+#ifndef BOOST_NO_CXX11_HDR_UNORDERED_SET
     template <class Key, class Hash, class KeyEqual, class Alloc>
     void save_value(const std::unordered_set<Key, Hash, KeyEqual, Alloc>& t)
     {
         save_sequence(t);
     }
+#endif
 
     template <class Key, class Hash, class KeyEqual, class Alloc>
     void save_value(const boost::unordered_set<Key, Hash, KeyEqual, Alloc>& t)
@@ -324,12 +335,14 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive
         save_sequence(t);
     }
 
+#ifndef BOOST_NO_CXX11_HDR_UNORDERED_SET
     template <class Key, class Hash, class KeyEqual, class Alloc>
     void
     save_value(const std::unordered_multiset<Key, Hash, KeyEqual, Alloc>& t)
     {
         save_sequence(t);
     }
+#endif
 
     template <class Key, class Hash, class KeyEqual, class Alloc>
     void

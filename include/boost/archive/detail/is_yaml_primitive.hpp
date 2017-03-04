@@ -2,6 +2,7 @@
 
 #include <YAML/extra_converters.hpp>
 #include <YAML/extra_emitter_overloads.hpp>
+#include <boost/config.hpp>
 #include <type_traits>
 
 namespace boost {
@@ -65,7 +66,9 @@ YAML_PRIM(std::wstring);
 YAML_SEQ_PRIM(vector);
 YAML_SEQ_PRIM(list);
 YAML_SEQ_PRIM(deque);
+#ifndef BOOST_NO_CXX11_HDR_FORWARD_LIST
 YAML_SEQ_PRIM(forward_list);
+#endif
 #undef YAML_SEQ_PRIM
 
 template <class T, std::size_t N> struct is_yaml_primitive<std::array<T, N>>
