@@ -13,8 +13,6 @@
 #include "A.ipp"
 #include "io_fixture.hpp"
 #include <algorithm> // std::copy
-#include <boost/serialization/map.hpp>
-#include <boost/serialization/nvp.hpp>
 #include <boost/serialization/unordered_map.hpp>
 #include <boost/test/unit_test.hpp>
 #include <functional> // requires changeset [69520]; Ticket #5254
@@ -53,7 +51,7 @@ template <> struct hash<random_key>
 
 BOOST_FIXTURE_TEST_CASE(std_unordered_map, io_fixture)
 {
-    // test unordered_map of objects
+#ifndef BOOST_NO_CXX11_UNORDERED_MAP
     std::unordered_map<random_key, A> anunordered_map;
     anunordered_map.insert(std::make_pair(random_key(), A()));
     anunordered_map.insert(std::make_pair(random_key(), A()));
@@ -74,10 +72,14 @@ BOOST_FIXTURE_TEST_CASE(std_unordered_map, io_fixture)
               std::back_inserter(tvec1));
     std::sort(tvec1.begin(), tvec1.end());
     BOOST_CHECK(tvec == tvec1);
+#else
+    BOOST_TEST_MESSAGE("std::unordered_map is not supported!");
+#endif
 }
 
 BOOST_FIXTURE_TEST_CASE(std_unordered_multimap, io_fixture)
 {
+#ifndef BOOST_NO_CXX11_UNORDERED_MAP
     std::unordered_multimap<random_key, A> anunordered_multimap;
     anunordered_multimap.insert(std::make_pair(random_key(), A()));
     anunordered_multimap.insert(std::make_pair(random_key(), A()));
@@ -97,4 +99,7 @@ BOOST_FIXTURE_TEST_CASE(std_unordered_multimap, io_fixture)
               std::back_inserter(tvec1));
     std::sort(tvec1.begin(), tvec1.end());
     BOOST_CHECK(tvec == tvec1);
+#else
+    BOOST_TEST_MESSAGE("std::unordered_multimap is not supported!");
+#endif
 }
