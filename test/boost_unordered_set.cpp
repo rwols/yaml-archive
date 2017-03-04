@@ -28,9 +28,9 @@ using ::remove;
 #include "io_fixture.hpp"
 #include <algorithm> // std::copy
 #include <boost/archive/archive_exception.hpp>
-#include <boost/serialization/nvp.hpp>
-#include <boost/serialization/set.hpp>
-#include <boost/serialization/unordered_set.hpp>
+#if BOOST_VERSION > 105900
+#include <boost/serialization/boost_unordered_set.hpp>
+#endif
 #include <boost/test/unit_test.hpp>
 #include <functional> // requires changeset [69520]; Ticket #5254
 #include <vector>
@@ -47,6 +47,7 @@ template <> struct hash<A>
 
 BOOST_FIXTURE_TEST_CASE(boost_unordered_set, io_fixture)
 {
+#if BOOST_VERSION > 105900
     boost::unordered_set<A> anunordered_set, anunordered_set1;
     anunordered_set.insert(A());
     anunordered_set.insert(A());
@@ -68,10 +69,15 @@ BOOST_FIXTURE_TEST_CASE(boost_unordered_set, io_fixture)
               std::back_inserter(tvec1));
     std::sort(tvec1.begin(), tvec1.end());
     BOOST_CHECK(tvec == tvec1);
+#else
+    BOOST_TEST_MESSAGE("serialization of boost::unordered_set requires at "
+                       "least boost version 1.60!");
+#endif
 }
 
 BOOST_FIXTURE_TEST_CASE(boost_unordered_multiset, io_fixture)
 {
+#if BOOST_VERSION > 105900
     boost::unordered_multiset<A> anunordered_multiset, anunordered_multiset1;
     anunordered_multiset.insert(A());
     anunordered_multiset.insert(A());
@@ -94,4 +100,8 @@ BOOST_FIXTURE_TEST_CASE(boost_unordered_multiset, io_fixture)
               std::back_inserter(tvec1));
     std::sort(tvec1.begin(), tvec1.end());
     BOOST_CHECK(tvec == tvec1);
+#else
+    BOOST_TEST_MESSAGE("serialization of boost::unordered_multiset requires at "
+                       "least boost version 1.60!");
+#endif
 }

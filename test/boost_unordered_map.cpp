@@ -11,11 +11,11 @@
 
 #include "A.hpp"
 #include "A.ipp"
-#include "io_fixture.hpp"
-#include <algorithm> // std::copy
+#include "io_fixture.hpp" // includes boost/version.hpp
+#include <algorithm>      // std::copy
+#if BOOST_VERSION > 105900
 #include <boost/serialization/boost_unordered_map.hpp>
-#include <boost/serialization/map.hpp>
-#include <boost/serialization/nvp.hpp>
+#endif
 #include <boost/test/unit_test.hpp>
 #include <functional> // requires changeset [69520]; Ticket #5254
 #include <vector>
@@ -54,6 +54,7 @@ template <> struct hash<random_key>
 
 BOOST_FIXTURE_TEST_CASE(boost_unordered_map, io_fixture)
 {
+#if BOOST_VERSION > 105900
     boost::unordered_map<random_key, A> anunordered_map;
     anunordered_map.insert(std::make_pair(random_key(), A()));
     anunordered_map.insert(std::make_pair(random_key(), A()));
@@ -75,10 +76,15 @@ BOOST_FIXTURE_TEST_CASE(boost_unordered_map, io_fixture)
               std::back_inserter(tvec1));
     std::sort(tvec1.begin(), tvec1.end());
     BOOST_CHECK(tvec == tvec1);
+#else
+    BOOST_TEST_MESSAGE("serialization of boost::unordered_map requires at "
+                       "least boost version 1.60!");
+#endif
 }
 
 BOOST_FIXTURE_TEST_CASE(boost_unordered_multimap, io_fixture)
 {
+#if BOOST_VERSION > 105900
     boost::unordered_multimap<random_key, A> anunordered_multimap;
     anunordered_multimap.insert(std::make_pair(random_key(), A()));
     anunordered_multimap.insert(std::make_pair(random_key(), A()));
@@ -101,4 +107,8 @@ BOOST_FIXTURE_TEST_CASE(boost_unordered_multimap, io_fixture)
               std::back_inserter(tvec1));
     std::sort(tvec1.begin(), tvec1.end());
     BOOST_CHECK(tvec == tvec1);
+#else
+    BOOST_TEST_MESSAGE("serialization of boost::unordered_multimap requires at "
+                       "least boost version 1.60!");
+#endif
 }
