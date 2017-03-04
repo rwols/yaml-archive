@@ -10,7 +10,7 @@
 
 #include "A.hpp"
 #include "A.ipp"
-#include "io_fixture.hpp"
+#include "io_fixture.hpp" // includes boost/version.hpp
 #include <boost/archive/archive_exception.hpp>
 #include <boost/serialization/list.hpp>
 #include <boost/test/unit_test.hpp>

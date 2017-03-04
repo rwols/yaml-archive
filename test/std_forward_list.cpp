@@ -1,5 +1,5 @@
 #include "A.hpp"
-#include "io_fixture.hpp"
+#include "io_fixture.hpp" // includes boost/version.hpp
 #include <boost/test/unit_test.hpp>
 #if BOOST_VERSION > 105500
 #include <boost/serialization/forward_list.hpp>
