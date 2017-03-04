@@ -10,7 +10,7 @@
 #include <boost/archive/detail/is_yaml_primitive.hpp>
 #include <boost/archive/detail/register_archive.hpp>
 #if BOOST_VERSION < 105600
-#include <boost/archive/detail/shared_ptr_helper.hpp>
+#include <boost/archive/shared_ptr_helper.hpp>
 #endif
 #include <boost/serialization/item_version_type.hpp>
 #include <boost/serialization/string.hpp>
