@@ -1,11 +1,30 @@
+################################################################################
+#                                                                              #
+#          Travis "continuous integration" configuration file                  #
+#                                                                              #
+################################################################################
+
+# When the OS is "linux" (more precisely Ubuntu), we take version 14.04.
 dist: trusty
+
+# The language is C++. I'm still not entirely sure what this does.
 language: cpp
+
+# Build on both Ubuntu 14.04 and macOS (version?).
 os:
   - linux
   - osx
+
+# Build for both GCC and Clang. Versions may be ancient. They both have some
+# C++11 defects (no forward_list etc).
 compiler:
   - gcc
   - clang
+
+# Make sure we have the correct boost libs and a modern version of cmake.
+# Boost 1.54 is fetched, which is ancient by now, but we'll have to deal
+# with it. Note that these settings only work on Ubuntu. On macOS, we use brew
+# to install a modern version of boost. That is handled in the build.py script.
 addons:
   apt:
     sources:
@@ -17,22 +36,20 @@ addons:
       - libboost-serialization-dev
       - libboost-test-dev
 
+# Environment variables. Every item in the sequence (delimited by dashes) gives
+# us another build in the build matrix.
 env:
   - BUILD_SHARED_LIBS=ON  CMAKE_BUILD_TYPE=Debug
-  # - BOOST_VERSION_MINOR=63 BUILD_SHARED_LIBS=ON  CMAKE_BUILD_TYPE=Debug
-  # - BOOST_VERSION_MINOR=60 BUILD_SHARED_LIBS=ON  CMAKE_BUILD_TYPE=Debug
-  # - BOOST_VERSION_MINOR=63 BUILD_SHARED_LIBS=OFF CMAKE_BUILD_TYPE=Debug
-  # - BOOST_VERSION_MINOR=60 BUILD_SHARED_LIBS=OFF CMAKE_BUILD_TYPE=Debug
-  # - BOOST_VERSION_MINOR=63 BUILD_SHARED_LIBS=ON  CMAKE_BUILD_TYPE=Release
-  # - BOOST_VERSION_MINOR=60 BUILD_SHARED_LIBS=ON  CMAKE_BUILD_TYPE=Release
-  # - BOOST_VERSION_MINOR=63 BUILD_SHARED_LIBS=OFF CMAKE_BUILD_TYPE=Release
-  # - BOOST_VERSION_MINOR=60 BUILD_SHARED_LIBS=OFF CMAKE_BUILD_TYPE=Release
+  - BUILD_SHARED_LIBS=ON  CMAKE_BUILD_TYPE=Release
+  - BUILD_SHARED_LIBS=OFF CMAKE_BUILD_TYPE=Debug
+  - BUILD_SHARED_LIBS=OFF CMAKE_BUILD_TYPE=Release
 
+# Let the python build script handle it from this point on.
 before_install: python build.py before-install
-install: python build.py install
-before_script: python build.py before-build
-script: python build.py build after-build before-test test after-test
-after_success: python build.py after-success
-after_failure: python build.py after-failure
+install:        python build.py install
+before_script:  python build.py before-build
+script:         python build.py build after-build before-test test after-test
+after_success:  python build.py after-success
+after_failure:  python build.py after-failure
 after_script:
 
