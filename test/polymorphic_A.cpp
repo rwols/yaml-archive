@@ -1,27 +1,21 @@
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
 // test_polymorphic_A.cpp
 
-// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com . 
+// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com .
 // Use, modification and distribution is subject to the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include "test_polymorphic_A.hpp"
-#include <boost/serialization/nvp.hpp>
-
+#include "polymorphic_A.hpp"
 #include "A.hpp"
 #include "A.ipp"
+#include <boost/serialization/nvp.hpp>
+#include <iostream>
 
-data::data() :
-    a(new A)
-{}
-data::~data(){
-    delete a;
-}
+data::data() : a(new A) {}
+data::~data() { delete a; }
 
-bool data::operator==(const data & rhs) const {
-    return * (a) == *(rhs.a);
-}
+bool data::operator==(const data& rhs) const { return *(a) == *(rhs.a); }
 
 #if 0 // this method fails with msvc 6.0 and borland
 // now we can define the serialization for class A
@@ -49,10 +43,27 @@ template void data::serialize<boost::archive::polymorphic_iarchive>(
 #endif
 
 // so use this
-void data::serialize(boost::archive::polymorphic_oarchive & ar, const unsigned int /* file_version */){
-    ar & BOOST_SERIALIZATION_NVP(a);
+void data::serialize(boost::archive::polymorphic_oarchive& ar,
+                     const unsigned int /* file_version */)
+{
+    ar& BOOST_SERIALIZATION_NVP(a);
 }
 
-void data::serialize(boost::archive::polymorphic_iarchive & ar, const unsigned int /* file_version */){
-    ar & BOOST_SERIALIZATION_NVP(a);
+void data::serialize(boost::archive::polymorphic_iarchive& ar,
+                     const unsigned int /* file_version */)
+{
+    ar& BOOST_SERIALIZATION_NVP(a);
+}
+
+std::ostream& operator<<(std::ostream& os, const data& d)
+{
+    if (d.a != nullptr)
+    {
+        os << *(d.a);
+    }
+    else
+    {
+        os << "<nullptr>";
+    }
+    return os;
 }

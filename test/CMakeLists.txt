@@ -2,14 +2,14 @@ include(CMakeParseArguments)
 
 # Creates a common "abstract" target that all tests link against.
 # Saves some boilerplate code.
-add_library(serialization-test-interface INTERFACE)
-target_include_directories(serialization-test-interface INTERFACE ${Boost_INCLUDE_DIRS})
-target_link_libraries(serialization-test-interface INTERFACE ${Boost_LIBRARIES})
-target_compile_definitions(serialization-test-interface INTERFACE BOOST_ALL_NO_LIB)
-target_compile_definitions(serialization-test-interface INTERFACE BOOST_LIB_DIAGNOSTICS)
-if (BUILD_SHARED_LIBS)
-  target_compile_definitions(serialization-test-interface INTERFACE BOOST_ALL_DYN_LINK)
-endif()
+# add_library(serialization-test-interface INTERFACE)
+# target_include_directories(serialization-test-interface INTERFACE ${Boost_INCLUDE_DIRS})
+# target_link_libraries(serialization-test-interface INTERFACE ${Boost_LIBRARIES})
+# target_compile_definitions(serialization-test-interface INTERFACE BOOST_ALL_NO_LIB)
+# target_compile_definitions(serialization-test-interface INTERFACE BOOST_LIB_DIAGNOSTICS)
+# if (BUILD_SHARED_LIBS)
+#   target_compile_definitions(serialization-test-interface INTERFACE BOOST_ALL_DYN_LINK)
+# endif()
 
 function(target_create_boost_archive_test_suite)
   set(functionArguments 
@@ -38,6 +38,7 @@ function(target_create_boost_archive_test_suite)
     polymorphic_base.cpp
     polymorphic_derived1.cpp
     polymorphic_derived2.cpp
+    polymorphic_A.cpp
     
     # unit test fixtures
     io_fixture.cpp
@@ -114,7 +115,6 @@ function(target_create_boost_archive_test_suite)
     std_complex.cpp
     std_bitset.cpp
     variant.cpp
-
     )
 
   if (BUILD_SHARED_LIBS)
@@ -187,7 +187,6 @@ function(target_create_boost_archive_test_suite)
   add_test(NAME no_rtti COMMAND ${exe} --run_test=no_rtti)
   add_test(NAME class_new_delete_0 COMMAND ${exe} --run_test=class_new_delete_0)
   add_test(NAME class_new_delete_1 COMMAND ${exe} --run_test=class_new_delete_1)
-  # add_test(NAME non_intrusive COMMAND ${exe} --run_test=non_intrusive)
   add_test(NAME private_base1 COMMAND ${exe} --run_test=private_base1)
   add_test(NAME private_base2 COMMAND ${exe} --run_test=private_base2)
   add_test(NAME recursion COMMAND ${exe} --run_test=recursion)
@@ -237,6 +236,9 @@ function(target_create_boost_archive_test_suite)
   add_test(NAME std_vector_non_default_ctor COMMAND ${exe} --run_test=std_vector_non_default_ctor)
   # FIXME!!!
   # add_test(NAME std_priority_queue COMMAND ${exe} --run_test=std_priority_queue)
+  # add_test(NAME std_queue COMMAND ${exe} --run_test=std_queue)
+  # add_test(NAME std_stack COMMAND ${exe} --run_test=std_stack)
+  # add_test(NAME std_valarray COMMAND ${exe} --run_test=std_valarrary)
 
   # unit tests -- misc
   add_test(NAME helper_support COMMAND ${exe} --run_test=helper_support)
@@ -279,124 +281,62 @@ function(target_create_boost_archive_test_suite)
   add_test(NAME boost_variant_6 COMMAND ${exe} --run_test=boost_variant_6)
   add_test(NAME boost_variant_7 COMMAND ${exe} --run_test=boost_variant_7)
 
-  # file(STRINGS test_archive.cpp contents)
-  # foreach (line ${contents})
-  #   string(REGEX MATCH "^\\s*TEST\\((.+)\\)" line ${line})
-  #   if (NOT "${line}" STREQUAL "")
-  #     string(REGEX REPLACE "^\\s*TEST\\((.+)\\)" "\\1" testname ${line})
-  #     add_test(NAME ${testname} COMMAND test_archive --run_test=${testname})
-  #   endif()
-  # endforeach()
-
 endfunction(target_create_boost_archive_test_suite)
 
+function(target_create_boost_polymorphic_archive_test_suite)
+  set(functionArguments 
+    LIBRARY_TARGET
+    INPUT_ARCHIVE_HEADER 
+    INPUT_ARCHIVE_FULLY_QUALIFIED_NAME 
+    OUTPUT_ARCHIVE_HEADER 
+    OUTPUT_ARCHIVE_FULLY_QUALIFIED_NAME
+    TEST_ISTREAM
+    TEST_OSTREAM
+    ARCHIVE_FILENAME_EXTENSION
+    ARCHIVE_FLAGS
+    STREAM_FLAGS)
+  cmake_parse_arguments(args "" "${functionArguments}" "" ${ARGN})
+  configure_file(config.hpp.in "${CMAKE_CURRENT_BINARY_DIR}/polymorphic_config.hpp")
 
+  set(exe test_polymorphic_${args_LIBRARY_TARGET})
+  add_executable(${exe}
+    polymorphic_main.cpp
 
-################################################################################
-# FUNCTION add_archive_test                                                    #
-#                                                                              #
-# NAMED PARAMETERS:                                                            #
-# - NAME           The main cpp file of the test, without the .cpp extension   #
-# - ARCHIVE_NAME   The cmake target that defines the archive                   #
-# - ARCHIVE_CONFIG The header that makes typedefs for the particular archive   #
-# - EXTRA_DEPS     Extra cpp files without the .cpp extension that should be   #
-#                  compiled along with NAME.                                   #
-################################################################################
-function(add_archive_test)
-  set(options)
-  set(oneValueArgs NAME ARCHIVE_NAME ARCHIVE_CONFIG)
-  set(multiValueArgs EXTRA_DEPS)
-  cmake_parse_arguments(args "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
-  foreach(dependency ${args_EXTRA_DEPS})
-    list(APPEND arglist ${dependency}.cpp)
-  endforeach()
-  set(amended_test_name ${args_NAME}_${args_ARCHIVE_NAME})
-  add_executable(${amended_test_name} ${args_NAME}.cpp ${arglist})
-  set_property(TARGET ${amended_test_name} PROPERTY CXX_STANDARD 14)
-  target_compile_definitions(${amended_test_name} PRIVATE BOOST_ARCHIVE_TEST=${args_ARCHIVE_CONFIG})
-  target_compile_options(${amended_test_name} PRIVATE -ftemplate-backtrace-limit=0)
-  target_link_libraries(${amended_test_name} PRIVATE serialization-test-interface)
-  target_link_libraries(${amended_test_name} PRIVATE ${args_ARCHIVE_NAME})
-  add_test(${amended_test_name} ${amended_test_name})
-endfunction(add_archive_test)
+    # auxiliary files
+    A.cpp
+    polymorphic_A.cpp
+    polymorphic_io_fixture.cpp
 
-################################################################################
-# FUNCTION target_add_archive_test_suite                                       #
-#                                                                              #
-# PARAMETERS:                                                                  #
-# - target         The cmake target that defines the archive                   #
-# - config         The header that makes typedefs for the particular archive   #
-################################################################################
-function(target_add_archive_test_suite target config)
-  # add_archive_test(NAME test_binary                    ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_native_array              ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  # add_archive_test(NAME test_boost_array               ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
+    # test files
+    polymorphic.cpp
+    )
+
+  if (BUILD_SHARED_LIBS)
+      set(Boost_USE_STATIC_LIBS OFF)
+  else()
+      set(Boost_USE_STATIC_LIBS ON)
+  endif()
+  find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+
+  target_include_directories(${exe} PRIVATE ${Boost_INCLUDE_DIRS})
+  target_include_directories(${exe} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
+
+  target_link_libraries(${exe} PRIVATE ${args_LIBRARY_TARGET})
+  target_link_libraries(${exe} PRIVATE ${Boost_LIBRARIES})
   
-  # This one requires C++11
-  # add_archive_test(NAME test_array                     ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
+  if (BUILD_SHARED_LIBS)
+      target_compile_definitions(${exe} PRIVATE BOOST_TEST_DYN_LINK)
+  endif()
+  target_compile_definitions(${exe} PRIVATE BOOST_ALL_NO_LIB)
   
-  # add_archive_test(NAME test_bitset                    ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_class_info_save           ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_class_info_load           ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_complex                   ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_contained_class           ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  # add_archive_test(NAME test_cyclic_ptrs               ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  # add_archive_test(NAME test_delete_pointer            ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_deque                     ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  # add_archive_test(NAME test_derived                   ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_derived_class             ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  # add_archive_test(NAME test_diamond                   ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_diamond_complex           ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_exported polymorphic_base ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_forward_list              ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  # add_archive_test(NAME test_forward_list_ptrs         ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  # add_archive_test(NAME test_helper_support            ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_interrupts                ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_list                      ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  # add_archive_test(NAME test_list_ptrs                 ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  # add_archive_test(NAME test_map                       ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  # add_archive_test(NAME test_map_boost_unordered       ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  # add_archive_test(NAME test_mi                        ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_multiple_ptrs             ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  # add_archive_test(NAME test_multiple_inheritance      ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_no_rtti polymorphic_base  ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS polymorphic_derived1)
-  # add_archive_test(NAME test_new_operator              ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  # add_archive_test(NAME test_non_intrusive             ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_non_default_ctor          ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_non_default_ctor2         ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_null_ptr                  ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_nvp                       ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  # add_archive_test(NAME test_object                    ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_optional                  ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_primitive                 ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_priority_queue            ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  # add_archive_test(NAME test_private_base              ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_private_base2             ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  add_archive_test(NAME test_queue                     ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  # add_archive_test(NAME test_recursion                 ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  # add_archive_test(NAME test_registered                ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_shared_ptr                ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_shared_ptr_multi_base     ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_shared_ptr_132            ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_simple_class              ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  # add_archive_test(NAME test_simple_class_ptr          ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  add_archive_test(NAME test_stack                     ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  # add_archive_test(NAME test_split                     ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_tracking                  ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_unregistered              ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_unique_ptr                ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  add_archive_test(NAME test_valarray                  ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-  # add_archive_test(NAME test_variant                   ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  # add_archive_test(NAME test_vector                    ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  # add_archive_test(NAME test_set                       ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  # add_archive_test(NAME test_set_boost_unordered       ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-  
-  # This one requires C++11
-  # add_archive_test(NAME test_set_unordered             ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
+  set_property(TARGET ${exe} PROPERTY CXX_STANDARD 11)
 
-  # This one requires C++11
-  # add_archive_test(NAME test_map_unordered             ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS A)
-endfunction(target_add_archive_test_suite)
+  # FIXME!!!
+  # add_test(NAME polymorphic_1 COMMAND ${exe} --run_test=polymorphic_1)
+  # add_test(NAME polymorphic_2 COMMAND ${exe} --run_test=polymorphic_2)
+  # add_test(NAME polymorphic_3 COMMAND ${exe} --run_test=polymorphic_3)
+
+endfunction(target_create_boost_polymorphic_archive_test_suite)
 
 ################################################################################
 # FUNCTION target_add_polymorphic_archive_test_suite                           #
@@ -405,16 +345,11 @@ endfunction(target_add_archive_test_suite)
 # - target         The cmake target that defines the archive                   #
 # - config         The header that makes typedefs for the particular archive   #
 ################################################################################
-function(target_add_polymorphic_archive_test_suite target config)
-  add_archive_test(NAME test_polymorphic        ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS test_polymorphic_A A)
-  add_archive_test(NAME test_polymorphic2       ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS test_polymorphic2imp)
-  add_archive_test(NAME test_polymorphic_helper ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
-endfunction(target_add_polymorphic_archive_test_suite)
-
-# target_add_archive_test_suite(yaml-archive Config.hpp)
-
-# # TODO!!
-# # target_add_polymorphic_archive_test_suite(yaml-archive ConfigPoly.hpp)
+# function(target_add_polymorphic_archive_test_suite target config)
+#   add_archive_test(NAME test_polymorphic        ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS test_polymorphic_A A)
+#   add_archive_test(NAME test_polymorphic2       ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config} EXTRA_DEPS test_polymorphic2imp)
+#   add_archive_test(NAME test_polymorphic_helper ARCHIVE_NAME ${target} ARCHIVE_CONFIG ${config})
+# endfunction(target_add_polymorphic_archive_test_suite)
 
 # add_executable(test1 test1.cpp)
 # set_property(TARGET test1 PROPERTY CXX_STANDARD 11)
@@ -434,6 +369,19 @@ target_create_boost_archive_test_suite(
   OUTPUT_ARCHIVE_HEADER boost/archive/yaml_oarchive.hpp
   INPUT_ARCHIVE_FULLY_QUALIFIED_NAME boost::archive::yaml_iarchive 
   OUTPUT_ARCHIVE_FULLY_QUALIFIED_NAME boost::archive::yaml_oarchive 
+  TEST_ISTREAM std::ifstream 
+  TEST_OSTREAM std::ofstream
+  ARCHIVE_FILENAME_EXTENSION yml
+  ARCHIVE_FLAGS "0"
+  STREAM_FLAGS "(std::ios_base::openmode)0"
+  )
+
+target_create_boost_polymorphic_archive_test_suite(
+  LIBRARY_TARGET yaml-archive
+  INPUT_ARCHIVE_HEADER boost/archive/polymorphic_yaml_iarchive.hpp 
+  OUTPUT_ARCHIVE_HEADER boost/archive/polymorphic_yaml_oarchive.hpp
+  INPUT_ARCHIVE_FULLY_QUALIFIED_NAME boost::archive::polymorphic_yaml_iarchive 
+  OUTPUT_ARCHIVE_FULLY_QUALIFIED_NAME boost::archive::polymorphic_yaml_oarchive 
   TEST_ISTREAM std::ifstream 
   TEST_OSTREAM std::ofstream
   ARCHIVE_FILENAME_EXTENSION yml

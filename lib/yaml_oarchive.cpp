@@ -35,7 +35,24 @@ yaml_oarchive::~yaml_oarchive()
     m_emit << YAML::EndMap << YAML::EndDoc;
 }
 
-#include <iostream>
+void yaml_oarchive::save_start(const char* key)
+{
+    if (key != nullptr)
+    {
+        end_preamble();
+        m_emit << YAML::Key << key << YAML::Value;
+        m_saving_dereffed_ptr.push(false);
+    }
+    else
+    {
+        m_saving_dereffed_ptr.push(true);
+    }
+}
+
+void yaml_oarchive::save_end(const char* /*key*/)
+{
+    m_saving_dereffed_ptr.pop();
+}
 
 void yaml_oarchive::save(const wchar_t t)
 {

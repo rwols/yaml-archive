@@ -25,15 +25,18 @@ namespace boost {
 namespace archive {
 
 /**
- * @brief      Archive for YAML format
+ * @brief      Output archive for YAML format
  */
+#if BOOST_VERSION < 105600
+class BOOST_SYMBOL_VISIBLE yaml_oarchive
+    : public detail::common_oarchive<yaml_oarchive>,
+      public detail::shared_ptr_helper
+{
+#else
 class BOOST_SYMBOL_VISIBLE yaml_oarchive
     : public detail::common_oarchive<yaml_oarchive>
-#if BOOST_VERSION < 105600
-      ,
-      public detail::shared_ptr_helper
-#endif
 {
+#endif
   public:
     BOOST_SYMBOL_VISIBLE yaml_oarchive(std::ostream&  os,
                                        const unsigned flags = 0);
@@ -43,7 +46,7 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive
     BOOST_SYMBOL_VISIBLE
     void save_binary(const void* address, std::size_t count);
 
-  private:
+  protected:
     friend class detail::interface_oarchive<yaml_oarchive>;
     friend class save_access;
 
@@ -56,6 +59,8 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive
     std::stack<bool>                m_saving_dereffed_ptr;
 
     BOOST_SYMBOL_VISIBLE void end_preamble();
+    BOOST_SYMBOL_VISIBLE void save_start(const char* key);
+    BOOST_SYMBOL_VISIBLE void save_end(const char* key);
 
     using base = detail::common_oarchive<yaml_oarchive>;
     template <class T> using nvp = boost::serialization::nvp<T>;
@@ -78,18 +83,9 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive
 
     template <class T> void save_override(const nvp<T>& t)
     {
-        if (t.name() != nullptr)
-        {
-            end_preamble();
-            m_emit << YAML::Key << t.name() << YAML::Value;
-            m_saving_dereffed_ptr.push(false);
-        }
-        else
-        {
-            m_saving_dereffed_ptr.push(true);
-        }
+        save_start(t.name());
         save_value(t.const_value());
-        m_saving_dereffed_ptr.pop();
+        save_end(t.name());
     }
 
     // Otherwise, invoke boost::serialization machinery.
@@ -150,18 +146,9 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive
 
     template <class T> void save_override(const nvp<T>& t, int)
     {
-        if (t.name() != nullptr)
-        {
-            end_preamble();
-            m_emit << YAML::Key << t.name() << YAML::Value;
-            m_saving_dereffed_ptr.push(false);
-        }
-        else
-        {
-            m_saving_dereffed_ptr.push(true);
-        }
+        save_start(t.name());
         save_value(t.const_value());
-        m_saving_dereffed_ptr.pop();
+        save_end(t.name());
     }
 
     // Otherwise, invoke boost::serialization machinery.

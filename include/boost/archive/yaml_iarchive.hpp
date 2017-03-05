@@ -24,13 +24,19 @@
 namespace boost {
 namespace archive {
 
+/**
+ * @brief      Input archive for YAML format
+ */
+#if BOOST_VERSION < 105600
+class BOOST_SYMBOL_VISIBLE yaml_iarchive
+    : public detail::common_iarchive<yaml_iarchive>,
+      public detail::shared_ptr_helper
+{
+#else
 class BOOST_SYMBOL_VISIBLE yaml_iarchive
     : public detail::common_iarchive<yaml_iarchive>
-#if BOOST_VERSION < 105600
-      ,
-      public detail::shared_ptr_helper
-#endif
 {
+#endif
   public:
     BOOST_SYMBOL_VISIBLE yaml_iarchive(std::istream&  is,
                                        const unsigned flags = 0);
@@ -40,7 +46,7 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
     BOOST_SYMBOL_VISIBLE
     void load_binary(void* address, std::size_t count);
 
-  private:
+  protected:
     friend class detail::interface_iarchive<yaml_iarchive>;
     friend class load_access;
 
