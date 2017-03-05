@@ -10,9 +10,12 @@
 import sys
 import subprocess
 import os
+import shutil
+
 root_dir = subprocess.check_output(['git', 'rev-parse' ,'--show-toplevel']).decode('utf-8').strip()
 sys.path.append(root_dir)
 sys.dont_write_bytecode = True
+
 import build
 
 def print_msg(msg):
@@ -20,7 +23,7 @@ def print_msg(msg):
 
 def get_changed_files():
     os.chdir(root_dir)
-    return subprocess.check_output(['git', 'diff-index', '--cached', 'HEAD']).decode('utf-8').splitlines()
+    return subprocess.check_output(['git', 'diff-index', '--cached', '--name-only', 'HEAD']).decode('utf-8').splitlines()
 
 class GitStasher(object):
     """Pushes and pops unstaged changes in a Python "with" block"""
@@ -44,21 +47,24 @@ class GitStasher(object):
         except Exception as e:
             print_msg('Failed to pop unstaged changes! (Unknown exception)')
 
-def do_build():
-    # Run clang-format on the changed files, if present.
-    print_msg('Running clang-format on the changed files...')
+def do_clang_format():
+    if not shutil.which('clang-format'):
+        print_msg('clang-format not present, skipping formatting.')
+        return
     os.chdir(root_dir)
-    changed_files = [f for f in get_changed_files() if f.endswith(('.h','.c', '.hh', '.cc', '.hpp', '.hpp', '.hxx', '.cxx'))]
-    try:
-        for file in changed_files:
+    for file in get_changed_files():
+        if not f.endswith(('.h','.c', '.hh', '.cc', '.hpp', '.hpp', '.hxx', '.cxx')):
+            continue
+        try:
             print_msg('Formatting "{}"'.format(file))
             subprocess.check_call(['clang-format', '-style=file', '-i', file])
-    except Exception as e:
-        # This is OK, we continue on anyway; formatting is not that important.
-        # Print an informational message that formatting failed.
-        print_msg('Failed formatting, but continuing on.')
+        except Exception as e:
+            print_msg('Failed formatting, but continuing on.')
 
-    print_msg('Building and testing the project...')
+
+def do_build():
+    # Run clang-format on the changed files, if present.
+    print_msg('Building and testing the project.')
     b = build.CommandLineBuild(0)
     if b.before_build():
         b.after_failure()
@@ -83,15 +89,17 @@ def do_build():
         return 0
 
 def main():
+    exit_status = 0
     try:
         with GitStasher() as stash:
-                return do_build()
+            exit_status = do_build()
     except build.SystemCallError as e:
-        print_msg('There were build and/or test errors.\n\tPlease fix them and then try committing again.')
-        return -1
+        exit_status = -1
     except Exception as e:
-        print_msg(str(e))
-        return -2
+        exit_status = -2
+    if exit_status != 0:
+        print_msg('There were build and/or test errors.\n\tPlease fix them and then try committing again.')
+    return exit_status
 
 if __name__ == '__main__':
     exit(main())
