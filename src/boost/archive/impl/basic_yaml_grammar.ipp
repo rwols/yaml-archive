@@ -284,7 +284,7 @@ bool basic_yaml_grammar<CharType>::parse_start_tag(unsigned int depth,
     }
     if (!arg.empty() && arg.back() == '\n') arg.pop_back();
     parse_info<typename std::basic_string<CharType>::iterator> parseresult =
-        boost::spirit::classic::parse(arg.begin(), arg.end(), STag);
+        boost::spirit::classic::parse(arg.begin(), arg.end(), StartTag);
     return parseresult.hit;
 }
 
@@ -292,7 +292,7 @@ template <class CharType>
 bool basic_yaml_grammar<CharType>::parse_end_tag(unsigned int depth,
                                                  IStream&     is) const
 {
-    return parse(depth, is, ETag);
+    return true;
 }
 
 template <class CharType>
@@ -337,8 +337,6 @@ template <class CharType> basic_yaml_grammar<CharType>::basic_yaml_grammar()
     NameTail = *(NameChar | '_');
     Name = NameHead >> NameTail;
 
-    Eq = !S >> '=' >> !S;
-
     NullPointer = str_p("~")[yaml::set_null_pointer(rv.class_id)];
 
     AttributeList =
@@ -346,10 +344,8 @@ template <class CharType> basic_yaml_grammar<CharType>::basic_yaml_grammar()
          !VersionAttribute >> !ClassNameAttribute >> !S >> !ObjectIDAttribute) |
         ObjectIDAttribute;
 
-    STag = Name[yaml::assign_object(rv.object_name)] >> L':' >> S >>
-           !(NullPointer | AttributeList);
-
-    ETag = !S;
+    StartTag = Name[yaml::assign_object(rv.object_name)] >> L':' >> S >>
+               !(NullPointer | AttributeList);
 
     // refactoring to workaround template depth on darwin
     CharDataChars = +(anychar_p - chset_p(L"\\\""));
@@ -357,22 +353,7 @@ template <class CharType> basic_yaml_grammar<CharType>::basic_yaml_grammar()
         StringType, typename std::basic_string<CharType>::const_iterator>(
         rv.contents)];
 
-    // slight factoring works around ICE in msvc 6.0
-    CharRef1 = str_p(L"&#") >>
-               uint_p[yaml::append_char<StringType>(rv.contents)] >> L';';
-    CharRef2 = str_p(L"&#x") >>
-               hex_p[yaml::append_char<StringType>(rv.contents)] >> L';';
-    CharRef = CharRef1 | CharRef2;
-
-    AmpRef = str_p(L"&amp;")[yaml::append_lit<StringType, L'&'>(rv.contents)];
-    LTRef = str_p(L"&lt;")[yaml::append_lit<StringType, L'<'>(rv.contents)];
-    GTRef = str_p(L"&gt;")[yaml::append_lit<StringType, L'>'>(rv.contents)];
-    AposRef =
-        str_p(L"&apos;")[yaml::append_lit<StringType, L'\''>(rv.contents)];
-
     QuoteRef = str_p(L"\\\"")[yaml::append_lit<StringType, L'"'>(rv.contents)];
-
-    Reference = AmpRef | LTRef | GTRef | AposRef | QuoteRef | CharRef;
 
     content = L'"' >> *(QuoteRef | CharData) >> L'"';
 
@@ -382,10 +363,6 @@ template <class CharType> basic_yaml_grammar<CharType>::basic_yaml_grammar()
     ObjectIDAttribute = (str_p(L"&") | str_p(L"*")) >>
                         uint_p[yaml::assign_object(rv.object_id)];
 
-    AmpName =
-        str_p(L"&amp;")[yaml::append_lit<StringType, L'&'>(rv.class_name)];
-    LTName = str_p(L"&lt;")[yaml::append_lit<StringType, L'<'>(rv.class_name)];
-    GTName = str_p(L"&gt;")[yaml::append_lit<StringType, L'>'>(rv.class_name)];
     ClassNameChar =
         (anychar_p -
          chset_p(L"\" "))[yaml::append_char<StringType>(rv.class_name)];
@@ -398,26 +375,6 @@ template <class CharType> basic_yaml_grammar<CharType>::basic_yaml_grammar()
 
     VersionAttribute = str_p(L"v") >> uint_p[yaml::assign_object(rv.version)];
 
-    UnusedAttribute = Name >> Eq >> L'"' >> !CharData >> L'"';
-
-    Attribute = ClassIDAttribute | ObjectIDAttribute | ClassNameAttribute |
-                TrackingAttribute | VersionAttribute;
-
-    YAMLDeclChars = *(anychar_p - chset_p(L"?>"));
-    YAMLDecl = !S >> str_p(L"<?yaml") >> S >> str_p(L"version") >> Eq >>
-               str_p(L"\"1.0\"") >> YAMLDeclChars >> !S >> str_p(L"?>");
-
-    DocTypeDeclChars = *(anychar_p - chset_p(L">"));
-    DocTypeDecl = !S >> str_p(L"<!DOCTYPE") >> DocTypeDeclChars >> L'>';
-
-    SignatureAttribute = str_p(L"signature") >> Eq >> L'"' >>
-                         Name[yaml::assign_object(rv.class_name)] >> L'"';
-
-    SerializationWrapper = !S >> str_p(L"<boost_serialization") >> S >>
-                           ((SignatureAttribute >> S >> VersionAttribute) |
-                            (VersionAttribute >> S >> SignatureAttribute)) >>
-                           !S >> L'>';
-
     YAMLDirective = str_p(L"%YAML 1.2");
     TagDirective = str_p(L"%TAG ! boost/archive/") >> VersionAttribute >> '/';
 
@@ -429,8 +386,7 @@ template <class CharType> basic_yaml_grammar<CharType>::basic_yaml_grammar()
     BOOST_SPIRIT_DEBUG_NODE(TagDirective);
     BOOST_SPIRIT_DEBUG_NODE(StartDoc);
     BOOST_SPIRIT_DEBUG_NODE(EndDoc);
-    BOOST_SPIRIT_DEBUG_NODE(STag);
-    BOOST_SPIRIT_DEBUG_NODE(ETag);
+    BOOST_SPIRIT_DEBUG_NODE(StartTag);
     BOOST_SPIRIT_DEBUG_NODE(ClassIDAttribute);
     BOOST_SPIRIT_DEBUG_NODE(ObjectIDAttribute);
     BOOST_SPIRIT_DEBUG_NODE(VersionAttribute);

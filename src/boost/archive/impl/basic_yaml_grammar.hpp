@@ -81,15 +81,11 @@ template <class CharType> class basic_yaml_grammar
                                                              scanner_t;
     typedef typename boost::spirit::classic::rule<scanner_t> rule_t;
     // Start grammar definition
-    rule_t Reference, Eq, STag, ETag, LetterOrUnderscoreOrColon, AttValue,
-        CharRef1, CharRef2, CharRef, AmpRef, LTRef, GTRef, AposRef, QuoteRef,
-        CharData, CharDataChars, content, AmpName, LTName, GTName,
-        ClassNameChar, ClassName, Name, YAMLDecl, YAMLDeclChars, YAMLDirective,
-        TagDirective, StartDoc, EndDoc, DocTypeDecl, DocTypeDeclChars,
-        ClassIDAttribute, ObjectIDAttribute, ClassNameAttribute,
-        TrackingAttribute, VersionAttribute, UnusedAttribute, Attribute,
-        SignatureAttribute, SerializationWrapper, NameHead, NameTail,
-        AttributeList, S, NullPointer;
+    rule_t StartTag, LetterOrUnderscoreOrColon, AttValue, CharData,
+        CharDataChars, QuoteRef, content, ClassNameChar, ClassName, Name,
+        YAMLDirective, TagDirective, StartDoc, EndDoc, ClassIDAttribute,
+        ObjectIDAttribute, ClassNameAttribute, TrackingAttribute,
+        VersionAttribute, NameHead, NameTail, AttributeList, S, NullPointer;
 
     // YAML Character classes
     chset_t BaseChar, Ideographic, Char, Letter, Digit, CombiningChar, Extender,
@@ -103,13 +99,13 @@ template <class CharType> class basic_yaml_grammar
   public:
     struct return_values
     {
-        StringType object_name;
-        StringType contents;
-        int_least16_t class_id;
+        StringType     object_name;
+        StringType     contents;
+        int_least16_t  class_id;
         uint_least32_t object_id;
-        unsigned int  version;
-        tracking_type tracking_level;
-        StringType    class_name;
+        unsigned int   version;
+        tracking_type  tracking_level;
+        StringType     class_name;
         return_values() : version(0), tracking_level(false) {}
     } rv;
     bool parse_start_tag(unsigned int depth, IStream& is) /*const*/;
