@@ -59,6 +59,7 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive_impl
     friend class basic_yaml_oarchive<Archive>;
     friend class save_access;
 #endif
+
     template <class T> void save(const T& t)
     {
         basic_text_oprimitive<std::ostream>::save(t);

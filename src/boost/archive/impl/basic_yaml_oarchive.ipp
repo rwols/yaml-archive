@@ -171,7 +171,6 @@ basic_yaml_oarchive<Archive>::save_override(const tracking_type& t)
 template <class Archive>
 BOOST_ARCHIVE_OR_WARCHIVE_DECL void basic_yaml_oarchive<Archive>::init()
 {
-    // yaml header
     this->This()->put("%YAML 1.2\n");
     this->This()->put("%TAG ! boost/archive/v");
     this->This()->save(BOOST_ARCHIVE_VERSION());

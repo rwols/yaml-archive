@@ -9,6 +9,10 @@
 			"variants":
 			[
 				{
+					"name": "ninja: warning",
+					"shell_cmd": "cmake --build . --target ninja: warning"
+				},
+				{
 					"name": "install/strip",
 					"shell_cmd": "cmake --build . --target install/strip"
 				},
@@ -179,6 +183,54 @@
 				{
 					"name": "test/list_install_components",
 					"shell_cmd": "cmake --build . --target test/list_install_components"
+				},
+				{
+					"name": "test/narrow/install/strip",
+					"shell_cmd": "cmake --build . --target test/narrow/install/strip"
+				},
+				{
+					"name": "test/narrow/install",
+					"shell_cmd": "cmake --build . --target test/narrow/install"
+				},
+				{
+					"name": "test/narrow/list_install_components",
+					"shell_cmd": "cmake --build . --target test/narrow/list_install_components"
+				},
+				{
+					"name": "test/narrow/rebuild_cache",
+					"shell_cmd": "cmake --build . --target test/narrow/rebuild_cache"
+				},
+				{
+					"name": "test/narrow/install/local",
+					"shell_cmd": "cmake --build . --target test/narrow/install/local"
+				},
+				{
+					"name": "test/narrow/test",
+					"shell_cmd": "cmake --build . --target test/narrow/test"
+				},
+				{
+					"name": "test/wide/install/strip",
+					"shell_cmd": "cmake --build . --target test/wide/install/strip"
+				},
+				{
+					"name": "test/wide/install",
+					"shell_cmd": "cmake --build . --target test/wide/install"
+				},
+				{
+					"name": "test/wide/list_install_components",
+					"shell_cmd": "cmake --build . --target test/wide/list_install_components"
+				},
+				{
+					"name": "test/wide/rebuild_cache",
+					"shell_cmd": "cmake --build . --target test/wide/rebuild_cache"
+				},
+				{
+					"name": "test/wide/install/local",
+					"shell_cmd": "cmake --build . --target test/wide/install/local"
+				},
+				{
+					"name": "test/wide/test",
+					"shell_cmd": "cmake --build . --target test/wide/test"
 				},
 				{
 					"name": "format",

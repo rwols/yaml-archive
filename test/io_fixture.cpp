@@ -63,7 +63,7 @@ static const char* s_narrow_string_samples[] = {
 io_fixture::io_fixture()
     : m_filename(boost::unit_test::framework::current_test_case().p_name)
 {
-    m_filename += ".yml";
+    m_filename += ARCHIVE_FILENAME_EXTENSION;
 }
 
 io_fixture::outputter::outputter(const char* filename)

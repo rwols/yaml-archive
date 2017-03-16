@@ -103,6 +103,11 @@ yaml_oarchive_impl<Archive>::yaml_oarchive_impl(std::ostream& os_,
     : basic_text_oprimitive<std::ostream>(os_, 0 != (flags & no_codecvt)),
       basic_yaml_oarchive<Archive>(flags)
 {
+    // This is the UTF-8 BOM:
+    // https://en.wikipedia.org/wiki/Byte_order_mark#UTF-8
+    //
+    // See: http://yaml.org/spec/1.2/spec.html, section 5.2
+    this->This()->put("\xEF\xBB\xBF");
     if (0 == (flags & no_header)) this->init();
 }
 

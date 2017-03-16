@@ -138,6 +138,23 @@ yaml_wiarchive_impl<Archive>::yaml_wiarchive_impl(std::wistream& is_,
           ),
       basic_yaml_iarchive<Archive>(flags), gimpl(new yaml_wgrammar())
 {
+    // Read the byte order mark (UTF-8).
+    // See: http://yaml.org/spec/1.2/spec.html, section 5.2.
+    if (is.get() != 0xEF || is.fail())
+    {
+        serialization::throw_exception(yaml_archive_exception(
+            yaml_archive_exception::yaml_archive_parsing_error));
+    }
+    if (is.get() != 0xBB || is.fail())
+    {
+        serialization::throw_exception(yaml_archive_exception(
+            yaml_archive_exception::yaml_archive_parsing_error));
+    }
+    if (is.get() != 0xBF || is.fail())
+    {
+        serialization::throw_exception(yaml_archive_exception(
+            yaml_archive_exception::yaml_archive_parsing_error));
+    }
     if (0 == (flags & no_codecvt))
     {
         std::locale l = std::locale(
