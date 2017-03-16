@@ -63,10 +63,10 @@ BOOST_ARCHIVE_DECL void yaml_iarchive_impl<Archive>::load(std::wstring& ws)
     bool result = gimpl->parse_string(this->This()->depth, is, utf8string);
 
     if (!result)
-        boost::serialization::throw_exception(yaml_archive_exception(
+        serialization::throw_exception(yaml_archive_exception(
             yaml_archive_exception::yaml_archive_parsing_error));
 
-    using boost::locale::conv::utf_to_utf;
+    using locale::conv::utf_to_utf;
     ws = utf_to_utf<std::wstring::value_type>(utf8string);
 }
 #endif // BOOST_NO_STD_WSTRING
@@ -80,7 +80,7 @@ BOOST_ARCHIVE_DECL void yaml_iarchive_impl<Archive>::load(wchar_t* ws)
     bool result = gimpl->parse_string(this->This()->depth, is, s);
 
     if (!result)
-        boost::serialization::throw_exception(yaml_archive_exception(
+        serialization::throw_exception(yaml_archive_exception(
             yaml_archive_exception::yaml_archive_parsing_error));
 
     std::mbstate_t mbs = std::mbstate_t();
@@ -91,7 +91,7 @@ BOOST_ARCHIVE_DECL void yaml_iarchive_impl<Archive>::load(wchar_t* ws)
         wchar_t     wc;
         std::size_t length = std::mbrtowc(&wc, start, end - start, &mbs);
         if (static_cast<std::size_t>(-1) == length)
-            boost::serialization::throw_exception(iterators::dataflow_exception(
+            serialization::throw_exception(iterators::dataflow_exception(
                 iterators::dataflow_exception::invalid_conversion));
         if (static_cast<std::size_t>(-2) == length) continue;
 
@@ -110,7 +110,7 @@ BOOST_ARCHIVE_DECL void yaml_iarchive_impl<Archive>::load(std::string& s)
     bool result = gimpl->parse_string(this->This()->depth, is, s);
     if (!result)
     {
-        boost::serialization::throw_exception(yaml_archive_exception(
+        serialization::throw_exception(yaml_archive_exception(
             yaml_archive_exception::yaml_archive_parsing_error));
     }
 }
@@ -121,7 +121,7 @@ BOOST_ARCHIVE_DECL void yaml_iarchive_impl<Archive>::load(char* s)
     std::string tstring;
     bool        result = gimpl->parse_string(this->This()->depth, is, tstring);
     if (!result)
-        boost::serialization::throw_exception(yaml_archive_exception(
+        serialization::throw_exception(yaml_archive_exception(
             yaml_archive_exception::yaml_archive_parsing_error));
     std::memcpy(s, tstring.data(), tstring.size());
     s[tstring.size()] = 0;
@@ -133,7 +133,7 @@ yaml_iarchive_impl<Archive>::load_override(class_name_type& t)
 {
     const std::string& s = gimpl->rv.class_name;
     if (s.size() > BOOST_SERIALIZATION_MAX_KEY_SIZE - 1)
-        boost::serialization::throw_exception(
+        serialization::throw_exception(
             archive_exception(archive_exception::invalid_class_name));
     char* tptr = t;
     std::memcpy(tptr, s.data(), s.size());
@@ -180,7 +180,7 @@ yaml_iarchive_impl<Archive>::load_binary(void* address, std::size_t count)
                  (count + sizeof(CharType) - 1) / sizeof(CharType));
 
     if (is.fail())
-        boost::serialization::throw_exception(
+        serialization::throw_exception(
             archive_exception(archive_exception::input_stream_error));
     // convert from base64 to binary
     typedef typename iterators::transform_width<
