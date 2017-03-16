@@ -47,7 +47,6 @@ class BOOST_SYMBOL_VISIBLE basic_yaml_oarchive
 {
     // special stuff for yaml output
     unsigned int depth;
-    bool         pending_preamble;
     const char*  m_pending_class_name = nullptr;
 #ifdef BOOST_NO_MEMBER_TEMPLATE_FRIENDS
   public:

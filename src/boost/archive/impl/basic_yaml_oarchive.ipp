@@ -188,7 +188,7 @@ BOOST_ARCHIVE_OR_WARCHIVE_DECL void basic_yaml_oarchive<Archive>::windup()
 template <class Archive>
 BOOST_ARCHIVE_OR_WARCHIVE_DECL
 basic_yaml_oarchive<Archive>::basic_yaml_oarchive(unsigned int flags)
-    : detail::common_oarchive<Archive>(flags), depth(0), pending_preamble(false)
+    : detail::common_oarchive<Archive>(flags), depth(0)
 {
 }
 
