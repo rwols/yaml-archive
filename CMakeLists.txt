@@ -44,84 +44,81 @@ else()
 endif()
 find_package(Boost 1.54 COMPONENTS system serialization REQUIRED)
 
-add_library(yaml-archive
-    lib/yaml_iarchive.cpp
-    lib/yaml_oarchive.cpp)
+# add_library(yaml-archive
+#     lib/yaml_iarchive.cpp
+#     lib/yaml_oarchive.cpp)
 
-set_target_properties(yaml-archive
-    PROPERTIES
-        CXX_STANDARD 
-            11
-        PUBLIC_HEADERS 
-            include/boost/archive/detail/is_yaml_primitive.hpp
-            include/boost/archive/yaml_iarchive.hpp
-            include/boost/archive/yaml_oarchive.hpp
-            include/YAML/extra_converters.hpp
-            include/YAML/extra_emitter_overloads.hpp
-    )
+# set_target_properties(yaml-archive
+#     PROPERTIES
+#         CXX_STANDARD 
+#             11
+#         PUBLIC_HEADERS 
+#             include/boost/archive/detail/is_yaml_primitive.hpp
+#             include/boost/archive/yaml_iarchive.hpp
+#             include/boost/archive/yaml_oarchive.hpp
+#             include/YAML/extra_converters.hpp
+#             include/YAML/extra_emitter_overloads.hpp
+#     )
 
-target_include_directories(yaml-archive PUBLIC  
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>  
-    $<INSTALL_INTERFACE:include>
-)
+# target_include_directories(yaml-archive PUBLIC  
+#     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>  
+#     $<INSTALL_INTERFACE:include>
+# )
 
-target_include_directories(yaml-archive PUBLIC 
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/ext/yaml-cpp/include> 
-    # No way to get at the install include dir of yaml-cpp right now,
-    # so just "guess" the yaml-cpp include directory.
-    $<INSTALL_INTERFACE:include>)
+# target_include_directories(yaml-archive PUBLIC 
+#     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/ext/yaml-cpp/include> 
+#     # No way to get at the install include dir of yaml-cpp right now,
+#     # so just "guess" the yaml-cpp include directory.
+#     $<INSTALL_INTERFACE:include>)
 
-target_include_directories(yaml-archive PUBLIC ${Boost_INCLUDE_DIR})
+# target_include_directories(yaml-archive PUBLIC ${Boost_INCLUDE_DIR})
 
-include(GenerateExportHeader)
-generate_export_header(yaml-archive)
+# include(GenerateExportHeader)
+# generate_export_header(yaml-archive)
 
-install(TARGETS yaml-archive
-    EXPORT yaml-archive-targets
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-    PUBLIC_HEADER DESTINATION ${yaml-archive_INCLUDE_DESTINATION})
+# install(TARGETS yaml-archive
+#     EXPORT yaml-archive-targets
+#     LIBRARY DESTINATION lib
+#     ARCHIVE DESTINATION lib
+#     PUBLIC_HEADER DESTINATION ${yaml-archive_INCLUDE_DESTINATION})
 
-target_link_libraries(yaml-archive PUBLIC yaml-cpp)
-target_link_libraries(yaml-archive PUBLIC ${Boost_LIBRARIES})
+# target_link_libraries(yaml-archive PUBLIC yaml-cpp)
+# target_link_libraries(yaml-archive PUBLIC ${Boost_LIBRARIES})
 
-include(CMakePackageConfigHelpers)
-write_basic_package_version_file(
-    "${CMAKE_CURRENT_BINARY_DIR}/yaml-archive-config-version.cmake"
-    VERSION ${PROJECT_VERSION}
-    COMPATIBILITY AnyNewerVersion
-)
+# include(CMakePackageConfigHelpers)
+# write_basic_package_version_file(
+#     "${CMAKE_CURRENT_BINARY_DIR}/yaml-archive-config-version.cmake"
+#     VERSION ${PROJECT_VERSION}
+#     COMPATIBILITY AnyNewerVersion
+# )
 
-export(EXPORT yaml-archive-targets
-  FILE "${CMAKE_CURRENT_BINARY_DIR}/yaml-archive-config-version.cmake"
-)
-configure_file(yaml-archive-config.cmake
-  "${CMAKE_CURRENT_BINARY_DIR}/yaml-archive-config.cmake"
-  COPYONLY
-)
+# export(EXPORT yaml-archive-targets
+#   FILE "${CMAKE_CURRENT_BINARY_DIR}/yaml-archive-config-version.cmake"
+# )
+# configure_file(yaml-archive-config.cmake
+#   "${CMAKE_CURRENT_BINARY_DIR}/yaml-archive-config.cmake"
+#   COPYONLY
+# )
 
-set(ConfigPackageLocation lib/cmake/yaml-archive)
-install(EXPORT yaml-archive-targets
-    FILE yaml-archive-targets.cmake
-    DESTINATION ${ConfigPackageLocation}
-)
-install(
-    FILES
-        yaml-archive-config.cmake
-        "${CMAKE_CURRENT_BINARY_DIR}/yaml-archive-config-version.cmake"
-    DESTINATION ${ConfigPackageLocation}
-    COMPONENT develop
-)
+# set(ConfigPackageLocation lib/cmake/yaml-archive)
+# install(EXPORT yaml-archive-targets
+#     FILE yaml-archive-targets.cmake
+#     DESTINATION ${ConfigPackageLocation}
+# )
+# install(
+#     FILES
+#         yaml-archive-config.cmake
+#         "${CMAKE_CURRENT_BINARY_DIR}/yaml-archive-config-version.cmake"
+#     DESTINATION ${ConfigPackageLocation}
+#     COMPONENT develop
+# )
 
-install(
-    DIRECTORY include
-    DESTINATION ${yaml-archive_INCLUDE_DESTINATION}
-    FILES_MATCHING PATTERN "*.hpp"
-)
+# install(
+#     DIRECTORY include
+#     DESTINATION ${yaml-archive_INCLUDE_DESTINATION}
+#     FILES_MATCHING PATTERN "*.hpp"
+# )
 
-add_subdirectory(ext)
-add_subdirectory(include)
-add_subdirectory(lib)
 add_subdirectory(src)
 
 if (yaml-archive_BUILD_UNIT_TESTS)
