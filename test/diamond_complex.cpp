@@ -1,5 +1,6 @@
 #include "io_count_fixture.hpp"
 #include <boost/serialization/export.hpp>
+#include <boost/serialization/map.hpp>
 #include <boost/test/unit_test.hpp>
 
 #define NVP(name) BOOST_SERIALIZATION_NVP(name)

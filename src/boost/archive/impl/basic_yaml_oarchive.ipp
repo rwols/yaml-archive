@@ -11,9 +11,9 @@
 #include <algorithm>
 #include <cstddef> // NULL
 #include <cstring>
-#if defined(BOOST_NO_STDC_NAMESPACE) && ! defined(__LIBCOMO__)
-namespace std{
-    using ::strlen;
+#if defined(BOOST_NO_STDC_NAMESPACE) && !defined(__LIBCOMO__)
+namespace std {
+using ::strlen;
 } // namespace std
 #endif
 
@@ -26,29 +26,25 @@ namespace boost {
 namespace archive {
 
 namespace detail {
-template<class CharType>
-struct YAML_name {
-    void operator()(CharType t) const{
+template <class CharType> struct YAML_name
+{
+    void operator()(CharType t) const
+    {
         const unsigned char lookup_table[] = {
-            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-            0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0, // -.
-            1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0, // 0-9
-            0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // A-
-            1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1, // -Z _
-            0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // a-
-            1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0, // -z
-            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-        };
-        if((unsigned)t > 127)
-            return;
-        if(0 == lookup_table[(unsigned)t])
-            boost::serialization::throw_exception(
-                yaml_archive_exception(
-                    yaml_archive_exception::yaml_archive_tag_name_error
-                )
-            );
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, // -.
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, // 0-9
+            0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // A-
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, // -Z _
+            0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // a-
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, // -z
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        if ((unsigned)t > 127) return;
+        if (0 == lookup_table[(unsigned)t])
+            boost::serialization::throw_exception(yaml_archive_exception(
+                yaml_archive_exception::yaml_archive_tag_name_error));
     }
 };
 
@@ -57,13 +53,11 @@ struct YAML_name {
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
 // implemenations of functions common to both types of yaml output
 
-template<class Archive>
+template <class Archive>
 BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_yaml_oarchive<Archive>::write_attribute(
-    const char *attribute_name,
-    int t,
-    const char *conjunction
-){
+basic_yaml_oarchive<Archive>::write_attribute(const char* attribute_name, int t,
+                                              const char* conjunction)
+{
     this->This()->put(' ');
     this->This()->put(attribute_name);
     this->This()->put(conjunction);
@@ -71,12 +65,11 @@ basic_yaml_oarchive<Archive>::write_attribute(
     this->This()->put('"');
 }
 
-template<class Archive>
+template <class Archive>
 BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_yaml_oarchive<Archive>::write_attribute(
-    const char *attribute_name,
-    const char *key
-){
+basic_yaml_oarchive<Archive>::write_attribute(const char* attribute_name,
+                                              const char* key)
+{
     this->This()->put(' ');
     this->This()->put(attribute_name);
     this->This()->put("=\"");
@@ -84,188 +77,153 @@ basic_yaml_oarchive<Archive>::write_attribute(
     this->This()->put('"');
 }
 
-template<class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_yaml_oarchive<Archive>::indent(){
-    int i;
-    for(i = depth; i-- > 0;)
-        this->This()->put('\t');
+template <class Archive>
+BOOST_ARCHIVE_OR_WARCHIVE_DECL void basic_yaml_oarchive<Archive>::indent()
+{
+    for (int i = 0; i != 2 * depth; ++i) this->This()->put(' ');
 }
 
-template<class Archive>
+template <class Archive>
 BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_yaml_oarchive<Archive>::save_start(const char *name)
+basic_yaml_oarchive<Archive>::save_start(const char* name)
 {
-    if(NULL == name)
-        return;
+    if (nullptr == name) return;
 
     // be sure name has no invalid characters
-    std::for_each(name, name + std::strlen(name), detail::YAML_name<const char>());
+    std::for_each(name, name + std::strlen(name),
+                  detail::YAML_name<const char>());
 
     end_preamble();
-    if(depth > 0){
+    if (depth > 0)
+    {
         this->This()->put('\n');
         indent();
     }
     ++depth;
-    this->This()->put('<');
-    this->This()->save(name);
-    pending_preamble = true;
+    this->This()->put(name);
+    this->This()->put(": ");
     indent_next = false;
 }
 
-template<class Archive>
+template <class Archive>
 BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_yaml_oarchive<Archive>::save_end(const char *name)
+basic_yaml_oarchive<Archive>::save_end(const char* name)
 {
-    if(NULL == name)
-        return;
-
-    // be sure name has no invalid characters
-    std::for_each(name, name + std::strlen(name), detail::YAML_name<const char>());
-
-    end_preamble();
+    if (nullptr == name) return;
     --depth;
-    if(indent_next){
-        this->This()->put('\n');
-        indent();
-    }
-    indent_next = true;
-    this->This()->put("</");
-    this->This()->save(name);
-    this->This()->put('>');
-    if(0 == depth)
-        this->This()->put('\n');
+    if (0 == depth) this->This()->put('\n');
 }
 
-template<class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_yaml_oarchive<Archive>::end_preamble(){
-    if(pending_preamble){
-        this->This()->put('>');
-        pending_preamble = false;
+template <class Archive>
+BOOST_ARCHIVE_OR_WARCHIVE_DECL void basic_yaml_oarchive<Archive>::end_preamble()
+{
+    if (m_pending_class_name != nullptr)
+    {
+        this->This()->put('/');
+        this->This()->put(m_pending_class_name);
+        m_pending_class_name = nullptr;
     }
 }
-#if 0
-template<class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_yaml_oarchive<Archive>::save_override(const object_id_type & t)
-{
-    int i = t.t; // extra .t is for borland
-    write_attribute(BOOST_ARCHIVE_YAML_OBJECT_ID(), i, "=\"_");
-}
-template<class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_yaml_oarchive<Archive>::save_override(
-    const object_reference_type & t,
-    int
-){
-    int i = t.t; // extra .t is for borland
-    write_attribute(BOOST_ARCHIVE_YAML_OBJECT_REFERENCE(), i, "=\"_");
-}
-template<class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_yaml_oarchive<Archive>::save_override(const version_type & t)
-{
-    int i = t.t; // extra .t is for borland
-    write_attribute(BOOST_ARCHIVE_YAML_VERSION(), i);
-}
-#endif
 
-template<class Archive>
+template <class Archive>
 BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_yaml_oarchive<Archive>::save_override(const object_id_type & t)
+basic_yaml_oarchive<Archive>::save_override(const object_id_type& t)
 {
-    // borland doesn't do conversion of STRONG_TYPEDEFs very well
-    const unsigned int i = t;
-    write_attribute(BOOST_ARCHIVE_YAML_OBJECT_ID(), i, "=\"_");
+    if (m_pending_class_name != nullptr)
+    {
+        this->This()->put('/');
+        this->This()->put(m_pending_class_name);
+        m_pending_class_name = nullptr;
+    }
+    this->This()->put(" &");
+    this->This()->save(static_cast<int>(t));
 }
-template<class Archive>
+template <class Archive>
 BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_yaml_oarchive<Archive>::save_override(
-    const object_reference_type & t
-){
-    const unsigned int i = t;
-    write_attribute(BOOST_ARCHIVE_YAML_OBJECT_REFERENCE(), i, "=\"_");
-}
-template<class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_yaml_oarchive<Archive>::save_override(const version_type & t)
+basic_yaml_oarchive<Archive>::save_override(const object_reference_type& t)
 {
-    const unsigned int i = t;
-    write_attribute(BOOST_ARCHIVE_YAML_VERSION(), i);
+    this->This()->put(" *");
+    this->This()->save(static_cast<int>(t));
+}
+template <class Archive>
+BOOST_ARCHIVE_OR_WARCHIVE_DECL void
+basic_yaml_oarchive<Archive>::save_override(const version_type& t)
+{
+    this->This()->put('v');
+    this->This()->save(static_cast<int>(t));
 }
 
-template<class Archive>
+template <class Archive>
 BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_yaml_oarchive<Archive>::save_override(const class_id_type & t)
+basic_yaml_oarchive<Archive>::save_override(const class_id_type& t)
 {
-    write_attribute(BOOST_ARCHIVE_YAML_CLASS_ID(), t);
+    if (t == NULL_POINTER_TAG)
+    {
+        this->This()->put('~');
+    }
+    else
+    {
+        this->This()->put("!!c");
+        this->This()->save(static_cast<int>(t));
+    }
 }
-template<class Archive>
+template <class Archive>
 BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_yaml_oarchive<Archive>::save_override(
-    const class_id_reference_type & t
-){
-    write_attribute(BOOST_ARCHIVE_YAML_CLASS_ID_REFERENCE(), t);
-}
-template<class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_yaml_oarchive<Archive>::save_override(
-    const class_id_optional_type & t
-){
-    write_attribute(BOOST_ARCHIVE_YAML_CLASS_ID(), t);
-}
-template<class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_yaml_oarchive<Archive>::save_override(const class_name_type & t)
+basic_yaml_oarchive<Archive>::save_override(const class_id_reference_type& t)
 {
-    const char * key = t;
-    if(NULL == key)
-        return;
-    write_attribute(BOOST_ARCHIVE_YAML_CLASS_NAME(), key);
+    this->This()->put("!!r");
+    this->This()->save(static_cast<int>(t));
+}
+template <class Archive>
+BOOST_ARCHIVE_OR_WARCHIVE_DECL void
+basic_yaml_oarchive<Archive>::save_override(const class_id_optional_type& t)
+{
+    this->This()->put("!!c");
+    this->This()->save(static_cast<int>(t));
+}
+template <class Archive>
+BOOST_ARCHIVE_OR_WARCHIVE_DECL void
+basic_yaml_oarchive<Archive>::save_override(const class_name_type& t)
+{
+    m_pending_class_name = t;
 }
 
-template<class Archive>
+template <class Archive>
 BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_yaml_oarchive<Archive>::save_override(const tracking_type & t)
+basic_yaml_oarchive<Archive>::save_override(const tracking_type& t)
 {
-    write_attribute(BOOST_ARCHIVE_YAML_TRACKING(), t.t);
+    if (t.t) this->This()->put('t');
 }
 
-template<class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_yaml_oarchive<Archive>::init(){
+template <class Archive>
+BOOST_ARCHIVE_OR_WARCHIVE_DECL void basic_yaml_oarchive<Archive>::init()
+{
     // yaml header
-    this->This()->put("<?yaml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n");
-    this->This()->put("<!DOCTYPE boost_serialization>\n");
-    // yaml document wrapper - outer root
-    this->This()->put("<boost_serialization");
-    write_attribute("signature", BOOST_ARCHIVE_SIGNATURE());
-    write_attribute("version", BOOST_ARCHIVE_VERSION());
-    this->This()->put(">\n");
+    this->This()->put("%YAML 1.2\n");
+    this->This()->put("%TAG ! boost/archive/v");
+    this->This()->save(BOOST_ARCHIVE_VERSION());
+    this->This()->put("/\n");
+    this->This()->put("---\n");
 }
 
-template<class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_yaml_oarchive<Archive>::windup(){
-    // yaml_trailer
-    this->This()->put("</boost_serialization>\n");
+template <class Archive>
+BOOST_ARCHIVE_OR_WARCHIVE_DECL void basic_yaml_oarchive<Archive>::windup()
+{
+    this->This()->put("...");
 }
 
-template<class Archive>
+template <class Archive>
 BOOST_ARCHIVE_OR_WARCHIVE_DECL
-basic_yaml_oarchive<Archive>::basic_yaml_oarchive(unsigned int flags) :
-    detail::common_oarchive<Archive>(flags),
-    depth(0),
-    pending_preamble(false),
-    indent_next(false)
+basic_yaml_oarchive<Archive>::basic_yaml_oarchive(unsigned int flags)
+    : detail::common_oarchive<Archive>(flags), depth(0),
+      pending_preamble(false), indent_next(false)
 {
 }
 
-template<class Archive>
+template <class Archive>
 BOOST_ARCHIVE_OR_WARCHIVE_DECL
-basic_yaml_oarchive<Archive>::~basic_yaml_oarchive(){
+    basic_yaml_oarchive<Archive>::~basic_yaml_oarchive()
+{
 }
 
 } // namespace archive

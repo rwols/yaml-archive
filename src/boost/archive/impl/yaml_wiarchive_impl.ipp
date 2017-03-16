@@ -10,31 +10,31 @@
 
 #include <cstring>
 #if defined(BOOST_NO_STDC_NAMESPACE)
-namespace std{ 
-    using ::memcpy; 
-} //std
+namespace std {
+using ::memcpy;
+} // std
 #endif
 
 #include <boost/config.hpp> // msvc 6.0 needs this to suppress warnings
 #ifndef BOOST_NO_STD_WSTREAMBUF
 
-#include <boost/assert.hpp>
 #include <algorithm> // std::copy
-#include <exception> // uncaught exception
+#include <boost/assert.hpp>
 #include <boost/detail/workaround.hpp> // Dinkumware and RogueWave
+#include <exception>                   // uncaught exception
 #if BOOST_WORKAROUND(BOOST_DINKUMWARE_STDLIB, == 1)
 #include <boost/archive/dinkumware.hpp>
 #endif
 
-#include <boost/io/ios_state.hpp>
 #include <boost/core/no_exceptions_support.hpp>
+#include <boost/io/ios_state.hpp>
 #include <boost/serialization/string.hpp>
 
 #include <boost/archive/basic_yaml_archive.hpp>
 #include <boost/archive/yaml_wiarchive.hpp>
 
-#include <boost/archive/yaml_archive_exception.hpp>
 #include <boost/archive/iterators/mb_from_wchar.hpp>
+#include <boost/archive/yaml_archive_exception.hpp>
 
 #include <boost/archive/detail/utf8_codecvt_facet.hpp>
 
@@ -48,137 +48,119 @@ namespace archive {
 
 namespace { // anonymous
 
-void copy_to_ptr(char * s, const std::wstring & ws){
+void copy_to_ptr(char* s, const std::wstring& ws)
+{
     std::copy(
-        iterators::mb_from_wchar<std::wstring::const_iterator>(
-            ws.begin()
-        ), 
-        iterators::mb_from_wchar<std::wstring::const_iterator>(
-            ws.end()
-        ), 
-        s
-    );
+        iterators::mb_from_wchar<std::wstring::const_iterator>(ws.begin()),
+        iterators::mb_from_wchar<std::wstring::const_iterator>(ws.end()), s);
     s[ws.size()] = 0;
 }
 
 } // anonymous
 
-template<class Archive>
-BOOST_WARCHIVE_DECL void
-yaml_wiarchive_impl<Archive>::load(std::string & s){
+template <class Archive>
+BOOST_WARCHIVE_DECL void yaml_wiarchive_impl<Archive>::load(std::string& s)
+{
     std::wstring ws;
-    bool result = gimpl->parse_string(is, ws);
-    if(! result)
-        boost::serialization::throw_exception(
-            yaml_archive_exception(yaml_archive_exception::yaml_archive_parsing_error)
-        );
-    #if BOOST_WORKAROUND(_RWSTD_VER, BOOST_TESTED_AT(20101))
-    if(NULL != s.data())
-    #endif
+
+    bool result = gimpl->parse_string(this->This()->depth, is, ws);
+
+    if (!result)
+        boost::serialization::throw_exception(yaml_archive_exception(
+            yaml_archive_exception::yaml_archive_parsing_error));
+#if BOOST_WORKAROUND(_RWSTD_VER, BOOST_TESTED_AT(20101))
+    if (NULL != s.data())
+#endif
         s.resize(0);
     s.reserve(ws.size());
-    std::copy(
-        iterators::mb_from_wchar<std::wstring::iterator>(
-            ws.begin()
-        ), 
-        iterators::mb_from_wchar<std::wstring::iterator>(
-            ws.end()
-        ), 
-        std::back_inserter(s)
-    );
+    std::copy(iterators::mb_from_wchar<std::wstring::iterator>(ws.begin()),
+              iterators::mb_from_wchar<std::wstring::iterator>(ws.end()),
+              std::back_inserter(s));
 }
 
 #ifndef BOOST_NO_STD_WSTRING
-template<class Archive>
-BOOST_WARCHIVE_DECL void
-yaml_wiarchive_impl<Archive>::load(std::wstring & ws){
-    bool result = gimpl->parse_string(is, ws);
-    if(! result)
-        boost::serialization::throw_exception(
-            yaml_archive_exception(yaml_archive_exception::yaml_archive_parsing_error)
-        );
+template <class Archive>
+BOOST_WARCHIVE_DECL void yaml_wiarchive_impl<Archive>::load(std::wstring& ws)
+{
+    bool result = gimpl->parse_string(this->This()->depth, is, ws);
+    if (!result)
+        boost::serialization::throw_exception(yaml_archive_exception(
+            yaml_archive_exception::yaml_archive_parsing_error));
 }
 #endif
 
-template<class Archive>
-BOOST_WARCHIVE_DECL void
-yaml_wiarchive_impl<Archive>::load(char * s){
+template <class Archive>
+BOOST_WARCHIVE_DECL void yaml_wiarchive_impl<Archive>::load(char* s)
+{
     std::wstring ws;
-    bool result = gimpl->parse_string(is, ws);
-    if(! result)
-        boost::serialization::throw_exception(
-            yaml_archive_exception(yaml_archive_exception::yaml_archive_parsing_error)
-        );
+
+    bool result = gimpl->parse_string(this->This()->depth, is, ws);
+
+    if (!result)
+        boost::serialization::throw_exception(yaml_archive_exception(
+            yaml_archive_exception::yaml_archive_parsing_error));
     copy_to_ptr(s, ws);
 }
 
 #ifndef BOOST_NO_INTRINSIC_WCHAR_T
-template<class Archive>
-BOOST_WARCHIVE_DECL void
-yaml_wiarchive_impl<Archive>::load(wchar_t * ws){
+template <class Archive>
+BOOST_WARCHIVE_DECL void yaml_wiarchive_impl<Archive>::load(wchar_t* ws)
+{
     std::wstring twstring;
-    bool result = gimpl->parse_string(is, twstring);
-    if(! result)
-        boost::serialization::throw_exception(
-            yaml_archive_exception(yaml_archive_exception::yaml_archive_parsing_error)
-        );
+    bool result = gimpl->parse_string(this->This()->depth, is, twstring);
+    if (!result)
+        boost::serialization::throw_exception(yaml_archive_exception(
+            yaml_archive_exception::yaml_archive_parsing_error));
     std::memcpy(ws, twstring.c_str(), twstring.size());
     ws[twstring.size()] = L'\0';
 }
 #endif
 
-template<class Archive>
+template <class Archive>
 BOOST_WARCHIVE_DECL void
-yaml_wiarchive_impl<Archive>::load_override(class_name_type & t){
-    const std::wstring & ws = gimpl->rv.class_name;
-    if(ws.size() > BOOST_SERIALIZATION_MAX_KEY_SIZE - 1)
+yaml_wiarchive_impl<Archive>::load_override(class_name_type& t)
+{
+    const std::wstring& ws = gimpl->rv.class_name;
+    if (ws.size() > BOOST_SERIALIZATION_MAX_KEY_SIZE - 1)
         boost::serialization::throw_exception(
-            archive_exception(archive_exception::invalid_class_name)
-        );
+            archive_exception(archive_exception::invalid_class_name));
     copy_to_ptr(t, ws);
 }
 
-template<class Archive>
-BOOST_WARCHIVE_DECL void
-yaml_wiarchive_impl<Archive>::init(){
+template <class Archive>
+BOOST_WARCHIVE_DECL void yaml_wiarchive_impl<Archive>::init()
+{
     gimpl->init(is);
-    this->set_library_version(
-        library_version_type(gimpl->rv.version)
-    );
+    this->set_library_version(library_version_type(gimpl->rv.version));
 }
 
-template<class Archive>
+template <class Archive>
 BOOST_WARCHIVE_DECL
-yaml_wiarchive_impl<Archive>::yaml_wiarchive_impl(
-    std::wistream &is_,
-    unsigned int flags
-) :
-    basic_text_iprimitive<std::wistream>(
-        is_, 
-        true // don't change the codecvt - use the one below
-    ),
-    basic_yaml_iarchive<Archive>(flags),
-    gimpl(new yaml_wgrammar())
+yaml_wiarchive_impl<Archive>::yaml_wiarchive_impl(std::wistream& is_,
+                                                  unsigned int   flags)
+    : basic_text_iprimitive<std::wistream>(
+          is_,
+          true // don't change the codecvt - use the one below
+          ),
+      basic_yaml_iarchive<Archive>(flags), gimpl(new yaml_wgrammar())
 {
-    if(0 == (flags & no_codecvt)){
+    if (0 == (flags & no_codecvt))
+    {
         std::locale l = std::locale(
-            is_.getloc(),
-            new boost::archive::detail::utf8_codecvt_facet
-        );
+            is_.getloc(), new boost::archive::detail::utf8_codecvt_facet);
         // libstdc++ crashes without this
         is_.sync();
         is_.imbue(l);
     }
-    if(0 == (flags & no_header))
-        init();
+    if (0 == (flags & no_header)) init();
 }
 
-template<class Archive>
-BOOST_WARCHIVE_DECL
-yaml_wiarchive_impl<Archive>::~yaml_wiarchive_impl(){
-    if(std::uncaught_exception())
-        return;
-    if(0 == (this->get_flags() & no_header)){
+template <class Archive>
+BOOST_WARCHIVE_DECL yaml_wiarchive_impl<Archive>::~yaml_wiarchive_impl()
+{
+    if (std::uncaught_exception()) return;
+    if (0 == (this->get_flags() & no_header))
+    {
         gimpl->windup(is);
     }
 }
@@ -186,4 +168,4 @@ yaml_wiarchive_impl<Archive>::~yaml_wiarchive_impl(){
 } // namespace archive
 } // namespace boost
 
-#endif  // BOOST_NO_STD_WSTREAMBUF
+#endif // BOOST_NO_STD_WSTREAMBUF

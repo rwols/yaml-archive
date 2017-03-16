@@ -1,7 +1,7 @@
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
 // yaml_wgrammar.cpp:
 
-// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com . 
+// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com .
 // Use, modification and distribution is subject to the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -15,27 +15,30 @@
 #else
 
 #define BOOST_WARCHIVE_SOURCE
-#include <boost/serialization/config.hpp>
+
+#define BOOST_SPIRIT_DEBUG
+#ifdef BOOST_SPIRIT_DEBUG
+#include <boost/spirit/home/classic/debug/parser_names.hpp>
+#endif
+
 #include <boost/archive/impl/basic_yaml_grammar.hpp>
+#include <boost/serialization/config.hpp>
 
 using namespace boost::spirit::classic;
 
 // fixup for RogueWave
-#if ! defined(__SGI_STL_PORT) \
-&& defined(BOOST_RWSTD_VER) && BOOST_RWSTD_VER<=0x020101
+#if !defined(__SGI_STL_PORT) && defined(BOOST_RWSTD_VER) &&                    \
+    BOOST_RWSTD_VER <= 0x020101
 #include <string>
 namespace std {
-    template<>
-    inline wstring & 
-    wstring::replace (
-        wchar_t * first1, 
-        wchar_t * last1,
-        const wchar_t * first2,
-        const wchar_t * last2
-    ){
-        replace(first1-begin(),last1-first1,first2,last2-first2,0,last2-first2);
-        return *this;
-    }
+template <>
+inline wstring& wstring::replace(wchar_t* first1, wchar_t* last1,
+                                 const wchar_t* first2, const wchar_t* last2)
+{
+    replace(first1 - begin(), last1 - first1, first2, last2 - first2, 0,
+            last2 - first2);
+    return *this;
+}
 } // namespace std
 #endif
 
@@ -47,15 +50,15 @@ typedef basic_yaml_grammar<wchar_t> yaml_wgrammar;
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
 // specific definitions for wchar_t based YAML
 
-template<>
-void yaml_wgrammar::init_chset(){
+template <> void yaml_wgrammar::init_chset()
+{
     Char = chset_t(
-        #if defined(__GNUC__) && defined(linux)
-            L"\x9\xA\xD\x20-\xD7FF\xE000-\xFFFD\x10000-\x10FFFF"
-        #else
-            L"\x9\xA\xD\x20-\xD7FF\xE000-\xFFFD"
-        #endif
-    );
+#if defined(__GNUC__) && defined(linux)
+        L"\x9\xA\xD\x20-\xD7FF\xE000-\xFFFD\x10000-\x10FFFF"
+#else
+        L"\x9\xA\xD\x20-\xD7FF\xE000-\xFFFD"
+#endif
+        );
 
     Sch = chset_t(L"\x20\x9\xD\xA");
 
@@ -91,8 +94,7 @@ void yaml_wgrammar::init_chset(){
         L"\x1F59\x1F5B\x1F5D\x1F5F-\x1F7D\x1F80-\x1FB4\x1FB6-\x1FBC\x1FBE"
         L"\x1FC2-\x1FC4\x1FC6-\x1FCC\x1FD0-\x1FD3\x1FD6-\x1FDB\x1FE0-\x1FEC"
         L"\x1FF2-\x1FF4\x1FF6-\x1FFC\x2126\x212A-\x212B\x212E\x2180-\x2182"
-        L"\x3041-\x3094\x30A1-\x30FA\x3105-\x312C\xAC00-\xD7A3"
-    );
+        L"\x3041-\x3094\x30A1-\x30FA\x3105-\x312C\xAC00-\xD7A3");
 
     Ideographic = chset_t(L"\x4E00-\x9FA5\x3007\x3021-\x3029");
 
@@ -115,30 +117,19 @@ void yaml_wgrammar::init_chset(){
         L"\x0E47-\x0E4E\x0EB1\x0EB4-\x0EB9\x0EBB-\x0EBC\x0EC8-\x0ECD"
         L"\x0F18-\x0F19\x0F35\x0F37\x0F39\x0F3E\x0F3F\x0F71-\x0F84"
         L"\x0F86-\x0F8B\x0F90-\x0F95\x0F97\x0F99-\x0FAD\x0FB1-\x0FB7\x0FB9"
-        L"\x20D0-\x20DC\x20E1\x302A-\x302F\x3099\x309A"
-    );
+        L"\x20D0-\x20DC\x20E1\x302A-\x302F\x3099\x309A");
 
     Digit = chset_t(
         L"\x0030-\x0039\x0660-\x0669\x06F0-\x06F9\x0966-\x096F\x09E6-\x09EF"
         L"\x0A66-\x0A6F\x0AE6-\x0AEF\x0B66-\x0B6F\x0BE7-\x0BEF\x0C66-\x0C6F"
-        L"\x0CE6-\x0CEF\x0D66-\x0D6F\x0E50-\x0E59\x0ED0-\x0ED9\x0F20-\x0F29"
-    );
+        L"\x0CE6-\x0CEF\x0D66-\x0D6F\x0E50-\x0E59\x0ED0-\x0ED9\x0F20-\x0F29");
 
-    Extender = chset_t(
-        L"\x00B7\x02D0\x02D1\x0387\x0640\x0E46\x0EC6\x3005\x3031-\x3035"
-        L"\x309D-\x309E\x30FC-\x30FE"
-    );
+    Extender =
+        chset_t(L"\x00B7\x02D0\x02D1\x0387\x0640\x0E46\x0EC6\x3005\x3031-\x3035"
+                L"\x309D-\x309E\x30FC-\x30FE");
 
     NameChar =
-        Letter 
-        | Digit 
-        | L'.'
-        | L'-'
-        | L'_'
-        | L':'
-        | CombiningChar 
-        | Extender
-    ;
+        Letter | Digit | L'.' | L'-' | L'_' | L' ' | CombiningChar | Extender;
 }
 } // namespace archive
 } // namespace boost

@@ -122,6 +122,7 @@ install(
 add_subdirectory(ext)
 add_subdirectory(include)
 add_subdirectory(lib)
+add_subdirectory(src)
 
 if (yaml-archive_BUILD_UNIT_TESTS)
     enable_testing()

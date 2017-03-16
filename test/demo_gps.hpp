@@ -19,6 +19,7 @@
 #include <iostream>
 
 #include <boost/serialization/assume_abstract.hpp>
+#include <boost/serialization/list.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/utility.hpp>
 #include <boost/serialization/version.hpp>
@@ -39,8 +40,8 @@ class gps_position
     friend class boost::serialization::access;
     friend std::ostream& operator<<(std::ostream& os, const gps_position& gp);
 
-    int degrees;
-    int minutes;
+    int   degrees;
+    int   minutes;
     float seconds;
 
     template <class Archive>
@@ -75,8 +76,8 @@ class bus_stop
 {
     friend class boost::serialization::access;
     virtual std::string description() const = 0;
-    gps_position latitude;
-    gps_position longitude;
+    gps_position        latitude;
+    gps_position        longitude;
 
     template <class Archive>
     void serialize(Archive& ar, const unsigned int version)
@@ -112,8 +113,8 @@ std::ostream& operator<<(std::ostream& os, const bus_stop& bs)
 class bus_stop_corner : public bus_stop
 {
     friend class boost::serialization::access;
-    std::string street1;
-    std::string street2;
+    std::string         street1;
+    std::string         street2;
     virtual std::string description() const
     {
         return street1 + " and " + street2;
@@ -139,7 +140,7 @@ class bus_stop_corner : public bus_stop
 class bus_stop_destination : public bus_stop
 {
     friend class boost::serialization::access;
-    std::string name;
+    std::string         name;
     virtual std::string description() const { return name; }
     template <class Archive>
     void serialize(Archive& ar, const unsigned int version)
@@ -173,7 +174,7 @@ class bus_route
 {
     friend class boost::serialization::access;
     friend std::ostream& operator<<(std::ostream& os, const bus_route& br);
-    typedef bus_stop* bus_stop_pointer;
+    typedef bus_stop*           bus_stop_pointer;
     std::list<bus_stop_pointer> stops;
     template <class Archive>
     void serialize(Archive& ar, const unsigned int version)

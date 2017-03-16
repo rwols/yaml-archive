@@ -16,6 +16,7 @@
 #if BOOST_WORKAROUND(BOOST_DINKUMWARE_STDLIB, == 1)
 #include <boost/archive/dinkumware.hpp>
 #endif
+#include <boost/locale/encoding_utf.hpp>
 
 #include "A.hpp"
 
@@ -96,37 +97,6 @@ bool A::operator==(const A& rhs) const
            && z == rhs.z
 #endif
         ;
-
-    //                if (b != rhs.b) return false;
-    //     if (l != rhs.l) return false;
-    // #ifndef BOOST_NO_INT64_T
-    //     if (f != rhs.f) return false;
-    //     if (g != rhs.g) return false;
-    // #endif
-    //     if (m != rhs.m) return false;
-    //     if (n != rhs.n) return false;
-    //     if (o != rhs.o) return false;
-    //     if (p != rhs.p) return false;
-    //     if (q != rhs.q) return false;
-    // #ifndef BOOST_NO_CWCHAR
-    //     if (r != rhs.r) return false;
-    // #endif
-    //     if (c != rhs.c) return false;
-    //     if (s != rhs.s) return false;
-    //     if (t != rhs.t) return false;
-    //     if (u != rhs.u) return false;
-    //     if (v != rhs.v) return false;
-
-    //     // FIXME!!!!
-    //     if (std::abs(boost::math::float_distance(x, rhs.x)) > 8) return
-    //     false;
-
-    //     if (y != rhs.y) return false;
-    // #ifndef BOOST_NO_STD_WSTRING
-    //     if (z != rhs.z) return false;
-    // #endif
-
-    //     return true;
 }
 
 bool A::operator!=(const A& rhs) const { return !(*this == rhs); }
@@ -189,7 +159,8 @@ std::ostream& operator<<(std::ostream& os, const A& a)
     os << ' ' << a.x;
     os << ' ' << a.y;
 #ifndef BOOST_NO_STD_WSTRING
-    os << " and some wstring...";
+    using boost::locale::conv::utf_to_utf;
+    os << ' ' << utf_to_utf<std::string::value_type>(a.z);
 #endif
     return os << '>';
 }

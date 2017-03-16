@@ -19,59 +19,31 @@
 #include "A.ipp"
 #include "io_fixture.hpp"
 
-// bool A::check_equal(const A& rhs) const
-// {
-//     BOOST_CHECK_EQUAL(b, rhs.b);
-//     BOOST_CHECK_EQUAL(l, rhs.l);
-// #ifndef BOOST_NO_INT64_T
-//     BOOST_CHECK_EQUAL(f, rhs.f);
-//     BOOST_CHECK_EQUAL(g, rhs.g);
-// #endif
-//     BOOST_CHECK_EQUAL(m, rhs.m);
-//     BOOST_CHECK_EQUAL(n, rhs.n);
-//     BOOST_CHECK_EQUAL(o, rhs.o);
-//     BOOST_CHECK_EQUAL(p, rhs.p);
-//     BOOST_CHECK_EQUAL(q, rhs.q);
-// #ifndef BOOST_NO_CWCHAR
-//     BOOST_CHECK_EQUAL(r, rhs.r);
-// #endif
-//     BOOST_CHECK_EQUAL(c, rhs.c);
-//     BOOST_CHECK_EQUAL(s, rhs.s);
-//     BOOST_CHECK_EQUAL(t, rhs.t);
-//     BOOST_CHECK_EQUAL(u, rhs.u);
-//     BOOST_CHECK_EQUAL(v, rhs.v);
-//     BOOST_CHECK_EQUAL(l, rhs.l);
-//     // FIXME!!!
-//     BOOST_CHECK(std::abs(boost::math::float_distance(w, rhs.w)) < 8);
-//     BOOST_CHECK(std::abs(boost::math::float_distance(x, rhs.x)) < 8);
-//     BOOST_CHECK(!(0 != y.compare(rhs.y)));
-// #ifndef BOOST_NO_STD_WSTRING
-//     BOOST_CHECK(!(0 != z.compare(rhs.z)));
-// #endif
-//     return true;
-// }
-
 BOOST_FIXTURE_TEST_CASE(simple_class, io_fixture)
 {
     for (std::size_t i = 0; i < get_string_sample_count(); ++i)
     {
         for (std::size_t j = 0; j < get_wstring_sample_count(); ++j)
         {
-            A a;
+            A a, another_a;
             a.y = get_string_sample(i);
 #ifndef BOOST_NO_STD_WSTRING
             a.z = get_wstring_sample(j);
 #endif
-            check_roundtrip(a);
+            const auto filename = get_filename() + "_" + std::to_string(i) +
+                                  "_" + std::to_string(j) +
+                                  ARCHIVE_FILENAME_EXTENSION;
+            {
+                test_ostream  os(filename.c_str(), STREAM_FLAGS);
+                test_oarchive oa(os, ARCHIVE_FLAGS);
+                oa << BOOST_SERIALIZATION_NVP(a);
+            }
+            {
+                test_istream  is(filename.c_str(), STREAM_FLAGS);
+                test_iarchive ia(is, ARCHIVE_FLAGS);
+                ia >> boost::serialization::make_nvp("a", another_a);
+            }
+            BOOST_CHECK_EQUAL(a, another_a);
         }
     }
-    // A a;
-    // check_roundtrip(a);
-    // {
-    //     output() << boost::serialization::make_nvp("a", a);
-    // }
-    // {
-    //     input() >> boost::serialization::make_nvp("a", a1);
-    // }
-    // BOOST_CHECK_EQUAL(a, a1);
 }

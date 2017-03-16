@@ -55,7 +55,8 @@ static const char* s_narrow_string_samples[] = {
     "I believe that the sun is about ninety-three million miles from the "
     "earth; that it is a hot globe many times bigger than the earth; that, "
     "owing to the earth’s rotation, it rises every morning, and will continue "
-    "to do so for an indefinite time in the future."
+    "to do so for an indefinite time in the future.",
+    "Here is a string with some \"qoutes\" inside it."
 
 };
 

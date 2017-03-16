@@ -1,59 +1,71 @@
-set(prefix boost/archive)
 
-add_library(yaml-archive-2
-  
-  ${prefix}/impl/yaml_grammar.cpp
-  ${prefix}/impl/yaml_wgrammar.cpp
+add_library(yaml-archive-better
+    boost/archive/impl/yaml_grammar.cpp
+    boost/archive/impl/yaml_wgrammar.cpp
+    boost/archive/basic_yaml_archive.cpp
+    boost/archive/yaml_archive_exception.cpp
+    boost/archive/yaml_iarchive.cpp
+    boost/archive/yaml_oarchive.cpp
+    boost/archive/yaml_wiarchive.cpp
+    boost/archive/yaml_woarchive.cpp
+    )
 
-  ${prefix}/basic_yaml_iarchive.cpp
-  ${prefix}/yaml_archive_exception.cpp
-  ${prefix}/yaml_iarchive.cpp
-  ${prefix}/yaml_oarchive.cpp
-  ${prefix}/yaml_wiarchive.cpp
-  ${prefix}/yaml_woarchive.cpp
-  )
+# set_target_properties(yaml-archive-better PROPERTIES CXX_STANDARD 11)
 
-set_target_properties(yaml-archive-2
-  PROPERTIES
-    CXX_STANDARD 
-      11
-    PUBLIC_HEADERS 
-      ${prefix}/impl/basic_yaml_grammar.hpp
+set(public_headers
+    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/basic_yaml_archive.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/iterators/yaml_escape.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/iterators/yaml_unescape_exception.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/yaml_iarchive.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/basic_yaml_iarchive.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/polymorphic_yaml_iarchive.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/yaml_oarchive.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/basic_yaml_oarchive.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/polymorphic_yaml_oarchive.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/yaml_wiarchive.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/impl/basic_yaml_grammar.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/polymorphic_yaml_wiarchive.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/yaml_woarchive.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/iterators/yaml_escape.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/polymorphic_yaml_woarchive.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/iterators/yaml_unescape.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/yaml_archive_exception.hpp")
 
-      ${prefix}/iterators/yaml_escape.hpp
-      ${prefix}/iterators/yaml_unescape.hpp
-      ${prefix}/iterators/yaml_unescape_exception.hpp
+set(private_headers
+    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/impl/basic_yaml_grammar.ipp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/impl/basic_yaml_iarchive.ipp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/impl/basic_yaml_oarchive.ipp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/impl/yaml_iarchive_impl.ipp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/impl/yaml_oarchive_impl.ipp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/impl/yaml_wiarchive_impl.ipp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/impl/yaml_woarchive_impl.ipp")
 
-      ${prefix}/basic_yaml_archive.hpp
-      ${prefix}/basic_yaml_iarchive.hpp
-      ${prefix}/basic_yaml_oarchive.hpp
-      ${prefix}/polymorphic_yaml_iarchive.hpp
-      ${prefix}/polymorphic_yaml_oarchive.hpp
-      ${prefix}/polymorphic_yaml_woarchive.hpp
-      ${prefix}/polymorphic_yaml_woarchive.hpp
-      ${prefix}/yaml_archive_exception.hpp
-      ${prefix}/yaml_iarchive.hpp
-      ${prefix}/yaml_oarchive.hpp
-      ${prefix}/yaml_wiarchive.hpp
-      ${prefix}/yaml_woarchive.hpp
-  )
+set_target_properties(yaml-archive-better
+    PROPERTIES
+        CXX_STANDARD 
+            11
+        PUBLIC_HEADER
+            "${public_headers}"
+    )
 
-target_include_directories(yaml-archive-2 PUBLIC  
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>  
+target_include_directories(yaml-archive-better PUBLIC  
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>  
     $<INSTALL_INTERFACE:include>
 )
 
+target_sources(yaml-archive-better PUBLIC "${public_headers}" "${private_headers}")
+
 # Link with boost serialization
 if (BUILD_SHARED_LIBS)
-  set(Boost_USE_STATIC_LIBS OFF)
+    set(Boost_USE_STATIC_LIBS OFF)
 else()
-  set(Boost_USE_STATIC_LIBS ON)
+    set(Boost_USE_STATIC_LIBS ON)
 endif()
-find_package(Boost 1.54 COMPONENTS system serialization REQUIRED)
-target_include_directories(yaml-archive-2 PUBLIC ${Boost_INCLUDE_DIR})
-target_link_libraries(yaml-archive-2 PUBLIC ${Boost_LIBRARIES})
+find_package(Boost 1.54 COMPONENTS wserialization REQUIRED)
+target_include_directories(yaml-archive-better PUBLIC ${Boost_INCLUDE_DIR})
+target_link_libraries(yaml-archive-better PUBLIC ${Boost_LIBRARIES})
 
-install(TARGETS yaml-archive-2
+install(TARGETS yaml-archive-better
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
     PUBLIC_HEADER DESTINATION include)

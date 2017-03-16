@@ -1,7 +1,7 @@
 #include "A.hpp"
 #include "io_fixture.hpp"
+#include <boost/serialization/deque.hpp>
 #include <boost/test/unit_test.hpp>
-#include <deque>
 
 BOOST_FIXTURE_TEST_CASE(std_deque, io_fixture)
 {

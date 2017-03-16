@@ -3,111 +3,113 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER)
-# pragma once
+#pragma once
 #endif
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
 // yaml_escape.hpp
 
-// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com . 
+// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com .
 // Use, modification and distribution is subject to the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org for updates, documentation, and revision history.
 
-#include <boost/assert.hpp>
 #include <boost/archive/iterators/escape.hpp>
+#include <boost/assert.hpp>
 
-namespace boost { 
+namespace boost {
 namespace archive {
 namespace iterators {
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
 // insert escapes into yaml text
 
-template<class Base>
-class yaml_escape 
-    : public escape<yaml_escape<Base>, Base>
+template <class Base> class yaml_escape : public escape<yaml_escape<Base>, Base>
 {
     friend class boost::iterator_core_access;
 
     typedef escape<yaml_escape<Base>, Base> super_t;
 
-public:
-    char fill(const char * & bstart, const char * & bend);
-    wchar_t fill(const wchar_t * & bstart, const wchar_t * & bend);
+  public:
+    char fill(const char*& bstart, const char*& bend);
+    wchar_t fill(const wchar_t*& bstart, const wchar_t*& bend);
 
-    template<class T>
-    yaml_escape(T start) :
-        super_t(Base(static_cast< T >(start)))
-    {}
+    template <class T>
+    yaml_escape(T start) : super_t(Base(static_cast<T>(start)))
+    {
+    }
     // intel 7.1 doesn't like default copy constructor
-    yaml_escape(const yaml_escape & rhs) : 
-        super_t(rhs.base_reference())
-    {}
+    yaml_escape(const yaml_escape& rhs) : super_t(rhs.base_reference()) {}
 };
 
-template<class Base>
-char yaml_escape<Base>::fill(
-    const char * & bstart, 
-    const char * & bend
-){
-    char current_value = * this->base_reference();
-    switch(current_value){
-    case '<':
-        bstart = "&lt;";
-        bend = bstart + 4;
-        break;
-    case '>':
-        bstart = "&gt;";
-        bend = bstart + 4;
-        break;
-    case '&':
-        bstart = "&amp;";
-        bend = bstart + 5;
-        break;
+template <class Base>
+char yaml_escape<Base>::fill(const char*& bstart, const char*& bend)
+{
+    char current_value = *this->base_reference();
+    switch (current_value)
+    {
     case '"':
-        bstart = "&quot;";
-        bend = bstart + 6;
+        bstart = "\\\"";
+        bend = bstart + 2;
         break;
-    case '\'':
-        bstart = "&apos;";
-        bend = bstart + 6;
-        break;
+    // case '<':
+    //     bstart = "&lt;";
+    //     bend = bstart + 4;
+    //     break;
+    // case '>':
+    //     bstart = "&gt;";
+    //     bend = bstart + 4;
+    //     break;
+    // case '&':
+    //     bstart = "&amp;";
+    //     bend = bstart + 5;
+    //     break;
+    // case '"':
+    //     bstart = "&quot;";
+    //     bend = bstart + 6;
+    //     break;
+    // case '\'':
+    //     bstart = "&apos;";
+    //     bend = bstart + 6;
+    //     break;
     default:
         return current_value;
     }
     return *bstart;
 }
 
-template<class Base>
-wchar_t yaml_escape<Base>::fill(
-    const wchar_t * & bstart, 
-    const wchar_t * & bend
-){
-    wchar_t current_value = * this->base_reference();
-    switch(current_value){
-    case '<':
-        bstart = L"&lt;";
-        bend = bstart + 4;
-        break;
-    case '>':
-        bstart = L"&gt;";
-        bend = bstart + 4;
-        break;
-    case '&':
-        bstart = L"&amp;";
-        bend = bstart + 5;
-        break;
+template <class Base>
+wchar_t yaml_escape<Base>::fill(const wchar_t*& bstart, const wchar_t*& bend)
+{
+    wchar_t current_value = *this->base_reference();
+    switch (current_value)
+    {
     case '"':
-        bstart = L"&quot;";
-        bend = bstart + 6;
+        bstart = L"\\\"";
+        bend = bstart + 2;
         break;
-    case '\'':
-        bstart = L"&apos;";
-        bend = bstart + 6;
-        break;
+    // case '<':
+    //     bstart = L"&lt;";
+    //     bend = bstart + 4;
+    //     break;
+    // case '>':
+    //     bstart = L"&gt;";
+    //     bend = bstart + 4;
+    //     break;
+    // case '&':
+    //     bstart = L"&amp;";
+    //     bend = bstart + 5;
+    //     break;
+    // case '"':
+    //     bstart = L"&quot;";
+    //     bend = bstart + 6;
+    //     break;
+    // case '\'':
+    //     bstart = L"&apos;";
+    //     bend = bstart + 6;
+    //     break;
     default:
         return current_value;
     }

@@ -1,16 +1,5 @@
 include(CMakeParseArguments)
 
-# Creates a common "abstract" target that all tests link against.
-# Saves some boilerplate code.
-# add_library(serialization-test-interface INTERFACE)
-# target_include_directories(serialization-test-interface INTERFACE ${Boost_INCLUDE_DIRS})
-# target_link_libraries(serialization-test-interface INTERFACE ${Boost_LIBRARIES})
-# target_compile_definitions(serialization-test-interface INTERFACE BOOST_ALL_NO_LIB)
-# target_compile_definitions(serialization-test-interface INTERFACE BOOST_LIB_DIAGNOSTICS)
-# if (BUILD_SHARED_LIBS)
-#   target_compile_definitions(serialization-test-interface INTERFACE BOOST_ALL_DYN_LINK)
-# endif()
-
 function(target_create_boost_archive_test_suite)
   set(functionArguments 
     LIBRARY_TARGET
@@ -44,6 +33,7 @@ function(target_create_boost_archive_test_suite)
     io_fixture.cpp
 
     # unit tests -- basics
+    empty.cpp
     char_.cpp
     signed_char.cpp
     unsigned_char.cpp
@@ -138,6 +128,7 @@ function(target_create_boost_archive_test_suite)
   set_property(TARGET ${exe} PROPERTY CXX_STANDARD 11)
 
   # unit tests -- basics
+  add_test(NAME empty COMMAND ${exe} --run_test=empty)
   add_test(NAME char COMMAND ${exe} --run_test=char_)
   add_test(NAME signed_char COMMAND ${exe} --run_test=signed_char)
   add_test(NAME unsigned_char COMMAND ${exe} --run_test=unsigned_char)
@@ -357,14 +348,39 @@ endfunction(target_create_boost_polymorphic_archive_test_suite)
 # target_link_libraries(test1 PRIVATE yaml-archive)
 # target_compile_options(test1 PRIVATE -ftemplate-backtrace-limit=0)
 
-# add_executable(demo_yaml demo_yaml.cpp)
-# set_property(TARGET demo_yaml PROPERTY CXX_STANDARD 11)
-# target_link_libraries(demo_yaml PRIVATE serialization-test-interface)
-# target_link_libraries(demo_yaml PRIVATE yaml-archive)
-# target_compile_options(demo_yaml PRIVATE -ftemplate-backtrace-limit=0)
+add_executable(demo_yaml demo_yaml.cpp)
+set_property(TARGET demo_yaml PROPERTY CXX_STANDARD 11)
+target_link_libraries(demo_yaml PRIVATE yaml-archive-better)
+target_compile_options(demo_yaml PRIVATE -ftemplate-backtrace-limit=0)
+
+# target_create_boost_archive_test_suite(
+#   LIBRARY_TARGET yaml-archive
+#   INPUT_ARCHIVE_HEADER boost/archive/yaml_iarchive.hpp 
+#   OUTPUT_ARCHIVE_HEADER boost/archive/yaml_oarchive.hpp
+#   INPUT_ARCHIVE_FULLY_QUALIFIED_NAME boost::archive::yaml_iarchive 
+#   OUTPUT_ARCHIVE_FULLY_QUALIFIED_NAME boost::archive::yaml_oarchive 
+#   TEST_ISTREAM std::ifstream 
+#   TEST_OSTREAM std::ofstream
+#   ARCHIVE_FILENAME_EXTENSION yml
+#   ARCHIVE_FLAGS "0"
+#   STREAM_FLAGS "(std::ios_base::openmode)0"
+#   )
+
+# target_create_boost_polymorphic_archive_test_suite(
+#   LIBRARY_TARGET yaml-archive
+#   INPUT_ARCHIVE_HEADER boost/archive/polymorphic_yaml_iarchive.hpp 
+#   OUTPUT_ARCHIVE_HEADER boost/archive/polymorphic_yaml_oarchive.hpp
+#   INPUT_ARCHIVE_FULLY_QUALIFIED_NAME boost::archive::polymorphic_yaml_iarchive 
+#   OUTPUT_ARCHIVE_FULLY_QUALIFIED_NAME boost::archive::polymorphic_yaml_oarchive 
+#   TEST_ISTREAM std::ifstream 
+#   TEST_OSTREAM std::ofstream
+#   ARCHIVE_FILENAME_EXTENSION yml
+#   ARCHIVE_FLAGS "0"
+#   STREAM_FLAGS "(std::ios_base::openmode)0"
+#   )
 
 target_create_boost_archive_test_suite(
-  LIBRARY_TARGET yaml-archive
+  LIBRARY_TARGET yaml-archive-better
   INPUT_ARCHIVE_HEADER boost/archive/yaml_iarchive.hpp 
   OUTPUT_ARCHIVE_HEADER boost/archive/yaml_oarchive.hpp
   INPUT_ARCHIVE_FULLY_QUALIFIED_NAME boost::archive::yaml_iarchive 
@@ -376,18 +392,17 @@ target_create_boost_archive_test_suite(
   STREAM_FLAGS "(std::ios_base::openmode)0"
   )
 
-target_create_boost_polymorphic_archive_test_suite(
-  LIBRARY_TARGET yaml-archive
-  INPUT_ARCHIVE_HEADER boost/archive/polymorphic_yaml_iarchive.hpp 
-  OUTPUT_ARCHIVE_HEADER boost/archive/polymorphic_yaml_oarchive.hpp
-  INPUT_ARCHIVE_FULLY_QUALIFIED_NAME boost::archive::polymorphic_yaml_iarchive 
-  OUTPUT_ARCHIVE_FULLY_QUALIFIED_NAME boost::archive::polymorphic_yaml_oarchive 
-  TEST_ISTREAM std::ifstream 
-  TEST_OSTREAM std::ofstream
-  ARCHIVE_FILENAME_EXTENSION yml
-  ARCHIVE_FLAGS "0"
-  STREAM_FLAGS "(std::ios_base::openmode)0"
-  )
-
+# target_create_boost_polymorphic_archive_test_suite(
+#   LIBRARY_TARGET yaml-archive
+#   INPUT_ARCHIVE_HEADER boost/archive/polymorphic_yaml_iarchive.hpp 
+#   OUTPUT_ARCHIVE_HEADER boost/archive/polymorphic_yaml_oarchive.hpp
+#   INPUT_ARCHIVE_FULLY_QUALIFIED_NAME boost::archive::polymorphic_yaml_iarchive 
+#   OUTPUT_ARCHIVE_FULLY_QUALIFIED_NAME boost::archive::polymorphic_yaml_oarchive 
+#   TEST_ISTREAM std::ifstream 
+#   TEST_OSTREAM std::ofstream
+#   ARCHIVE_FILENAME_EXTENSION yml
+#   ARCHIVE_FLAGS "0"
+#   STREAM_FLAGS "(std::ios_base::openmode)0"
+#   )
 
 

@@ -3,13 +3,13 @@
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER)
-# pragma once
+#pragma once
 #endif
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
 // yaml_unescape_exception.hpp:
 
-// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com . 
+// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com .
 // Use, modification and distribution is subject to the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -31,11 +31,10 @@ namespace iterators {
 //
 class yaml_unescape_exception : public std::exception
 {
-public:
-    yaml_unescape_exception()
-    {}
+  public:
+    yaml_unescape_exception() {}
 
-    virtual const char *what( ) const throw( )
+    virtual const char* what() const throw()
     {
         return "yaml contained un-recognized escape code";
     }
@@ -45,5 +44,5 @@ public:
 } // namespace archive
 } // namespace boost
 
-#endif //BOOST_NO_EXCEPTIONS
-#endif //BOOST_ARCHIVE_ITERATORS_YAML_UNESCAPE_EXCEPTION_HPP
+#endif // BOOST_NO_EXCEPTIONS
+#endif // BOOST_ARCHIVE_ITERATORS_YAML_UNESCAPE_EXCEPTION_HPP

@@ -111,8 +111,6 @@ int main(int argc, char* argv[])
     std::cout << new_schedule;
     // should be the same as the old one. (except for the pointer values)
 
-    std::remove(filename.c_str());
-
     delete bs0;
     delete bs1;
     delete bs2;

@@ -9,36 +9,38 @@
 #include <boost/config.hpp>
 #ifndef BOOST_NO_STD_WSTREAMBUF
 
+#include <algorithm> // std::copy
+#include <exception>
+#include <locale>
 #include <ostream>
 #include <string>
-#include <algorithm> // std::copy
-#include <locale>
-#include <exception>
 
-#include <cstring> // strlen
 #include <cstdlib> // mbtowc
+#include <cstring> // strlen
 #include <cwchar>  // wcslen
 
 #include <boost/config.hpp>
 #if defined(BOOST_NO_STDC_NAMESPACE)
-namespace std{ 
-    using ::strlen; 
-    #if ! defined(BOOST_NO_INTRINSIC_WCHAR_T)
-        using ::mbtowc; 
-        using ::wcslen;
-    #endif
+namespace std {
+using ::strlen;
+#if !defined(BOOST_NO_INTRINSIC_WCHAR_T)
+using ::mbtowc;
+using ::wcslen;
+#endif
 } // namespace std
 #endif
 
-#include <boost/archive/yaml_woarchive.hpp>
 #include <boost/archive/detail/utf8_codecvt_facet.hpp>
+#include <boost/archive/yaml_woarchive.hpp>
 
 #include <boost/serialization/throw_exception.hpp>
 
-#include <boost/archive/iterators/yaml_escape.hpp>
-#include <boost/archive/iterators/wchar_from_mb.hpp>
-#include <boost/archive/iterators/ostream_iterator.hpp>
+#include <boost/archive/iterators/base64_from_binary.hpp>
 #include <boost/archive/iterators/dataflow_exception.hpp>
+#include <boost/archive/iterators/ostream_iterator.hpp>
+#include <boost/archive/iterators/transform_width.hpp>
+#include <boost/archive/iterators/wchar_from_mb.hpp>
+#include <boost/archive/iterators/yaml_escape.hpp>
 
 namespace boost {
 namespace archive {
@@ -47,33 +49,32 @@ namespace archive {
 // implemenations of functions specific to wide char archives
 
 // copy chars to output escaping to yaml and widening characters as we go
-template<class InputIterator>
-void save_iterator(std::wostream &os, InputIterator begin, InputIterator end){
-    typedef iterators::wchar_from_mb<
-        iterators::yaml_escape<InputIterator>
-    > xmbtows;
-    std::copy(
-        xmbtows(begin),
-        xmbtows(end),
-        boost::archive::iterators::ostream_iterator<wchar_t>(os)
-    );
+template <class InputIterator>
+void save_iterator(std::wostream& os, InputIterator begin, InputIterator end)
+{
+    typedef iterators::wchar_from_mb<iterators::yaml_escape<InputIterator>>
+        xmbtows;
+    std::copy(xmbtows(begin), xmbtows(end),
+              boost::archive::iterators::ostream_iterator<wchar_t>(os));
 }
 
-template<class Archive>
+template <class Archive>
 BOOST_WARCHIVE_DECL void
-yaml_woarchive_impl<Archive>::save(const std::string & s){
+yaml_woarchive_impl<Archive>::save(const std::string& s)
+{
     // note: we don't use s.begin() and s.end() because dinkumware
     // doesn't have string::value_type defined. So use a wrapper
     // around these values to implement the definitions.
-    const char * begin = s.data();
-    const char * end = begin + s.size();
+    const char* begin = s.data();
+    const char* end = begin + s.size();
     save_iterator(os, begin, end);
 }
 
 #ifndef BOOST_NO_STD_WSTRING
-template<class Archive>
+template <class Archive>
 BOOST_WARCHIVE_DECL void
-yaml_woarchive_impl<Archive>::save(const std::wstring & ws){
+yaml_woarchive_impl<Archive>::save(const std::wstring& ws)
+{
 #if 0
     typedef iterators::yaml_escape<std::wstring::const_iterator> xmbtows;
     std::copy(
@@ -82,88 +83,93 @@ yaml_woarchive_impl<Archive>::save(const std::wstring & ws){
         boost::archive::iterators::ostream_iterator<wchar_t>(os)
     );
 #endif
-    typedef iterators::yaml_escape<const wchar_t *> xmbtows;
-    std::copy(
-        xmbtows(ws.data()),
-        xmbtows(ws.data() + ws.size()),
-        boost::archive::iterators::ostream_iterator<wchar_t>(os)
-    );
+    typedef iterators::yaml_escape<const wchar_t*> xmbtows;
+    std::copy(xmbtows(ws.data()), xmbtows(ws.data() + ws.size()),
+              boost::archive::iterators::ostream_iterator<wchar_t>(os));
 }
-#endif //BOOST_NO_STD_WSTRING
+#endif // BOOST_NO_STD_WSTRING
 
-template<class Archive>
-BOOST_WARCHIVE_DECL void
-yaml_woarchive_impl<Archive>::save(const char * s){
-   save_iterator(os, s, s + std::strlen(s));
+template <class Archive>
+BOOST_WARCHIVE_DECL void yaml_woarchive_impl<Archive>::save(const char* s)
+{
+    save_iterator(os, s, s + std::strlen(s));
 }
 
 #ifndef BOOST_NO_INTRINSIC_WCHAR_T
-template<class Archive>
-BOOST_WARCHIVE_DECL void
-yaml_woarchive_impl<Archive>::save(const wchar_t * ws){
+template <class Archive>
+BOOST_WARCHIVE_DECL void yaml_woarchive_impl<Archive>::save(const wchar_t* ws)
+{
     os << ws;
-    typedef iterators::yaml_escape<const wchar_t *> xmbtows;
-    std::copy(
-        xmbtows(ws),
-        xmbtows(ws + std::wcslen(ws)),
-        boost::archive::iterators::ostream_iterator<wchar_t>(os)
-    );
+    typedef iterators::yaml_escape<const wchar_t*> xmbtows;
+    std::copy(xmbtows(ws), xmbtows(ws + std::wcslen(ws)),
+              boost::archive::iterators::ostream_iterator<wchar_t>(os));
 }
 #endif
 
-template<class Archive>
+template <class Archive>
 BOOST_WARCHIVE_DECL
-yaml_woarchive_impl<Archive>::yaml_woarchive_impl(
-    std::wostream & os_,
-    unsigned int flags
-) :
-    basic_text_oprimitive<std::wostream>(
-        os_,
-        true // don't change the codecvt - use the one below
-    ),
-    basic_yaml_oarchive<Archive>(flags)
+yaml_woarchive_impl<Archive>::yaml_woarchive_impl(std::wostream& os_,
+                                                  unsigned int   flags)
+    : basic_text_oprimitive<std::wostream>(
+          os_,
+          true // don't change the codecvt - use the one below
+          ),
+      basic_yaml_oarchive<Archive>(flags)
 {
-    if(0 == (flags & no_codecvt)){
+    if (0 == (flags & no_codecvt))
+    {
         std::locale l = std::locale(
-            os_.getloc(),
-            new boost::archive::detail::utf8_codecvt_facet
-        );
+            os_.getloc(), new boost::archive::detail::utf8_codecvt_facet);
         os_.flush();
         os_.imbue(l);
     }
-    if(0 == (flags & no_header))
-        this->init();
+    if (0 == (flags & no_header)) this->init();
 }
 
-template<class Archive>
-BOOST_WARCHIVE_DECL
-yaml_woarchive_impl<Archive>::~yaml_woarchive_impl(){
-    if(std::uncaught_exception())
-        return;
-    if(0 == (this->get_flags() & no_header)){
+template <class Archive>
+BOOST_WARCHIVE_DECL yaml_woarchive_impl<Archive>::~yaml_woarchive_impl()
+{
+    if (std::uncaught_exception()) return;
+    if (0 == (this->get_flags() & no_header))
+    {
         save(L"</boost_serialization>\n");
     }
 }
 
-template<class Archive>
+template <class Archive>
 BOOST_WARCHIVE_DECL void
-yaml_woarchive_impl<Archive>::save_binary(
-    const void *address,
-    std::size_t count
-){
+yaml_woarchive_impl<Archive>::save_binary(const void* address,
+                                          std::size_t count)
+{
     this->end_preamble();
-    #if ! defined(__MWERKS__)
-    this->basic_text_oprimitive<std::wostream>::save_binary(
-    #else
-    this->basic_text_oprimitive::save_binary(
-    #endif
-        address, 
-        count
-    );
+    typedef typename std::wostream::char_type CharType;
+
+    if (0 == count) return;
+
+    if (os.fail())
+        boost::serialization::throw_exception(
+            archive_exception(archive_exception::output_stream_error));
+
+    typedef boost::archive::iterators::base64_from_binary<
+        boost::archive::iterators::transform_width<const char*, 6, 8>,
+        const char // cwpro8 needs this
+        >
+        base64_text;
+
+    boost::archive::iterators::ostream_iterator<CharType> oi(os);
+    std::copy(base64_text(static_cast<const char*>(address)),
+              base64_text(static_cast<const char*>(address) + count), oi);
+
+    std::size_t tail = count % 3;
+    if (tail > 0)
+    {
+        *oi++ = '=';
+        if (tail < 2) *oi = '=';
+    }
     this->indent_next = true;
 }
 
 } // namespace archive
 } // namespace boost
 
-#endif //BOOST_NO_STD_WSTREAMBUF
+#endif // BOOST_NO_STD_WSTREAMBUF
