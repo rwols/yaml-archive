@@ -25,20 +25,14 @@ using ::memcpy;
 #if BOOST_WORKAROUND(BOOST_DINKUMWARE_STDLIB, == 1)
 #include <boost/archive/dinkumware.hpp>
 #endif
-
+#include "basic_yaml_grammar.hpp"
+#include <boost/archive/detail/utf8_codecvt_facet.hpp>
+#include <boost/archive/iterators/mb_from_wchar.hpp>
+#include <boost/archive/yaml_archive_exception.hpp>
+#include <boost/archive/yaml_wiarchive.hpp>
 #include <boost/core/no_exceptions_support.hpp>
 #include <boost/io/ios_state.hpp>
 #include <boost/serialization/string.hpp>
-
-#include <boost/archive/basic_yaml_archive.hpp>
-#include <boost/archive/yaml_wiarchive.hpp>
-
-#include <boost/archive/iterators/mb_from_wchar.hpp>
-#include <boost/archive/yaml_archive_exception.hpp>
-
-#include <boost/archive/detail/utf8_codecvt_facet.hpp>
-
-#include "basic_yaml_grammar.hpp"
 
 namespace boost {
 namespace archive {

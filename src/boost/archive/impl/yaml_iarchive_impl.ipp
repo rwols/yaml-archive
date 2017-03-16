@@ -34,9 +34,7 @@ using ::mbrtowc;
 #include <boost/archive/dinkumware.hpp>
 #endif
 
-#include <boost/core/no_exceptions_support.hpp>
-
-#include <boost/archive/basic_yaml_archive.hpp>
+#include "basic_yaml_grammar.hpp"
 #include <boost/archive/iterators/binary_from_base64.hpp>
 #include <boost/archive/iterators/dataflow_exception.hpp>
 #include <boost/archive/iterators/istream_iterator.hpp>
@@ -44,9 +42,8 @@ using ::mbrtowc;
 #include <boost/archive/iterators/transform_width.hpp>
 #include <boost/archive/yaml_archive_exception.hpp>
 #include <boost/archive/yaml_iarchive.hpp>
+#include <boost/core/no_exceptions_support.hpp>
 #include <boost/locale/encoding_utf.hpp>
-
-#include "basic_yaml_grammar.hpp"
 
 namespace boost {
 namespace archive {

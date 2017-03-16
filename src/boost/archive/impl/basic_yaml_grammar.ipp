@@ -32,12 +32,10 @@
 
 // for head_iterator test
 //#include <boost/bind.hpp>
-#include <boost/function.hpp>
-
-#include <boost/archive/basic_yaml_archive.hpp>
 #include <boost/archive/impl/basic_yaml_grammar.hpp>
 #include <boost/archive/iterators/yaml_unescape.hpp>
 #include <boost/archive/yaml_archive_exception.hpp>
+#include <boost/function.hpp>
 #include <boost/io/ios_state.hpp>
 #include <boost/serialization/throw_exception.hpp>
 

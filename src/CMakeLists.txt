@@ -2,7 +2,6 @@
 add_library(yaml-archive-better
     boost/archive/impl/yaml_grammar.cpp
     boost/archive/impl/yaml_wgrammar.cpp
-    boost/archive/basic_yaml_archive.cpp
     boost/archive/yaml_archive_exception.cpp
     boost/archive/yaml_iarchive.cpp
     boost/archive/yaml_oarchive.cpp
@@ -13,7 +12,6 @@ add_library(yaml-archive-better
 # set_target_properties(yaml-archive-better PROPERTIES CXX_STANDARD 11)
 
 set(public_headers
-    "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/basic_yaml_archive.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/iterators/yaml_escape.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/iterators/yaml_unescape_exception.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/yaml_iarchive.hpp"

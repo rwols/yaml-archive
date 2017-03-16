@@ -16,8 +16,6 @@ namespace std {
 using ::strlen;
 } // namespace std
 #endif
-
-#include <boost/archive/basic_yaml_archive.hpp>
 #include <boost/archive/basic_yaml_oarchive.hpp>
 #include <boost/archive/yaml_archive_exception.hpp>
 #include <boost/core/no_exceptions_support.hpp>
