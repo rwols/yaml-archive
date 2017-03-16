@@ -27,7 +27,7 @@ namespace archive {
 // implementation of yaml_text_archive
 
 template <class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
+BOOST_SYMBOL_VISIBLE void
 basic_yaml_iarchive<Archive>::load_start(const char* name)
 {
     // name == nullptr happens when we're in the process of serializing a
@@ -43,7 +43,7 @@ basic_yaml_iarchive<Archive>::load_start(const char* name)
 }
 
 template <class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
+BOOST_SYMBOL_VISIBLE void
 basic_yaml_iarchive<Archive>::load_end(const char* name)
 {
     // name == nullptr happens when we're in the process of serializing a
@@ -54,42 +54,41 @@ basic_yaml_iarchive<Archive>::load_end(const char* name)
 }
 
 template <class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
+BOOST_SYMBOL_VISIBLE void
 basic_yaml_iarchive<Archive>::load_override(object_id_type& t)
 {
     t = object_id_type(this->This()->gimpl->rv.object_id);
 }
 
 template <class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
+BOOST_SYMBOL_VISIBLE void
 basic_yaml_iarchive<Archive>::load_override(version_type& t)
 {
     t = version_type(this->This()->gimpl->rv.version);
 }
 
 template <class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
+BOOST_SYMBOL_VISIBLE void
 basic_yaml_iarchive<Archive>::load_override(class_id_type& t)
 {
     t = class_id_type(this->This()->gimpl->rv.class_id);
 }
 
 template <class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
+BOOST_SYMBOL_VISIBLE void
 basic_yaml_iarchive<Archive>::load_override(tracking_type& t)
 {
     t = this->This()->gimpl->rv.tracking_level;
 }
 
 template <class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL
+BOOST_SYMBOL_VISIBLE
 basic_yaml_iarchive<Archive>::basic_yaml_iarchive(unsigned int flags)
     : detail::common_iarchive<Archive>(flags), depth(0)
 {
 }
 template <class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL
-    basic_yaml_iarchive<Archive>::~basic_yaml_iarchive()
+BOOST_SYMBOL_VISIBLE basic_yaml_iarchive<Archive>::~basic_yaml_iarchive()
 {
 }
 

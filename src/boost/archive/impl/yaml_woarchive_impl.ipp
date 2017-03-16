@@ -57,7 +57,7 @@ void save_iterator(std::wostream& os, InputIterator begin, InputIterator end)
 }
 
 template <class Archive>
-BOOST_WARCHIVE_DECL void
+BOOST_SYMBOL_VISIBLE void
 yaml_woarchive_impl<Archive>::save(const std::string& s)
 {
     // note: we don't use s.begin() and s.end() because dinkumware
@@ -72,7 +72,7 @@ yaml_woarchive_impl<Archive>::save(const std::string& s)
 
 #ifndef BOOST_NO_STD_WSTRING
 template <class Archive>
-BOOST_WARCHIVE_DECL void
+BOOST_SYMBOL_VISIBLE void
 yaml_woarchive_impl<Archive>::save(const std::wstring& ws)
 {
     typedef iterators::yaml_escape<const wchar_t*> xmbtows;
@@ -84,7 +84,7 @@ yaml_woarchive_impl<Archive>::save(const std::wstring& ws)
 #endif // BOOST_NO_STD_WSTRING
 
 template <class Archive>
-BOOST_WARCHIVE_DECL void yaml_woarchive_impl<Archive>::save(const char* s)
+BOOST_SYMBOL_VISIBLE void yaml_woarchive_impl<Archive>::save(const char* s)
 {
     this->This()->put('"');
     save_iterator(os, s, s + std::strlen(s));
@@ -93,7 +93,7 @@ BOOST_WARCHIVE_DECL void yaml_woarchive_impl<Archive>::save(const char* s)
 
 #ifndef BOOST_NO_INTRINSIC_WCHAR_T
 template <class Archive>
-BOOST_WARCHIVE_DECL void yaml_woarchive_impl<Archive>::save(const wchar_t* ws)
+BOOST_SYMBOL_VISIBLE void yaml_woarchive_impl<Archive>::save(const wchar_t* ws)
 {
     this->This()->put('"');
     typedef iterators::yaml_escape<const wchar_t*> xmbtows;
@@ -104,7 +104,7 @@ BOOST_WARCHIVE_DECL void yaml_woarchive_impl<Archive>::save(const wchar_t* ws)
 #endif
 
 template <class Archive>
-BOOST_WARCHIVE_DECL
+BOOST_SYMBOL_VISIBLE
 yaml_woarchive_impl<Archive>::yaml_woarchive_impl(std::wostream& os_,
                                                   unsigned int   flags)
     : basic_text_oprimitive<std::wostream>(
@@ -132,14 +132,14 @@ yaml_woarchive_impl<Archive>::yaml_woarchive_impl(std::wostream& os_,
 }
 
 template <class Archive>
-BOOST_WARCHIVE_DECL yaml_woarchive_impl<Archive>::~yaml_woarchive_impl()
+BOOST_SYMBOL_VISIBLE yaml_woarchive_impl<Archive>::~yaml_woarchive_impl()
 {
     if (std::uncaught_exception()) return;
     if (0 == (this->get_flags() & no_header)) this->windup();
 }
 
 template <class Archive>
-BOOST_WARCHIVE_DECL void
+BOOST_SYMBOL_VISIBLE void
 yaml_woarchive_impl<Archive>::save_binary(const void* address,
                                           std::size_t count)
 {

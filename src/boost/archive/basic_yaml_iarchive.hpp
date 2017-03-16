@@ -50,8 +50,8 @@ class BOOST_SYMBOL_VISIBLE basic_yaml_iarchive
     unsigned int depth;
     friend class detail::interface_iarchive<Archive>;
 #endif
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void load_start(const char* name);
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void load_end(const char* name);
+    BOOST_SYMBOL_VISIBLE void load_start(const char* name);
+    BOOST_SYMBOL_VISIBLE void load_end(const char* name);
 
     // Anything not an attribute and not a name-value pair is an
     // should be trapped here.
@@ -82,22 +82,19 @@ class BOOST_SYMBOL_VISIBLE basic_yaml_iarchive
     // an yaml archive.  So we can skip it here.  Note: we MUST override
     // it otherwise it will be loaded as a normal primitive w/o tag and
     // leaving the archive in an undetermined state
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void load_override(class_id_type& t);
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-    load_override(class_id_optional_type& /* t */)
-    {
-    }
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void load_override(object_id_type& t);
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void load_override(version_type& t);
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void load_override(tracking_type& t);
+    BOOST_SYMBOL_VISIBLE void load_override(class_id_type& t);
+    BOOST_SYMBOL_VISIBLE void load_override(class_id_optional_type& /* t */) {}
+    BOOST_SYMBOL_VISIBLE void load_override(object_id_type& t);
+    BOOST_SYMBOL_VISIBLE void load_override(version_type& t);
+    BOOST_SYMBOL_VISIBLE void load_override(tracking_type& t);
     // class_name_type can't be handled here as it depends upon the
     // char type used by the stream.  So require the derived implementation
     // handle this.
     // void load_override(class_name_type & t);
 
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL
+    BOOST_SYMBOL_VISIBLE
     basic_yaml_iarchive(unsigned int flags);
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL
+    BOOST_SYMBOL_VISIBLE
     ~basic_yaml_iarchive();
 };
 
