@@ -104,7 +104,11 @@ BOOST_SYMBOL_VISIBLE void basic_yaml_oarchive<Archive>::end_preamble()
 
 template <class Archive>
 BOOST_SYMBOL_VISIBLE void
+#if BOOST_VERSION > 105800
 basic_yaml_oarchive<Archive>::save_override(const object_id_type& t)
+#else // BOOST_VERSION <= 105800
+basic_yaml_oarchive<Archive>::save_override(const object_id_type& t, int)
+#endif
 {
     if (m_pending_class_name != nullptr)
     {
@@ -117,14 +121,22 @@ basic_yaml_oarchive<Archive>::save_override(const object_id_type& t)
 }
 template <class Archive>
 BOOST_SYMBOL_VISIBLE void
+#if BOOST_VERSION > 105800
 basic_yaml_oarchive<Archive>::save_override(const object_reference_type& t)
+#else // BOOST_VERSION <= 105800
+basic_yaml_oarchive<Archive>::save_override(const object_reference_type& t, int)
+#endif
 {
     this->This()->put(" *");
     this->This()->save(static_cast<int>(t));
 }
 template <class Archive>
 BOOST_SYMBOL_VISIBLE void
+#if BOOST_VERSION > 105800
 basic_yaml_oarchive<Archive>::save_override(const version_type& t)
+#else // BOOST_VERSION <= 105800
+basic_yaml_oarchive<Archive>::save_override(const version_type& t, int)
+#endif
 {
     this->This()->put('v');
     this->This()->save(static_cast<int>(t));
@@ -132,7 +144,11 @@ basic_yaml_oarchive<Archive>::save_override(const version_type& t)
 
 template <class Archive>
 BOOST_SYMBOL_VISIBLE void
+#if BOOST_VERSION > 105800
 basic_yaml_oarchive<Archive>::save_override(const class_id_type& t)
+#else // BOOST_VERSION <= 105800
+basic_yaml_oarchive<Archive>::save_override(const class_id_type& t, int)
+#endif
 {
     if (t == NULL_POINTER_TAG)
     {
@@ -146,28 +162,46 @@ basic_yaml_oarchive<Archive>::save_override(const class_id_type& t)
 }
 template <class Archive>
 BOOST_SYMBOL_VISIBLE void
+#if BOOST_VERSION > 105800
 basic_yaml_oarchive<Archive>::save_override(const class_id_reference_type& t)
+#else // BOOST_VERSION <= 105800
+basic_yaml_oarchive<Archive>::save_override(const class_id_reference_type& t,
+                                            int)
+#endif
 {
     this->This()->put("!!r");
     this->This()->save(static_cast<int>(t));
 }
 template <class Archive>
 BOOST_SYMBOL_VISIBLE void
+#if BOOST_VERSION > 105800
 basic_yaml_oarchive<Archive>::save_override(const class_id_optional_type& t)
+#else // BOOST_VERSION <= 105800
+basic_yaml_oarchive<Archive>::save_override(const class_id_optional_type& t,
+                                            int)
+#endif
 {
     this->This()->put("!!c");
     this->This()->save(static_cast<int>(t));
 }
 template <class Archive>
 BOOST_SYMBOL_VISIBLE void
+#if BOOST_VERSION > 105800
 basic_yaml_oarchive<Archive>::save_override(const class_name_type& t)
+#else // BOOST_VERSION <= 105800
+basic_yaml_oarchive<Archive>::save_override(const class_name_type& t, int)
+#endif
 {
     m_pending_class_name = t;
 }
 
 template <class Archive>
 BOOST_SYMBOL_VISIBLE void
+#if BOOST_VERSION > 105800
 basic_yaml_oarchive<Archive>::save_override(const tracking_type& t)
+#else // BOOST_VERSION <= 105800
+basic_yaml_oarchive<Archive>::save_override(const tracking_type& t, int)
+#endif
 {
     if (t.t) this->This()->put('t');
 }

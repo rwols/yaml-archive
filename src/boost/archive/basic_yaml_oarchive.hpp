@@ -16,10 +16,9 @@
 
 //  See http://www.boost.org for updates, documentation, and revision history.
 
+#include <boost/archive/detail/common_oarchive.hpp>
 #include <boost/config.hpp>
 #include <boost/mpl/assert.hpp>
-
-#include <boost/archive/detail/common_oarchive.hpp>
 #include <boost/serialization/collection_size_type.hpp>
 #include <boost/serialization/item_version_type.hpp>
 #include <boost/serialization/nvp.hpp>
@@ -62,6 +61,8 @@ class BOOST_SYMBOL_VISIBLE basic_yaml_oarchive
     BOOST_SYMBOL_VISIBLE void save_end(const char* name);
     BOOST_SYMBOL_VISIBLE void end_preamble();
 
+#if BOOST_VERSION > 105800
+
     // Anything not an attribute and not a name-value pair is an
     // error and should be trapped here.
     template <class T> void save_override(T& t)
@@ -93,10 +94,43 @@ class BOOST_SYMBOL_VISIBLE basic_yaml_oarchive
     BOOST_SYMBOL_VISIBLE void save_override(const class_name_type& t);
     BOOST_SYMBOL_VISIBLE void save_override(const tracking_type& t);
 
-    BOOST_SYMBOL_VISIBLE
-    basic_yaml_oarchive(unsigned int flags);
-    BOOST_SYMBOL_VISIBLE
-    ~basic_yaml_oarchive();
+#else // BOOST_VERSION <= 105800
+
+    // These overloads are required for versions of boost <= 1.58.
+
+    template <class T> void save_override(T& t, BOOST_PFTO int)
+    {
+        // If your program fails to compile here, its most likely due to
+        // not specifying an nvp wrapper around the variable to
+        // be serialized.
+        BOOST_MPL_ASSERT((serialization::is_wrapper<T>));
+        this->detail_common_oarchive::save_override(t, 0);
+    }
+
+    typedef detail::common_oarchive<Archive> detail_common_oarchive;
+    template <class T> void save_override(const serialization::nvp<T>& t, int)
+    {
+        this->This()->save_start(t.name());
+        this->detail_common_oarchive::save_override(t.const_value(), 0);
+        this->This()->save_end(t.name());
+    }
+
+    BOOST_SYMBOL_VISIBLE void save_override(const class_id_type& t, int);
+    BOOST_SYMBOL_VISIBLE void save_override(const class_id_optional_type& t,
+                                            int);
+    BOOST_SYMBOL_VISIBLE void save_override(const class_id_reference_type& t,
+                                            int);
+    BOOST_SYMBOL_VISIBLE void save_override(const object_id_type& t, int);
+    BOOST_SYMBOL_VISIBLE void save_override(const object_reference_type& t,
+                                            int);
+    BOOST_SYMBOL_VISIBLE void save_override(const version_type& t, int);
+    BOOST_SYMBOL_VISIBLE void save_override(const class_name_type& t, int);
+    BOOST_SYMBOL_VISIBLE void save_override(const tracking_type& t, int);
+
+#endif
+
+    BOOST_SYMBOL_VISIBLE basic_yaml_oarchive(unsigned int flags);
+    BOOST_SYMBOL_VISIBLE ~basic_yaml_oarchive();
 };
 
 } // namespace archive
