@@ -133,7 +133,11 @@ BOOST_SYMBOL_VISIBLE void yaml_iarchive_impl<Archive>::load(char* s)
 
 template <class Archive>
 BOOST_SYMBOL_VISIBLE void
+#if BOOST_VERSION > 105800
 yaml_iarchive_impl<Archive>::load_override(class_name_type& t)
+#else // BOOST_VERSION <= 105800
+yaml_iarchive_impl<Archive>::load_override(class_name_type& t, int)
+#endif
 {
     const std::string& s = gimpl->rv.class_name;
     if (s.size() > BOOST_SERIALIZATION_MAX_KEY_SIZE - 1)

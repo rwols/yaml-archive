@@ -55,28 +55,44 @@ basic_yaml_iarchive<Archive>::load_end(const char* name)
 
 template <class Archive>
 BOOST_SYMBOL_VISIBLE void
+#if BOOST_VERSION > 105800
 basic_yaml_iarchive<Archive>::load_override(object_id_type& t)
+#else // BOOST_VERSION <= 105800
+basic_yaml_iarchive<Archive>::load_override(object_id_type& t, int)
+#endif
 {
     t = object_id_type(this->This()->gimpl->rv.object_id);
 }
 
 template <class Archive>
 BOOST_SYMBOL_VISIBLE void
+#if BOOST_VERSION > 105800
 basic_yaml_iarchive<Archive>::load_override(version_type& t)
+#else // BOOST_VERSION <= 105800
+basic_yaml_iarchive<Archive>::load_override(version_type& t, int)
+#endif
 {
     t = version_type(this->This()->gimpl->rv.version);
 }
 
 template <class Archive>
 BOOST_SYMBOL_VISIBLE void
+#if BOOST_VERSION > 105800
 basic_yaml_iarchive<Archive>::load_override(class_id_type& t)
+#else // BOOST_VERSION <= 105800
+basic_yaml_iarchive<Archive>::load_override(class_id_type& t, int)
+#endif
 {
     t = class_id_type(this->This()->gimpl->rv.class_id);
 }
 
 template <class Archive>
 BOOST_SYMBOL_VISIBLE void
+#if BOOST_VERSION > 105800
 basic_yaml_iarchive<Archive>::load_override(tracking_type& t)
+#else // BOOST_VERSION <= 105800
+basic_yaml_iarchive<Archive>::load_override(tracking_type& t, int)
+#endif
 {
     t = this->This()->gimpl->rv.tracking_level;
 }

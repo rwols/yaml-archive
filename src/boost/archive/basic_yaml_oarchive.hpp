@@ -127,7 +127,7 @@ class BOOST_SYMBOL_VISIBLE basic_yaml_oarchive
     BOOST_SYMBOL_VISIBLE void save_override(const class_name_type& t, int);
     BOOST_SYMBOL_VISIBLE void save_override(const tracking_type& t, int);
 
-#endif
+#endif // BOOST_VERSION
 
     BOOST_SYMBOL_VISIBLE basic_yaml_oarchive(unsigned int flags);
     BOOST_SYMBOL_VISIBLE ~basic_yaml_oarchive();

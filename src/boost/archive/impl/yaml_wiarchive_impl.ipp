@@ -116,7 +116,11 @@ BOOST_SYMBOL_VISIBLE void yaml_wiarchive_impl<Archive>::load(wchar_t* ws)
 
 template <class Archive>
 BOOST_SYMBOL_VISIBLE void
+#if BOOST_VERSION > 105800
 yaml_wiarchive_impl<Archive>::load_override(class_name_type& t)
+#else // BOOST_VERSION <= 105800
+yaml_wiarchive_impl<Archive>::load_override(class_name_type& t, int)
+#endif
 {
     const std::wstring& ws = gimpl->rv.class_name;
     if (ws.size() > BOOST_SERIALIZATION_MAX_KEY_SIZE - 1)

@@ -43,15 +43,19 @@ template <class Archive>
 class BOOST_SYMBOL_VISIBLE basic_yaml_iarchive
     : public detail::common_iarchive<Archive>
 {
+
 #ifdef BOOST_NO_MEMBER_TEMPLATE_FRIENDS
   public:
-#else
+#else // compiler is not totally broken
   protected:
+#endif
     unsigned int depth;
     friend class detail::interface_iarchive<Archive>;
-#endif
+
     BOOST_SYMBOL_VISIBLE void load_start(const char* name);
     BOOST_SYMBOL_VISIBLE void load_end(const char* name);
+
+#if BOOST_VERSION > 105800
 
     // Anything not an attribute and not a name-value pair is an
     // should be trapped here.
@@ -87,10 +91,37 @@ class BOOST_SYMBOL_VISIBLE basic_yaml_iarchive
     BOOST_SYMBOL_VISIBLE void load_override(object_id_type& t);
     BOOST_SYMBOL_VISIBLE void load_override(version_type& t);
     BOOST_SYMBOL_VISIBLE void load_override(tracking_type& t);
-    // class_name_type can't be handled here as it depends upon the
-    // char type used by the stream.  So require the derived implementation
-    // handle this.
-    // void load_override(class_name_type & t);
+// class_name_type can't be handled here as it depends upon the
+// char type used by the stream.  So require the derived implementation
+// handle this.
+
+#else // BOOST_VERSION <= 105800
+
+    // These overloads are required for versions of boost <= 1.58.
+
+    template <class T> void load_override(T& t, BOOST_PFTO int)
+    {
+        // If your program fails to compile here, its most likely due to
+        // not specifying an nvp wrapper around the variable to
+        // be serialized.
+        BOOST_MPL_ASSERT((serialization::is_wrapper<T>));
+        this->detail_common_iarchive::load_override(t, 0);
+    }
+    typedef detail::common_iarchive<Archive> detail_common_iarchive;
+    template <class T>
+    void load_override(const boost::serialization::nvp<T>& t, int)
+    {
+        this->This()->load_start(t.name());
+        this->detail_common_iarchive::load_override(t.value(), 0);
+        this->This()->load_end(t.name());
+    }
+    BOOST_SYMBOL_VISIBLE void load_override(class_id_type& t, int);
+    BOOST_SYMBOL_VISIBLE void load_override(class_id_optional_type&, int) {}
+    BOOST_SYMBOL_VISIBLE void load_override(object_id_type& t, int);
+    BOOST_SYMBOL_VISIBLE void load_override(version_type& t, int);
+    BOOST_SYMBOL_VISIBLE void load_override(tracking_type& t, int);
+
+#endif // BOOST_VERSION
 
     BOOST_SYMBOL_VISIBLE
     basic_yaml_iarchive(unsigned int flags);
