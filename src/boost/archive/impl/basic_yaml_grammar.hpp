@@ -105,11 +105,8 @@ template <class CharType> class basic_yaml_grammar
     {
         StringType object_name;
         StringType contents;
-        // class_id_type class_id;
         int_least16_t class_id;
-        // object_id_type object_id;
         uint_least32_t object_id;
-        // version_type version;
         unsigned int  version;
         tracking_type tracking_level;
         StringType    class_name;

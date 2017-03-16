@@ -16,11 +16,6 @@
 
 #define BOOST_ARCHIVE_SOURCE
 
-#define BOOST_SPIRIT_DEBUG
-#ifdef BOOST_SPIRIT_DEBUG
-#include <boost/spirit/home/classic/debug/parser_names.hpp>
-#endif
-
 #include <boost/archive/impl/basic_yaml_grammar.hpp>
 #include <boost/serialization/config.hpp>
 

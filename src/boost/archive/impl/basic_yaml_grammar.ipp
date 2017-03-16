@@ -240,8 +240,6 @@ bool basic_yaml_grammar<CharType>::parse_start_tag(unsigned int depth,
     {
         typename basic_yaml_grammar<CharType>::IStream::int_type result =
             is.get();
-        std::cout << "removing depth (got \"" << static_cast<CharType>(result)
-                  << "\")\n";
         if (!std::isspace(result) || is.fail())
         {
             return false;

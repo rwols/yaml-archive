@@ -71,26 +71,6 @@ BOOST_ARCHIVE_DECL void yaml_iarchive_impl<Archive>::load(std::wstring& ws)
 
     using boost::locale::conv::utf_to_utf;
     ws = utf_to_utf<std::wstring::value_type>(utf8string);
-    // std::cout << "Got wstring    : \"" << s << "\"\n";
-
-    // #if BOOST_WORKAROUND(_RWSTD_VER, BOOST_TESTED_AT(20101))
-    //     if (NULL != ws.data())
-    // #endif
-    //         ws.resize(0);
-    //     std::mbstate_t mbs = std::mbstate_t();
-    //     const char*    start = s.data();
-    //     const char*    end = start + s.size();
-    //     while (start < end)
-    //     {
-    //         wchar_t     wc;
-    //         std::size_t count = std::mbrtowc(&wc, start, end - start, &mbs);
-    //         if (count == static_cast<std::size_t>(-1))
-    //             boost::serialization::throw_exception(iterators::dataflow_exception(
-    //                 iterators::dataflow_exception::invalid_conversion));
-    //         if (count == static_cast<std::size_t>(-2)) continue;
-    //         start += count;
-    //         ws += wc;
-    //     }
 }
 #endif // BOOST_NO_STD_WSTRING
 
@@ -133,7 +113,6 @@ BOOST_ARCHIVE_DECL void yaml_iarchive_impl<Archive>::load(std::string& s)
     bool result = gimpl->parse_string(this->This()->depth, is, s);
     if (!result)
     {
-        std::cout << "throwing on load string\n";
         boost::serialization::throw_exception(yaml_archive_exception(
             yaml_archive_exception::yaml_archive_parsing_error));
     }
@@ -228,7 +207,6 @@ yaml_iarchive_impl<Archive>::load_binary(void* address, std::size_t count)
     for (;;)
     {
         const typename std::istream::int_type r = is.get();
-        std::cout << "got char: \"" << static_cast<CharType>(r) << "\"\n";
         if (is.eof() || r == '\n')
         {
             break;
