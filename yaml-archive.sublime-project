@@ -9,8 +9,8 @@
 			"variants":
 			[
 				{
-					"name": "",
-					"shell_cmd": "cmake --build . --target "
+					"name": "ninja: warning",
+					"shell_cmd": "cmake --build . --target ninja: warning"
 				},
 				{
 					"name": "install/strip",
@@ -35,6 +35,106 @@
 				{
 					"name": "test",
 					"shell_cmd": "cmake --build . --target test"
+				},
+				{
+					"name": "ext/install/strip",
+					"shell_cmd": "cmake --build . --target ext/install/strip"
+				},
+				{
+					"name": "ext/install",
+					"shell_cmd": "cmake --build . --target ext/install"
+				},
+				{
+					"name": "ext/list_install_components",
+					"shell_cmd": "cmake --build . --target ext/list_install_components"
+				},
+				{
+					"name": "ext/rebuild_cache",
+					"shell_cmd": "cmake --build . --target ext/rebuild_cache"
+				},
+				{
+					"name": "ext/install/local",
+					"shell_cmd": "cmake --build . --target ext/install/local"
+				},
+				{
+					"name": "ext/test",
+					"shell_cmd": "cmake --build . --target ext/test"
+				},
+				{
+					"name": "ext/yaml-cpp/list_install_components",
+					"shell_cmd": "cmake --build . --target ext/yaml-cpp/list_install_components"
+				},
+				{
+					"name": "ext/yaml-cpp/install/local",
+					"shell_cmd": "cmake --build . --target ext/yaml-cpp/install/local"
+				},
+				{
+					"name": "ext/yaml-cpp/libyaml-cpp.0.5",
+					"shell_cmd": "cmake --build . --target ext/yaml-cpp/libyaml-cpp.0.5.dylib"
+				},
+				{
+					"name": "ext/yaml-cpp/test",
+					"shell_cmd": "cmake --build . --target ext/yaml-cpp/test"
+				},
+				{
+					"name": "ext/yaml-cpp/install/strip",
+					"shell_cmd": "cmake --build . --target ext/yaml-cpp/install/strip"
+				},
+				{
+					"name": "ext/yaml-cpp/install",
+					"shell_cmd": "cmake --build . --target ext/yaml-cpp/install"
+				},
+				{
+					"name": "ext/yaml-cpp/rebuild_cache",
+					"shell_cmd": "cmake --build . --target ext/yaml-cpp/rebuild_cache"
+				},
+				{
+					"name": "include/install/strip",
+					"shell_cmd": "cmake --build . --target include/install/strip"
+				},
+				{
+					"name": "include/install",
+					"shell_cmd": "cmake --build . --target include/install"
+				},
+				{
+					"name": "include/list_install_components",
+					"shell_cmd": "cmake --build . --target include/list_install_components"
+				},
+				{
+					"name": "include/rebuild_cache",
+					"shell_cmd": "cmake --build . --target include/rebuild_cache"
+				},
+				{
+					"name": "include/install/local",
+					"shell_cmd": "cmake --build . --target include/install/local"
+				},
+				{
+					"name": "include/test",
+					"shell_cmd": "cmake --build . --target include/test"
+				},
+				{
+					"name": "lib/install/strip",
+					"shell_cmd": "cmake --build . --target lib/install/strip"
+				},
+				{
+					"name": "lib/install",
+					"shell_cmd": "cmake --build . --target lib/install"
+				},
+				{
+					"name": "lib/list_install_components",
+					"shell_cmd": "cmake --build . --target lib/list_install_components"
+				},
+				{
+					"name": "lib/rebuild_cache",
+					"shell_cmd": "cmake --build . --target lib/rebuild_cache"
+				},
+				{
+					"name": "lib/install/local",
+					"shell_cmd": "cmake --build . --target lib/install/local"
+				},
+				{
+					"name": "lib/test",
+					"shell_cmd": "cmake --build . --target lib/test"
 				},
 				{
 					"name": "src/install/strip",
@@ -133,8 +233,20 @@
 					"shell_cmd": "cmake --build . --target test/wide/test"
 				},
 				{
+					"name": "format",
+					"shell_cmd": "cmake --build . --target format"
+				},
+				{
 					"name": "libyaml-archive-better",
 					"shell_cmd": "cmake --build . --target libyaml-archive-better.dylib"
+				},
+				{
+					"name": "libyaml-cpp",
+					"shell_cmd": "cmake --build . --target libyaml-cpp.dylib"
+				},
+				{
+					"name": "yaml-archive",
+					"shell_cmd": "cmake --build . --target yaml-archive"
 				},
 				{
 					"name": "clean",
