@@ -52,30 +52,6 @@ template <class CharType> struct YAML_name
 // implemenations of functions common to both types of yaml output
 
 template <class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_yaml_oarchive<Archive>::write_attribute(const char* attribute_name, int t,
-                                              const char* conjunction)
-{
-    this->This()->put(' ');
-    this->This()->put(attribute_name);
-    this->This()->put(conjunction);
-    this->This()->save(t);
-    this->This()->put('"');
-}
-
-template <class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_yaml_oarchive<Archive>::write_attribute(const char* attribute_name,
-                                              const char* key)
-{
-    this->This()->put(' ');
-    this->This()->put(attribute_name);
-    this->This()->put("=\"");
-    this->This()->save(key);
-    this->This()->put('"');
-}
-
-template <class Archive>
 BOOST_ARCHIVE_OR_WARCHIVE_DECL void basic_yaml_oarchive<Archive>::indent()
 {
     for (int i = 0; i != 2 * depth; ++i) this->This()->put(' ');

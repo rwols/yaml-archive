@@ -59,11 +59,6 @@ class BOOST_SYMBOL_VISIBLE basic_yaml_oarchive
     BOOST_ARCHIVE_OR_WARCHIVE_DECL void indent();
     BOOST_ARCHIVE_OR_WARCHIVE_DECL void init();
     BOOST_ARCHIVE_OR_WARCHIVE_DECL void windup();
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-    write_attribute(const char* attribute_name, int t,
-                    const char* conjunction = "=\"");
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-    write_attribute(const char* attribute_name, const char* key);
     // helpers used below
     BOOST_ARCHIVE_OR_WARCHIVE_DECL void save_start(const char* name);
     BOOST_ARCHIVE_OR_WARCHIVE_DECL void save_end(const char* name);
