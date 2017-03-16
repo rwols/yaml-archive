@@ -42,7 +42,11 @@ using ::mbrtowc;
 #include <boost/archive/iterators/transform_width.hpp>
 #include <boost/archive/yaml_archive_exception.hpp>
 #include <boost/archive/yaml_iarchive.hpp>
+#if BOOST_VERSION < 105600
+#include <boost/detail/no_exceptions_support.hpp>
+#else
 #include <boost/core/no_exceptions_support.hpp>
+#endif
 #include <boost/locale/encoding_utf.hpp>
 
 namespace boost {

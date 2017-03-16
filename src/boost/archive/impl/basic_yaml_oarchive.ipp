@@ -18,7 +18,11 @@ using ::strlen;
 #endif
 #include <boost/archive/basic_yaml_oarchive.hpp>
 #include <boost/archive/yaml_archive_exception.hpp>
+#if BOOST_VERSION < 105600
+#include <boost/detail/no_exceptions_support.hpp>
+#else
 #include <boost/core/no_exceptions_support.hpp>
+#endif
 
 namespace boost {
 namespace archive {

@@ -30,7 +30,11 @@ using ::memcpy;
 #include <boost/archive/iterators/mb_from_wchar.hpp>
 #include <boost/archive/yaml_archive_exception.hpp>
 #include <boost/archive/yaml_wiarchive.hpp>
+#if BOOST_VERSION < 105600
+#include <boost/detail/no_exceptions_support.hpp>
+#else
 #include <boost/core/no_exceptions_support.hpp>
+#endif
 #include <boost/io/ios_state.hpp>
 #include <boost/serialization/string.hpp>
 
