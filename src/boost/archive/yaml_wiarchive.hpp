@@ -29,7 +29,9 @@
 #include <boost/archive/detail/register_archive.hpp>
 #include <boost/serialization/item_version_type.hpp>
 #include <boost/smart_ptr/scoped_ptr.hpp>
-// #include <boost/archive/detail/utf8_codecvt_facet.hpp>
+#if BOOST_VERSION < 105600
+#include <boost/archive/shared_ptr_helper.hpp>
+#endif
 
 #include <boost/archive/detail/abi_prefix.hpp> // must be the last header
 
@@ -116,9 +118,16 @@ class BOOST_SYMBOL_VISIBLE yaml_wiarchive_impl
 namespace boost {
 namespace archive {
 
+#if BOOST_VERSION < 105600
+class BOOST_SYMBOL_VISIBLE yaml_wiarchive
+    : public yaml_wiarchive_impl<yaml_wiarchive>,
+      public detail::shared_ptr_helper
+{
+#else
 class BOOST_SYMBOL_VISIBLE yaml_wiarchive
     : public yaml_wiarchive_impl<yaml_wiarchive>
 {
+#endif
   public:
     yaml_wiarchive(std::wistream& is, unsigned int flags = 0)
         : yaml_wiarchive_impl<yaml_wiarchive>(is, flags)

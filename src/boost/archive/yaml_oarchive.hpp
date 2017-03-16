@@ -31,6 +31,9 @@ using ::size_t;
 #include <boost/archive/detail/auto_link_archive.hpp>
 #include <boost/archive/detail/register_archive.hpp>
 #include <boost/serialization/item_version_type.hpp>
+#if BOOST_VERSION < 105600
+#include <boost/archive/shared_ptr_helper.hpp>
+#endif
 
 #include <boost/archive/detail/abi_prefix.hpp> // must be the last header
 
@@ -98,6 +101,7 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive_impl
 #endif
 
 #include <boost/archive/detail/abi_suffix.hpp> // pops abi_suffix.hpp pragmas
+
 #ifdef BOOST_MSVC
 #pragma warning(push)
 #pragma warning(disable : 4511 4512)
@@ -112,9 +116,16 @@ namespace archive {
 // do not derive from this class.  If you want to extend this functionality
 // via inhertance, derived from yaml_oarchive_impl instead.  This will
 // preserve correct static polymorphism.
+#if BOOST_VERSION < 105600
+class BOOST_SYMBOL_VISIBLE yaml_oarchive
+    : public yaml_oarchive_impl<yaml_oarchive>,
+      public detail::shared_ptr_helper
+{
+#else
 class BOOST_SYMBOL_VISIBLE yaml_oarchive
     : public yaml_oarchive_impl<yaml_oarchive>
 {
+#endif
   public:
     yaml_oarchive(std::ostream& os, unsigned int flags = 0)
         : yaml_oarchive_impl<yaml_oarchive>(os, flags)

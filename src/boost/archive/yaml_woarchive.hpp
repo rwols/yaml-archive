@@ -29,13 +29,14 @@ using ::size_t;
 
 #include <ostream>
 
-//#include <boost/smart_ptr/scoped_ptr.hpp>
 #include <boost/archive/basic_text_oprimitive.hpp>
 #include <boost/archive/basic_yaml_oarchive.hpp>
 #include <boost/archive/detail/auto_link_warchive.hpp>
 #include <boost/archive/detail/register_archive.hpp>
 #include <boost/serialization/item_version_type.hpp>
-//#include <boost/archive/detail/utf8_codecvt_facet.hpp>
+#if BOOST_VERSION < 105600
+#include <boost/archive/shared_ptr_helper.hpp>
+#endif
 
 #include <boost/archive/detail/abi_prefix.hpp> // must be the last header
 
@@ -103,9 +104,16 @@ class BOOST_SYMBOL_VISIBLE yaml_woarchive_impl
 // do not derive from this class.  If you want to extend this functionality
 // via inhertance, derived from yaml_woarchive_impl instead.  This will
 // preserve correct static polymorphism.
+#if BOOST_VERSION < 105600
+class BOOST_SYMBOL_VISIBLE yaml_woarchive
+    : public yaml_woarchive_impl<yaml_woarchive>,
+      public detail::shared_ptr_helper
+{
+#else
 class BOOST_SYMBOL_VISIBLE yaml_woarchive
     : public yaml_woarchive_impl<yaml_woarchive>
 {
+#endif
   public:
     yaml_woarchive(std::wostream& os, unsigned int flags = 0)
         : yaml_woarchive_impl<yaml_woarchive>(os, flags)

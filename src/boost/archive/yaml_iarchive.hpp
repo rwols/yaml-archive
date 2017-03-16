@@ -24,6 +24,9 @@
 #include <boost/archive/detail/register_archive.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/serialization/item_version_type.hpp>
+#if BOOST_VERSION < 105600
+#include <boost/archive/shared_ptr_helper.hpp>
+#endif
 
 #include <boost/archive/detail/abi_prefix.hpp> // must be the last header
 
@@ -114,9 +117,16 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive_impl
 namespace boost {
 namespace archive {
 
+#if BOOST_VERSION < 105600
+class BOOST_SYMBOL_VISIBLE yaml_iarchive
+    : public yaml_iarchive_impl<yaml_iarchive>,
+      public detail::shared_ptr_helper
+{
+#else
 class BOOST_SYMBOL_VISIBLE yaml_iarchive
     : public yaml_iarchive_impl<yaml_iarchive>
 {
+#endif
   public:
     yaml_iarchive(std::istream& is, unsigned int flags = 0)
         : yaml_iarchive_impl<yaml_iarchive>(is, flags)
