@@ -135,7 +135,6 @@ yaml_oarchive_impl<Archive>::save_binary(const void* address, std::size_t count)
         *oi++ = '=';
         if (tail < 2) *oi = '=';
     }
-    this->indent_next = true;
 }
 
 template <class Archive>

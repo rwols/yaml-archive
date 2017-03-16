@@ -166,7 +166,6 @@ yaml_woarchive_impl<Archive>::save_binary(const void* address,
         *oi++ = '=';
         if (tail < 2) *oi = '=';
     }
-    this->indent_next = true;
 }
 
 } // namespace archive

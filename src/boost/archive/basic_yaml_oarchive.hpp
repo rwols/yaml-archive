@@ -55,7 +55,6 @@ class BOOST_SYMBOL_VISIBLE basic_yaml_oarchive
   protected:
     friend class detail::interface_oarchive<Archive>;
 #endif
-    bool                                indent_next;
     BOOST_ARCHIVE_OR_WARCHIVE_DECL void indent();
     BOOST_ARCHIVE_OR_WARCHIVE_DECL void init();
     BOOST_ARCHIVE_OR_WARCHIVE_DECL void windup();
