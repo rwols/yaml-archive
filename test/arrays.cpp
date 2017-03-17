@@ -139,6 +139,7 @@ BOOST_FIXTURE_TEST_CASE(boost_array_A_wrong_size, io_fixture)
 
 BOOST_FIXTURE_TEST_CASE(std_array_A, io_fixture)
 {
+#if BOOST_VERSION >= 105600
     const std::array<A, 10> array = {
         {A(), A(), A(), A(), A(), A(), A(), A(), A(), A()}};
     std::array<A, 10> array1;
@@ -152,10 +153,12 @@ BOOST_FIXTURE_TEST_CASE(std_array_A, io_fixture)
     {
         BOOST_CHECK_EQUAL(array[i], array1[i]);
     }
+#endif
 }
 
 BOOST_FIXTURE_TEST_CASE(std_array_A_wrong_size, io_fixture)
 {
+#if BOOST_VERSION >= 105600
     const std::array<A, 2> array = {{A(), A()}};
     std::array<A, 1>       array1;
     {
@@ -165,4 +168,5 @@ BOOST_FIXTURE_TEST_CASE(std_array_A_wrong_size, io_fixture)
         BOOST_CHECK_THROW((input() >> make_nvp("array", array1)),
                           boost::archive::archive_exception);
     }
+#endif
 }
