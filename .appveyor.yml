@@ -37,6 +37,7 @@ install:
   # 1.56.0 (C:\Libraries\boost)
   # See: https://www.appveyor.com/docs/installed-software/#languages-libraries-frameworks
   - cmd: set PATH=%PATH%;C:\Libraries\boost_1_%BOOST_VERSION_MINOR%_0\stage\lib
+  - cmd: echo %PATH%
   - python build.py before-install install
 
 before_build: python build.py before-build

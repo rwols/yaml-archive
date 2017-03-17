@@ -113,6 +113,7 @@ function(target_create_boost_archive_test_suite)
 
   # ALWAYS dynamically link with Boost.Test.
   target_compile_definitions(${exe} PRIVATE BOOST_TEST_DYN_LINK)
+  target_compile_definitions(${exe} PRIVATE BOOST_TEST_NO_LIB)
 
   # Find Boost.Test.
   set(Boost_USE_STATIC_LIBS OFF)

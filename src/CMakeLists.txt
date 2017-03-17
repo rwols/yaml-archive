@@ -63,6 +63,7 @@ if (BUILD_SHARED_LIBS)
 else()
     set(Boost_USE_STATIC_LIBS ON)
 endif()
+target_compile_definitions(yaml-archive-better PUBLIC BOOST_SERIALIZATION_NO_LIB)
 
 # We support Boost versions >= 1.54.
 find_package(Boost 1.54 COMPONENTS wserialization REQUIRED)
