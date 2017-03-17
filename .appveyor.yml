@@ -27,8 +27,18 @@ configuration:
   - Debug
   - Release
 
-# Let the python build script handle it from this point on.
-install:      python build.py before-install install
+install:
+  # Appveyor has the following boost libraries installed:
+  # 1.63.0 (C:\Libraries\boost_1_63_0)
+  # 1.62.0 (C:\Libraries\boost_1_62_0)
+  # 1.60.0 (C:\Libraries\boost_1_60_0)
+  # 1.59.0 (C:\Libraries\boost_1_59_0)
+  # 1.58.0 (C:\Libraries\boost_1_58_0)
+  # 1.56.0 (C:\Libraries\boost)
+  # See: https://www.appveyor.com/docs/installed-software/#languages-libraries-frameworks
+  - cmd: set PATH=%PATH%;C:\Libraries\boost_1_%BOOST_VERSION_MINOR%_0\stage\lib
+  - python build.py before-install install
+
 before_build: python build.py before-build
 build_script: python build.py build
 after_build:  python build.py after_build

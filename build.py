@@ -298,12 +298,7 @@ class AppveyorBuild(BuildBase):
         # 1.59.0 (C:\Libraries\boost_1_59_0)
         # 1.58.0 (C:\Libraries\boost_1_58_0)
         # 1.56.0 (C:\Libraries\boost)
-        #
         # See: https://www.appveyor.com/docs/installed-software/#languages-libraries-frameworks
-        libdir = self.boost_dir + '/stage/lib'
-
-        # Add the boost libs to our path so that the linker can find DLLs.
-        utils.check_call('$env:Path', '+=', ';%s' % libdir)
         super(AppveyorBuild, self).install()
 
     def before_build(self):
