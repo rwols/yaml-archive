@@ -24,7 +24,7 @@
 namespace boost {
 namespace archive {
 
-BOOST_SYMBOL_VISIBLE
+BOOST_ARCHIVE_DECL
 yaml_archive_exception::yaml_archive_exception(exception_code c, const char* e1,
                                                const char* e2)
     : archive_exception(other_exception, e1, e2)
@@ -55,17 +55,15 @@ yaml_archive_exception::yaml_archive_exception(exception_code c, const char* e1,
     }
 }
 
-BOOST_SYMBOL_VISIBLE
+BOOST_ARCHIVE_DECL
 yaml_archive_exception::yaml_archive_exception(
     yaml_archive_exception const& oth)
     : archive_exception(oth)
 {
 }
 
-BOOST_SYMBOL_VISIBLE
-    yaml_archive_exception::~yaml_archive_exception() BOOST_NOEXCEPT_OR_NOTHROW
-{
-}
+BOOST_ARCHIVE_DECL
+yaml_archive_exception::~yaml_archive_exception() BOOST_NOEXCEPT_OR_NOTHROW {}
 
 } // archive
 } // boost

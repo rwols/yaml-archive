@@ -80,22 +80,22 @@ class BOOST_SYMBOL_VISIBLE yaml_woarchive_impl
     {
         save(static_cast<const unsigned int>(t));
     }
-    BOOST_SYMBOL_VISIBLE void save(const char* t);
+    BOOST_WARCHIVE_DECL void save(const char* t);
 #ifndef BOOST_NO_INTRINSIC_WCHAR_T
-    BOOST_SYMBOL_VISIBLE void save(const wchar_t* t);
+    BOOST_WARCHIVE_DECL void save(const wchar_t* t);
 #endif
-    BOOST_SYMBOL_VISIBLE void save(const std::string& s);
+    BOOST_WARCHIVE_DECL void save(const std::string& s);
 #ifndef BOOST_NO_STD_WSTRING
-    BOOST_SYMBOL_VISIBLE void save(const std::wstring& ws);
+    BOOST_WARCHIVE_DECL void save(const std::wstring& ws);
 #endif
-    BOOST_SYMBOL_VISIBLE
+    BOOST_WARCHIVE_DECL
     yaml_woarchive_impl(std::wostream& os, unsigned int flags);
-    BOOST_SYMBOL_VISIBLE
+    BOOST_WARCHIVE_DECL
     ~yaml_woarchive_impl();
 
   public:
-    BOOST_SYMBOL_VISIBLE void save_binary(const void* address,
-                                          std::size_t count);
+    BOOST_WARCHIVE_DECL void save_binary(const void* address,
+                                         std::size_t count);
 };
 
 // we use the following because we can't use

@@ -56,13 +56,13 @@ template <class CharType> struct YAML_name
 // implemenations of functions common to both types of yaml output
 
 template <class Archive>
-BOOST_SYMBOL_VISIBLE void basic_yaml_oarchive<Archive>::indent()
+BOOST_ARCHIVE_OR_WARCHIVE_DECL void basic_yaml_oarchive<Archive>::indent()
 {
     for (int i = 0; i != 2 * depth; ++i) this->This()->put(' ');
 }
 
 template <class Archive>
-BOOST_SYMBOL_VISIBLE void
+BOOST_ARCHIVE_OR_WARCHIVE_DECL void
 basic_yaml_oarchive<Archive>::save_start(const char* name)
 {
     if (nullptr == name) return;
@@ -83,7 +83,7 @@ basic_yaml_oarchive<Archive>::save_start(const char* name)
 }
 
 template <class Archive>
-BOOST_SYMBOL_VISIBLE void
+BOOST_ARCHIVE_OR_WARCHIVE_DECL void
 basic_yaml_oarchive<Archive>::save_end(const char* name)
 {
     if (nullptr == name) return;
@@ -92,7 +92,7 @@ basic_yaml_oarchive<Archive>::save_end(const char* name)
 }
 
 template <class Archive>
-BOOST_SYMBOL_VISIBLE void basic_yaml_oarchive<Archive>::end_preamble()
+BOOST_ARCHIVE_OR_WARCHIVE_DECL void basic_yaml_oarchive<Archive>::end_preamble()
 {
     if (m_pending_class_name != nullptr)
     {
@@ -103,7 +103,7 @@ BOOST_SYMBOL_VISIBLE void basic_yaml_oarchive<Archive>::end_preamble()
 }
 
 template <class Archive>
-BOOST_SYMBOL_VISIBLE void
+BOOST_ARCHIVE_OR_WARCHIVE_DECL void
 #if BOOST_VERSION > 105800
 basic_yaml_oarchive<Archive>::save_override(const object_id_type& t)
 #else // BOOST_VERSION <= 105800
@@ -120,7 +120,7 @@ basic_yaml_oarchive<Archive>::save_override(const object_id_type& t, int)
     this->This()->save(static_cast<int>(t));
 }
 template <class Archive>
-BOOST_SYMBOL_VISIBLE void
+BOOST_ARCHIVE_OR_WARCHIVE_DECL void
 #if BOOST_VERSION > 105800
 basic_yaml_oarchive<Archive>::save_override(const object_reference_type& t)
 #else // BOOST_VERSION <= 105800
@@ -131,7 +131,7 @@ basic_yaml_oarchive<Archive>::save_override(const object_reference_type& t, int)
     this->This()->save(static_cast<int>(t));
 }
 template <class Archive>
-BOOST_SYMBOL_VISIBLE void
+BOOST_ARCHIVE_OR_WARCHIVE_DECL void
 #if BOOST_VERSION > 105800
 basic_yaml_oarchive<Archive>::save_override(const version_type& t)
 #else // BOOST_VERSION <= 105800
@@ -143,7 +143,7 @@ basic_yaml_oarchive<Archive>::save_override(const version_type& t, int)
 }
 
 template <class Archive>
-BOOST_SYMBOL_VISIBLE void
+BOOST_ARCHIVE_OR_WARCHIVE_DECL void
 #if BOOST_VERSION > 105800
 basic_yaml_oarchive<Archive>::save_override(const class_id_type& t)
 #else // BOOST_VERSION <= 105800
@@ -161,7 +161,7 @@ basic_yaml_oarchive<Archive>::save_override(const class_id_type& t, int)
     }
 }
 template <class Archive>
-BOOST_SYMBOL_VISIBLE void
+BOOST_ARCHIVE_OR_WARCHIVE_DECL void
 #if BOOST_VERSION > 105800
 basic_yaml_oarchive<Archive>::save_override(const class_id_reference_type& t)
 #else // BOOST_VERSION <= 105800
@@ -173,7 +173,7 @@ basic_yaml_oarchive<Archive>::save_override(const class_id_reference_type& t,
     this->This()->save(static_cast<int>(t));
 }
 template <class Archive>
-BOOST_SYMBOL_VISIBLE void
+BOOST_ARCHIVE_OR_WARCHIVE_DECL void
 #if BOOST_VERSION > 105800
 basic_yaml_oarchive<Archive>::save_override(const class_id_optional_type& t)
 #else // BOOST_VERSION <= 105800
@@ -185,7 +185,7 @@ basic_yaml_oarchive<Archive>::save_override(const class_id_optional_type& t,
     this->This()->save(static_cast<int>(t));
 }
 template <class Archive>
-BOOST_SYMBOL_VISIBLE void
+BOOST_ARCHIVE_OR_WARCHIVE_DECL void
 #if BOOST_VERSION > 105800
 basic_yaml_oarchive<Archive>::save_override(const class_name_type& t)
 #else // BOOST_VERSION <= 105800
@@ -196,7 +196,7 @@ basic_yaml_oarchive<Archive>::save_override(const class_name_type& t, int)
 }
 
 template <class Archive>
-BOOST_SYMBOL_VISIBLE void
+BOOST_ARCHIVE_OR_WARCHIVE_DECL void
 #if BOOST_VERSION > 105800
 basic_yaml_oarchive<Archive>::save_override(const tracking_type& t)
 #else // BOOST_VERSION <= 105800
@@ -207,7 +207,7 @@ basic_yaml_oarchive<Archive>::save_override(const tracking_type& t, int)
 }
 
 template <class Archive>
-BOOST_SYMBOL_VISIBLE void basic_yaml_oarchive<Archive>::init()
+BOOST_ARCHIVE_OR_WARCHIVE_DECL void basic_yaml_oarchive<Archive>::init()
 {
     this->This()->put("%YAML 1.2\n");
     this->This()->put("%TAG ! boost/archive/v");
@@ -217,20 +217,21 @@ BOOST_SYMBOL_VISIBLE void basic_yaml_oarchive<Archive>::init()
 }
 
 template <class Archive>
-BOOST_SYMBOL_VISIBLE void basic_yaml_oarchive<Archive>::windup()
+BOOST_ARCHIVE_OR_WARCHIVE_DECL void basic_yaml_oarchive<Archive>::windup()
 {
     this->This()->put("...");
 }
 
 template <class Archive>
-BOOST_SYMBOL_VISIBLE
+BOOST_ARCHIVE_OR_WARCHIVE_DECL
 basic_yaml_oarchive<Archive>::basic_yaml_oarchive(unsigned int flags)
     : detail::common_oarchive<Archive>(flags), depth(0)
 {
 }
 
 template <class Archive>
-BOOST_SYMBOL_VISIBLE basic_yaml_oarchive<Archive>::~basic_yaml_oarchive()
+BOOST_ARCHIVE_OR_WARCHIVE_DECL
+    basic_yaml_oarchive<Archive>::~basic_yaml_oarchive()
 {
 }
 

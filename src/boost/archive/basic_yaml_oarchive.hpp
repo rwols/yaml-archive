@@ -53,13 +53,13 @@ class BOOST_SYMBOL_VISIBLE basic_yaml_oarchive
   protected:
     friend class detail::interface_oarchive<Archive>;
 #endif
-    BOOST_SYMBOL_VISIBLE void indent();
-    BOOST_SYMBOL_VISIBLE void init();
-    BOOST_SYMBOL_VISIBLE void windup();
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL void indent();
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL void init();
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL void windup();
     // helpers used below
-    BOOST_SYMBOL_VISIBLE void save_start(const char* name);
-    BOOST_SYMBOL_VISIBLE void save_end(const char* name);
-    BOOST_SYMBOL_VISIBLE void end_preamble();
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL void save_start(const char* name);
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL void save_end(const char* name);
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL void end_preamble();
 
 #if BOOST_VERSION > 105800
 
@@ -85,14 +85,17 @@ class BOOST_SYMBOL_VISIBLE basic_yaml_oarchive
 
     // specific overrides for attributes - not name value pairs so we
     // want to trap them before the above "fall through"
-    BOOST_SYMBOL_VISIBLE void save_override(const class_id_type& t);
-    BOOST_SYMBOL_VISIBLE void save_override(const class_id_optional_type& t);
-    BOOST_SYMBOL_VISIBLE void save_override(const class_id_reference_type& t);
-    BOOST_SYMBOL_VISIBLE void save_override(const object_id_type& t);
-    BOOST_SYMBOL_VISIBLE void save_override(const object_reference_type& t);
-    BOOST_SYMBOL_VISIBLE void save_override(const version_type& t);
-    BOOST_SYMBOL_VISIBLE void save_override(const class_name_type& t);
-    BOOST_SYMBOL_VISIBLE void save_override(const tracking_type& t);
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL void save_override(const class_id_type& t);
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL void
+    save_override(const class_id_optional_type& t);
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL void
+    save_override(const class_id_reference_type& t);
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL void save_override(const object_id_type& t);
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL void
+    save_override(const object_reference_type& t);
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL void save_override(const version_type& t);
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL void save_override(const class_name_type& t);
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL void save_override(const tracking_type& t);
 
 #else // BOOST_VERSION <= 105800
 
@@ -115,22 +118,34 @@ class BOOST_SYMBOL_VISIBLE basic_yaml_oarchive
         this->This()->save_end(t.name());
     }
 
-    BOOST_SYMBOL_VISIBLE void save_override(const class_id_type& t, int);
-    BOOST_SYMBOL_VISIBLE void save_override(const class_id_optional_type& t,
-                                            int);
-    BOOST_SYMBOL_VISIBLE void save_override(const class_id_reference_type& t,
-                                            int);
-    BOOST_SYMBOL_VISIBLE void save_override(const object_id_type& t, int);
-    BOOST_SYMBOL_VISIBLE void save_override(const object_reference_type& t,
-                                            int);
-    BOOST_SYMBOL_VISIBLE void save_override(const version_type& t, int);
-    BOOST_SYMBOL_VISIBLE void save_override(const class_name_type& t, int);
-    BOOST_SYMBOL_VISIBLE void save_override(const tracking_type& t, int);
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL
+    void save_override(const class_id_type& t, int);
+
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL
+    void save_override(const class_id_optional_type& t, int);
+
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL
+    void save_override(const class_id_reference_type& t, int);
+
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL
+    void save_override(const object_id_type& t, int);
+
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL
+    void save_override(const object_reference_type& t, int);
+
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL
+    void save_override(const version_type& t, int);
+
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL
+    void save_override(const class_name_type& t, int);
+
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL
+    void save_override(const tracking_type& t, int);
 
 #endif // BOOST_VERSION
 
-    BOOST_SYMBOL_VISIBLE basic_yaml_oarchive(unsigned int flags);
-    BOOST_SYMBOL_VISIBLE ~basic_yaml_oarchive();
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL basic_yaml_oarchive(unsigned int flags);
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL ~basic_yaml_oarchive();
 };
 
 } // namespace archive

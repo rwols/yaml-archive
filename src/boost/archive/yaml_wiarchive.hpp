@@ -81,32 +81,31 @@ class BOOST_SYMBOL_VISIBLE yaml_wiarchive_impl
         load(v);
         t = boost::serialization::item_version_type(v);
     }
-    BOOST_SYMBOL_VISIBLE void load(char* t);
+    BOOST_WARCHIVE_DECL void load(char* t);
 #ifndef BOOST_NO_INTRINSIC_WCHAR_T
-    BOOST_SYMBOL_VISIBLE void load(wchar_t* t);
+    BOOST_WARCHIVE_DECL void load(wchar_t* t);
 #endif
-    BOOST_SYMBOL_VISIBLE void load(std::string& s);
+    BOOST_WARCHIVE_DECL void load(std::string& s);
 #ifndef BOOST_NO_STD_WSTRING
-    BOOST_SYMBOL_VISIBLE void load(std::wstring& ws);
+    BOOST_WARCHIVE_DECL void load(std::wstring& ws);
 #endif
 #if BOOST_VERSION > 105800
     template <class T> void load_override(T& t)
     {
         basic_yaml_iarchive<Archive>::load_override(t);
     }
-    BOOST_SYMBOL_VISIBLE void load_override(class_name_type& t);
+    BOOST_WARCHIVE_DECL void load_override(class_name_type& t);
 #else  // BOOST_VERSION <= 105800
     template <class T> void load_override(T& t, BOOST_PFTO int)
     {
         basic_yaml_iarchive<Archive>::load_override(t, 0);
     }
-    BOOST_SYMBOL_VISIBLE void load_override(class_name_type& t, int);
+    BOOST_WARCHIVE_DECL void load_override(class_name_type& t, int);
 #endif // BOOST_VERSION
-    BOOST_SYMBOL_VISIBLE void init();
-    BOOST_SYMBOL_VISIBLE
-    yaml_wiarchive_impl(std::wistream& is, unsigned int flags);
-    BOOST_SYMBOL_VISIBLE
-    ~yaml_wiarchive_impl();
+    BOOST_WARCHIVE_DECL void init();
+    BOOST_WARCHIVE_DECL yaml_wiarchive_impl(std::wistream& is,
+                                            unsigned int   flags);
+    BOOST_WARCHIVE_DECL ~yaml_wiarchive_impl();
 };
 
 } // namespace archive
