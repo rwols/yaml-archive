@@ -68,13 +68,8 @@ endif()
 find_package(Boost 1.54 COMPONENTS wserialization REQUIRED)
 
 # Link with Boost and add its include path to the search paths.
-if (CMAKE_VERSION VERSION_LESS 3.5)
-    target_include_directories(yaml-archive-better PUBLIC ${Boost_INCLUDE_DIR})
-    target_link_libraries(yaml-archive-better PUBLIC ${Boost_LIBRARIES})
-else()
-    # The "modern CMake way".
-    target_link_libraries(yaml-archive-better PUBLIC Boost::wserialization)
-endif()
+target_include_directories(yaml-archive-better PUBLIC ${Boost_INCLUDE_DIR})
+target_link_libraries(yaml-archive-better PUBLIC ${Boost_LIBRARIES})
 
 if (MSVC)
     target_compile_definitions(yaml-archive-better PRIVATE _CRT_SECURE_NO_WARNINGS)
