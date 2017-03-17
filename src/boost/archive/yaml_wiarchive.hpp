@@ -96,7 +96,7 @@ class BOOST_SYMBOL_VISIBLE yaml_wiarchive_impl
     }
     BOOST_SYMBOL_VISIBLE void load_override(class_name_type& t);
 #else  // BOOST_VERSION <= 105800
-    template <class T> void load_override(T& t BOOST_PFTO int)
+    template <class T> void load_override(T& t, BOOST_PFTO int)
     {
         basic_yaml_iarchive<Archive>::load_override(t, 0);
     }
