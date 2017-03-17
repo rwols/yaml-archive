@@ -56,12 +56,30 @@ target_sources(yaml-archive-better PUBLIC "${public_headers}" "${private_headers
 # Link with boost serialization
 if (BUILD_SHARED_LIBS)
     set(Boost_USE_STATIC_LIBS OFF)
+    # If we are a shared library, make sure we link with the shared library
+    # variant of Boost.Serialization. Users don't have to repeat this because
+    # we make this definition public.
+    target_compile_definitions(yaml-archive-better PUBLIC BOOST_SERIALIZATION_DYN_LINK)
 else()
     set(Boost_USE_STATIC_LIBS ON)
 endif()
+# Let CMake handle library linking. Users don't have to repeat this because we
+# make this definition public.
+target_compile_definitions(yaml-archive-better PUBLIC BOOST_SERIALIZATION_NO_LIB)
 find_package(Boost 1.54 COMPONENTS wserialization REQUIRED)
+
+# Link with Boost and add its include path to the search paths.
 target_include_directories(yaml-archive-better PUBLIC ${Boost_INCLUDE_DIR})
 target_link_libraries(yaml-archive-better PUBLIC ${Boost_LIBRARIES})
+
+# In summary, when users now link with yaml-archive-better, they get for free:
+# 1. Correct preprocessor defines for static and shared linking,
+# 2. BOOST_SERIALIZATION_NO_LIB preprocessor definition,
+# 3. Boost include path,
+# 4. Boost.Serialization library linked in. 
+#
+# Therefore, if users link with yaml-archive-better, they don't have to link
+# with Boost.Serialization anymore.
 
 install(TARGETS yaml-archive-better
     LIBRARY DESTINATION lib

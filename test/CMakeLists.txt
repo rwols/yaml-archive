@@ -111,24 +111,27 @@ function(target_create_boost_archive_test_suite)
     ../variant.cpp
     )
 
-  if (BUILD_SHARED_LIBS)
-      set(Boost_USE_STATIC_LIBS OFF)
-  else()
-      set(Boost_USE_STATIC_LIBS ON)
-  endif()
+  # ALWAYS dynamically link with Boost.Test.
+  target_compile_definitions(${exe} PRIVATE BOOST_TEST_DYN_LINK)
+
+  # Let CMake handle library linking.
+  target_compile_definitions(${exe} PRIVATE BOOST_TEST_NO_LIB)
+
+  # Find Boost.Test.
+  set(Boost_USE_STATIC_LIBS OFF)
   find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
-  target_include_directories(${exe} PRIVATE ${Boost_INCLUDE_DIRS})
+  # For the config.hpp file.
   target_include_directories(${exe} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 
+  # Link with the archive that we're going to run unit tests on.
+  # This should bring in Boost.Serialization too.
   target_link_libraries(${exe} PRIVATE ${args_LIBRARY_TARGET})
+
+  # Link with Boost.Test
   target_link_libraries(${exe} PRIVATE ${Boost_LIBRARIES})
   
-  if (BUILD_SHARED_LIBS)
-      target_compile_definitions(${exe} PRIVATE BOOST_TEST_DYN_LINK)
-  endif()
-  target_compile_definitions(${exe} PRIVATE BOOST_ALL_NO_LIB)
-  
+  # We want C++11.
   set_property(TARGET ${exe} PROPERTY CXX_STANDARD 11)
 
   # unit tests -- basics
@@ -320,9 +323,9 @@ function(target_create_boost_polymorphic_archive_test_suite)
   target_link_libraries(${exe} PRIVATE ${Boost_LIBRARIES})
   
   if (BUILD_SHARED_LIBS)
-      target_compile_definitions(${exe} PRIVATE BOOST_TEST_DYN_LINK)
+      target_compile_definitions(${exe} PUBLIC BOOST_TEST_DYN_LINK)
   endif()
-  target_compile_definitions(${exe} PRIVATE BOOST_ALL_NO_LIB)
+  target_compile_definitions(${exe} PUBLIC BOOST_ALL_NO_LIB)
   
   set_property(TARGET ${exe} PROPERTY CXX_STANDARD 11)
 
