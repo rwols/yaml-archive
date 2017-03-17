@@ -2,7 +2,8 @@
 #include <boost/test/unit_test.hpp>
 
 // random collection of various unicode symbols
-static const wchar_t* s_wide_string_samples[] = {
+static const wchar_t* s_wide_string_samples[] = 
+{
     // L"Euro Symbol: €",
     // L"Greek: Μπορώ να φάω σπασμένα γυαλιά χωρίς να πάθω τίποτα.",
     // L"Íslenska / Icelandic: Ég get etið gler án þess að meiða mig.",
@@ -10,21 +11,23 @@ static const wchar_t* s_wide_string_samples[] = {
     L"Romanian: Pot să mănânc sticlă și ea nu mă rănește.",
     L"Ukrainian: Я можу їсти шкло, й воно мені не пошкодить.",
     L"Armenian: Կրնամ ապակի ուտել և ինծի անհանգիստ չըներ։",
-    L"Georgian: მინას ვჭამ და არა მტკივა.",
-    L"Hindi: मैं काँच खा सकता हूँ, मुझे उस से कोई पीडा नहीं होती.",
-    L"Hebrew(2): אני יכול לאכול זכוכית וזה לא מזיק לי.",
-    L"Yiddish(2): איך קען עסן גלאָז און עס טוט מיר נישט װײ.",
-    L"Arabic(2): أنا قادر على أكل الزجاج و هذا لا يؤلمني.",
-    L"Japanese: 私はガラスを食べられます。それは私を傷つけません。",
-    L"Thai: ฉันกินกระจกได้ แต่มันไม่ทำให้ฉันเจ็บ",
-    L"👌👀👌👀👌👀👌👀👌👀 good shit go౦ԁ sHit👌 thats ✔ some good👌👌shit right👌👌there👌👌👌 "
-    L"right✔there ✔✔if i do ƽaү so my self 💯 i say so 💯 thats what im talking "
-    L"about right there right there (chorus: ʳᶦᵍʰᵗ ᵗʰᵉʳᵉ) mMMMMᎷМ💯 👌👌 "
-    L"👌НO0ОଠOOOOOОଠଠOoooᵒᵒᵒᵒᵒᵒᵒᵒᵒ👌 👌👌 👌 💯 👌 👀 👀 👀 👌👌Good shit",
-    L"◕‿◕ இ௰இ ઊઠઊ ꉨڡꉨ ꈿ۝ꈿ ஞ౩ஞ ب_ب "
-    L"ꆨ❥ꆨ "
-    L"ꆧεꆧ "
-    L"ꆤॄꆤ"};
+    L"Georgian: მინას ვჭამ და არა მტკივა."
+    // ,
+    // L"Hindi: मैं काँच खा सकता हूँ, मुझे उस से कोई पीडा नहीं होती.",
+    // L"Hebrew(2): אני יכול לאכול זכוכית וזה לא מזיק לי.",
+    // L"Yiddish(2): איך קען עסן גלאָז און עס טוט מיר נישט װײ.",
+    // L"Arabic(2): أنا قادر على أكل الزجاج و هذا لا يؤلمني.",
+    // L"Japanese: 私はガラスを食べられます。それは私を傷つけません。",
+    // L"Thai: ฉันกินกระจกได้ แต่มันไม่ทำให้ฉันเจ็บ",
+    // L"👌👀👌👀👌👀👌👀👌👀 good shit go౦ԁ sHit👌 thats ✔ some good👌👌shit right👌👌there👌👌👌 "
+    // L"right✔there ✔✔if i do ƽaү so my self 💯 i say so 💯 thats what im talking "
+    // L"about right there right there (chorus: ʳᶦᵍʰᵗ ᵗʰᵉʳᵉ) mMMMMᎷМ💯 👌👌 "
+    // L"👌НO0ОଠOOOOOОଠଠOoooᵒᵒᵒᵒᵒᵒᵒᵒᵒ👌 👌👌 👌 💯 👌 👀 👀 👀 👌👌Good shit",
+    // L"◕‿◕ இ௰இ ઊઠઊ ꉨڡꉨ ꈿ۝ꈿ ஞ౩ஞ ب_ب "
+    // L"ꆨ❥ꆨ "
+    // L"ꆧεꆧ "
+    // L"ꆤॄꆤ"
+};
 
 // first page of chapter 1 of "the problems of philosophy" by Bertrand Russell
 static const char* s_narrow_string_samples[] = {
