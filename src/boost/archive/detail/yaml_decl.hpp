@@ -10,6 +10,7 @@
 // changed in boost >= 1.59.
 
 #include <boost/config.hpp>
+#include <boost/version.hpp>
 
 #if (defined(BOOST_ALL_DYN_LINK) || defined(BOOST_SERIALIZATION_DYN_LINK))
 #if defined(BOOST_ARCHIVE_SOURCE)

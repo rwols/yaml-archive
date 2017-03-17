@@ -97,6 +97,10 @@ class BOOST_SYMBOL_VISIBLE basic_yaml_oarchive
 
 #else // BOOST_VERSION <= 105800
 
+#ifdef _MSC_VER
+#pragma message("Boost version is " BOOST_LIB_VERSION ". Consider upgrading!")
+#endif
+
     // These overloads are required for versions of boost <= 1.58.
 
     template <class T> void save_override(T& t, BOOST_PFTO int)

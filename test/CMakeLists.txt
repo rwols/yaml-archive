@@ -134,6 +134,12 @@ function(target_create_boost_archive_test_suite)
   # We want C++11.
   set_property(TARGET ${exe} PROPERTY CXX_STANDARD 11)
 
+  if (MSVC)
+    # Enable multithreaded compilation. This speeds things up.
+    target_compile_definitions(${exe} PRIVATE _CRT_SECURE_NO_WARNINGS)
+    target_compile_options(${exe} PRIVATE /MP)
+  endif()
+
   # unit tests -- basics
   add_archive_test(empty ${exe} ${ext})
   add_archive_test(char_ ${exe} ${ext})

@@ -1,4 +1,4 @@
-#include "io_fixture.hpp"
+﻿#include "io_fixture.hpp"
 #include <boost/test/unit_test.hpp>
 
 // random collection of various unicode symbols

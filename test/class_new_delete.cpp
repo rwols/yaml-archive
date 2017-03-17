@@ -8,12 +8,13 @@
 
 // should pass compilation and execution
 
+#include <new>
+
 #include "A.hpp"
 #include "A.ipp"
 #include "io_fixture.hpp"
 #include <boost/serialization/access.hpp>
 #include <boost/test/unit_test.hpp>
-#include <new>
 
 class ANew : public A
 {
@@ -30,12 +31,17 @@ class ANew : public A
     // implement class specific new/delete in terms standard
     // implementation - we're testing serialization
     // not "new" here.
-    static void* operator new(size_t s)
+    static void* operator new(std::size_t s, std::size_t)
     {
         ++m_new_calls;
         return ::operator new(s);
     }
-    static void operator delete(void* p, std::size_t)
+    static void* operator new(std::size_t s)
+    {
+        ++m_new_calls;
+        return ::operator new(s);
+    }
+    static void operator delete(void* p, std::size_t /*count*/)
     {
         ++m_delete_calls;
         ::operator delete(p);
@@ -59,12 +65,12 @@ class ANew1 : public A
     // implement class specific new/delete in terms standard
     // implementation - we're testing serialization
     // not "new" here.
-    static void* operator new(size_t s)
+    static void* operator new(std::size_t s)
     {
         ++m_new_calls;
         return ::operator new(s);
     }
-    static void operator delete(void* p)
+    static void operator delete(void* p, std::size_t /*count*/)
     {
         ++m_delete_calls;
         ::operator delete(p);

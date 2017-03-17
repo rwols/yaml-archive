@@ -72,6 +72,11 @@ find_package(Boost 1.54 COMPONENTS wserialization REQUIRED)
 target_include_directories(yaml-archive-better PUBLIC ${Boost_INCLUDE_DIR})
 target_link_libraries(yaml-archive-better PUBLIC ${Boost_LIBRARIES})
 
+if (MSVC)
+    target_compile_definitions(yaml-archive-better PRIVATE _CRT_SECURE_NO_WARNINGS)
+    target_compile_options(yaml-archive-better PRIVATE /MP)
+endif()
+
 # In summary, when users now link with yaml-archive-better, they get for free:
 # 1. Correct preprocessor defines for static and shared linking,
 # 2. BOOST_SERIALIZATION_NO_LIB preprocessor definition,

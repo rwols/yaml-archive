@@ -16,6 +16,7 @@
 
 //  See http://www.boost.org for updates, documentation, and revision history.
 
+#include <boost/version.hpp>
 #include <boost/archive/detail/common_iarchive.hpp>
 #include <boost/archive/detail/yaml_decl.hpp>
 #include <boost/config.hpp>
@@ -55,7 +56,7 @@ class BOOST_SYMBOL_VISIBLE basic_yaml_iarchive
     YAML_AWARCHIVE_API void load_start(const char* name);
     YAML_AWARCHIVE_API void load_end(const char* name);
 
-#if BOOST_VERSION > 105800
+#if BOOST_VERSION >= 105800
 
     // Anything not an attribute and not a name-value pair is an
     // should be trapped here.
@@ -95,9 +96,9 @@ class BOOST_SYMBOL_VISIBLE basic_yaml_iarchive
 // char type used by the stream.  So require the derived implementation
 // handle this.
 
-#else // BOOST_VERSION <= 105800
+#else // BOOST_VERSION < 105800
 
-    // These overloads are required for versions of boost <= 1.58.
+    // These overloads are required for versions of boost < 1.59.
 
     template <class T> void load_override(T& t, BOOST_PFTO int)
     {

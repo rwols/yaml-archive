@@ -22,6 +22,10 @@
 #include <boost/config.hpp>
 #include <exception>
 
+#if BOOST_VERSION <= 105800
+#include <boost/serialization/pfto.hpp>
+#endif
+
 #include <boost/archive/detail/abi_prefix.hpp> // must be the last header
 
 namespace boost {

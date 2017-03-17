@@ -16,6 +16,7 @@
 #include <boost/archive/yaml_archive_exception.hpp>
 #include <boost/serialization/throw_exception.hpp>
 #include <boost/serialization/tracking.hpp>
+#include <boost/version.hpp>
 
 // remove me
 #include <iostream>
