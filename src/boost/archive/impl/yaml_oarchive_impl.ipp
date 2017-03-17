@@ -51,8 +51,7 @@ void save_iterator(std::ostream& os, InputIterator begin, InputIterator end)
 
 #ifndef BOOST_NO_STD_WSTRING
 template <class Archive>
-BOOST_ARCHIVE_DECL void
-yaml_oarchive_impl<Archive>::save(const std::wstring& ws)
+YAML_ARCHIVE_API void yaml_oarchive_impl<Archive>::save(const std::wstring& ws)
 {
     this->This()->put('"');
     save_iterator(os, ws.data(), ws.data() + ws.size());
@@ -62,7 +61,7 @@ yaml_oarchive_impl<Archive>::save(const std::wstring& ws)
 
 #ifndef BOOST_NO_INTRINSIC_WCHAR_T
 template <class Archive>
-BOOST_ARCHIVE_DECL void yaml_oarchive_impl<Archive>::save(const wchar_t* ws)
+YAML_ARCHIVE_API void yaml_oarchive_impl<Archive>::save(const wchar_t* ws)
 {
     this->This()->put('"');
     save_iterator(os, ws, ws + std::wcslen(ws));
@@ -73,7 +72,7 @@ BOOST_ARCHIVE_DECL void yaml_oarchive_impl<Archive>::save(const wchar_t* ws)
 #endif // BOOST_NO_CWCHAR
 
 template <class Archive>
-BOOST_ARCHIVE_DECL void yaml_oarchive_impl<Archive>::save(const std::string& s)
+YAML_ARCHIVE_API void yaml_oarchive_impl<Archive>::save(const std::string& s)
 {
     this->This()->put('"');
     typedef boost::archive::iterators::yaml_escape<const char*>
@@ -85,7 +84,7 @@ BOOST_ARCHIVE_DECL void yaml_oarchive_impl<Archive>::save(const std::string& s)
 }
 
 template <class Archive>
-BOOST_ARCHIVE_DECL void yaml_oarchive_impl<Archive>::save(const char* s)
+YAML_ARCHIVE_API void yaml_oarchive_impl<Archive>::save(const char* s)
 {
     this->This()->put('"');
     typedef boost::archive::iterators::yaml_escape<const char*>
@@ -97,7 +96,7 @@ BOOST_ARCHIVE_DECL void yaml_oarchive_impl<Archive>::save(const char* s)
 }
 
 template <class Archive>
-BOOST_ARCHIVE_DECL
+YAML_ARCHIVE_API
 yaml_oarchive_impl<Archive>::yaml_oarchive_impl(std::ostream& os_,
                                                 unsigned int  flags)
     : basic_text_oprimitive<std::ostream>(os_, 0 != (flags & no_codecvt)),
@@ -112,7 +111,7 @@ yaml_oarchive_impl<Archive>::yaml_oarchive_impl(std::ostream& os_,
 }
 
 template <class Archive>
-BOOST_ARCHIVE_DECL void
+YAML_ARCHIVE_API void
 yaml_oarchive_impl<Archive>::save_binary(const void* address, std::size_t count)
 {
     this->end_preamble();
@@ -143,7 +142,7 @@ yaml_oarchive_impl<Archive>::save_binary(const void* address, std::size_t count)
 }
 
 template <class Archive>
-BOOST_ARCHIVE_DECL yaml_oarchive_impl<Archive>::~yaml_oarchive_impl()
+YAML_ARCHIVE_API yaml_oarchive_impl<Archive>::~yaml_oarchive_impl()
 {
     if (std::uncaught_exception()) return;
     if (0 == (this->get_flags() & no_header)) this->windup();

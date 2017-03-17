@@ -57,7 +57,7 @@ void copy_to_ptr(char* s, const std::wstring& ws)
 } // anonymous
 
 template <class Archive>
-BOOST_WARCHIVE_DECL void yaml_wiarchive_impl<Archive>::load(std::string& s)
+YAML_WARCHIVE_API void yaml_wiarchive_impl<Archive>::load(std::string& s)
 {
     std::wstring ws;
 
@@ -78,7 +78,7 @@ BOOST_WARCHIVE_DECL void yaml_wiarchive_impl<Archive>::load(std::string& s)
 
 #ifndef BOOST_NO_STD_WSTRING
 template <class Archive>
-BOOST_WARCHIVE_DECL void yaml_wiarchive_impl<Archive>::load(std::wstring& ws)
+YAML_WARCHIVE_API void yaml_wiarchive_impl<Archive>::load(std::wstring& ws)
 {
     bool result = gimpl->parse_string(this->This()->depth, is, ws);
     if (!result)
@@ -88,7 +88,7 @@ BOOST_WARCHIVE_DECL void yaml_wiarchive_impl<Archive>::load(std::wstring& ws)
 #endif
 
 template <class Archive>
-BOOST_WARCHIVE_DECL void yaml_wiarchive_impl<Archive>::load(char* s)
+YAML_WARCHIVE_API void yaml_wiarchive_impl<Archive>::load(char* s)
 {
     std::wstring ws;
 
@@ -102,7 +102,7 @@ BOOST_WARCHIVE_DECL void yaml_wiarchive_impl<Archive>::load(char* s)
 
 #ifndef BOOST_NO_INTRINSIC_WCHAR_T
 template <class Archive>
-BOOST_WARCHIVE_DECL void yaml_wiarchive_impl<Archive>::load(wchar_t* ws)
+YAML_WARCHIVE_API void yaml_wiarchive_impl<Archive>::load(wchar_t* ws)
 {
     std::wstring twstring;
     bool result = gimpl->parse_string(this->This()->depth, is, twstring);
@@ -115,7 +115,7 @@ BOOST_WARCHIVE_DECL void yaml_wiarchive_impl<Archive>::load(wchar_t* ws)
 #endif
 
 template <class Archive>
-BOOST_WARCHIVE_DECL void
+YAML_WARCHIVE_API void
 #if BOOST_VERSION > 105800
 yaml_wiarchive_impl<Archive>::load_override(class_name_type& t)
 #else // BOOST_VERSION <= 105800
@@ -130,14 +130,14 @@ yaml_wiarchive_impl<Archive>::load_override(class_name_type& t, int)
 }
 
 template <class Archive>
-BOOST_WARCHIVE_DECL void yaml_wiarchive_impl<Archive>::init()
+YAML_WARCHIVE_API void yaml_wiarchive_impl<Archive>::init()
 {
     gimpl->init(is);
     this->set_library_version(library_version_type(gimpl->rv.version));
 }
 
 template <class Archive>
-BOOST_WARCHIVE_DECL
+YAML_WARCHIVE_API
 yaml_wiarchive_impl<Archive>::yaml_wiarchive_impl(std::wistream& is_,
                                                   unsigned int   flags)
     : basic_text_iprimitive<std::wistream>(
@@ -175,7 +175,7 @@ yaml_wiarchive_impl<Archive>::yaml_wiarchive_impl(std::wistream& is_,
 }
 
 template <class Archive>
-BOOST_WARCHIVE_DECL yaml_wiarchive_impl<Archive>::~yaml_wiarchive_impl()
+YAML_WARCHIVE_API yaml_wiarchive_impl<Archive>::~yaml_wiarchive_impl()
 {
     if (std::uncaught_exception()) return;
     if (0 == (this->get_flags() & no_header))

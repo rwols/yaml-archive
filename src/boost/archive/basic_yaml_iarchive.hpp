@@ -16,10 +16,10 @@
 
 //  See http://www.boost.org for updates, documentation, and revision history.
 
+#include <boost/archive/detail/common_iarchive.hpp>
+#include <boost/archive/detail/yaml_decl.hpp>
 #include <boost/config.hpp>
 #include <boost/mpl/assert.hpp>
-
-#include <boost/archive/detail/common_iarchive.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/string.hpp>
 
@@ -52,8 +52,8 @@ class BOOST_SYMBOL_VISIBLE basic_yaml_iarchive
     unsigned int depth;
     friend class detail::interface_iarchive<Archive>;
 
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void load_start(const char* name);
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void load_end(const char* name);
+    YAML_AWARCHIVE_API void load_start(const char* name);
+    YAML_AWARCHIVE_API void load_end(const char* name);
 
 #if BOOST_VERSION > 105800
 
@@ -86,14 +86,11 @@ class BOOST_SYMBOL_VISIBLE basic_yaml_iarchive
     // an yaml archive.  So we can skip it here.  Note: we MUST override
     // it otherwise it will be loaded as a normal primitive w/o tag and
     // leaving the archive in an undetermined state
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void load_override(class_id_type& t);
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-    load_override(class_id_optional_type& /* t */)
-    {
-    }
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void load_override(object_id_type& t);
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void load_override(version_type& t);
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void load_override(tracking_type& t);
+    YAML_AWARCHIVE_API void load_override(class_id_type& t);
+    YAML_AWARCHIVE_API void load_override(class_id_optional_type& /* t */) {}
+    YAML_AWARCHIVE_API void load_override(object_id_type& t);
+    YAML_AWARCHIVE_API void load_override(version_type& t);
+    YAML_AWARCHIVE_API void load_override(tracking_type& t);
 // class_name_type can't be handled here as it depends upon the
 // char type used by the stream.  So require the derived implementation
 // handle this.
@@ -118,20 +115,17 @@ class BOOST_SYMBOL_VISIBLE basic_yaml_iarchive
         this->detail_common_iarchive::load_override(t.value(), 0);
         this->This()->load_end(t.name());
     }
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void load_override(class_id_type& t, int);
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void load_override(class_id_optional_type&,
-                                                      int)
-    {
-    }
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void load_override(object_id_type& t, int);
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void load_override(version_type& t, int);
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void load_override(tracking_type& t, int);
+    YAML_AWARCHIVE_API void load_override(class_id_type& t, int);
+    YAML_AWARCHIVE_API void load_override(class_id_optional_type&, int) {}
+    YAML_AWARCHIVE_API void load_override(object_id_type& t, int);
+    YAML_AWARCHIVE_API void load_override(version_type& t, int);
+    YAML_AWARCHIVE_API void load_override(tracking_type& t, int);
 
 #endif // BOOST_VERSION
 
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL
+    YAML_AWARCHIVE_API
     basic_yaml_iarchive(unsigned int flags);
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL
+    YAML_AWARCHIVE_API
     ~basic_yaml_iarchive();
 };
 

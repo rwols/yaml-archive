@@ -60,7 +60,7 @@ namespace archive {
 #ifndef BOOST_NO_CWCHAR
 #ifndef BOOST_NO_STD_WSTRING
 template <class Archive>
-BOOST_ARCHIVE_DECL void yaml_iarchive_impl<Archive>::load(std::wstring& ws)
+YAML_ARCHIVE_API void yaml_iarchive_impl<Archive>::load(std::wstring& ws)
 {
     std::string utf8string;
 
@@ -77,7 +77,7 @@ BOOST_ARCHIVE_DECL void yaml_iarchive_impl<Archive>::load(std::wstring& ws)
 
 #ifndef BOOST_NO_INTRINSIC_WCHAR_T
 template <class Archive>
-BOOST_ARCHIVE_DECL void yaml_iarchive_impl<Archive>::load(wchar_t* ws)
+YAML_ARCHIVE_API void yaml_iarchive_impl<Archive>::load(wchar_t* ws)
 {
     std::string s;
 
@@ -109,7 +109,7 @@ BOOST_ARCHIVE_DECL void yaml_iarchive_impl<Archive>::load(wchar_t* ws)
 #endif // BOOST_NO_CWCHAR
 
 template <class Archive>
-BOOST_ARCHIVE_DECL void yaml_iarchive_impl<Archive>::load(std::string& s)
+YAML_ARCHIVE_API void yaml_iarchive_impl<Archive>::load(std::string& s)
 {
     bool result = gimpl->parse_string(this->This()->depth, is, s);
     if (!result)
@@ -120,7 +120,7 @@ BOOST_ARCHIVE_DECL void yaml_iarchive_impl<Archive>::load(std::string& s)
 }
 
 template <class Archive>
-BOOST_ARCHIVE_DECL void yaml_iarchive_impl<Archive>::load(char* s)
+YAML_ARCHIVE_API void yaml_iarchive_impl<Archive>::load(char* s)
 {
     std::string tstring;
     bool        result = gimpl->parse_string(this->This()->depth, is, tstring);
@@ -132,7 +132,7 @@ BOOST_ARCHIVE_DECL void yaml_iarchive_impl<Archive>::load(char* s)
 }
 
 template <class Archive>
-BOOST_ARCHIVE_DECL void
+YAML_ARCHIVE_API void
 #if BOOST_VERSION > 105800
 yaml_iarchive_impl<Archive>::load_override(class_name_type& t)
 #else // BOOST_VERSION <= 105800
@@ -149,14 +149,14 @@ yaml_iarchive_impl<Archive>::load_override(class_name_type& t, int)
 }
 
 template <class Archive>
-BOOST_ARCHIVE_DECL void yaml_iarchive_impl<Archive>::init()
+YAML_ARCHIVE_API void yaml_iarchive_impl<Archive>::init()
 {
     gimpl->init(is);
     this->set_library_version(library_version_type(gimpl->rv.version));
 }
 
 template <class Archive>
-BOOST_ARCHIVE_DECL
+YAML_ARCHIVE_API
 yaml_iarchive_impl<Archive>::yaml_iarchive_impl(std::istream& is_,
                                                 unsigned int  flags)
     : basic_text_iprimitive<std::istream>(is_, 0 != (flags & no_codecvt)),
@@ -183,7 +183,7 @@ yaml_iarchive_impl<Archive>::yaml_iarchive_impl(std::istream& is_,
 }
 
 template <class Archive>
-BOOST_ARCHIVE_DECL yaml_iarchive_impl<Archive>::~yaml_iarchive_impl()
+YAML_ARCHIVE_API yaml_iarchive_impl<Archive>::~yaml_iarchive_impl()
 {
     if (std::uncaught_exception()) return;
     if (0 == (this->get_flags() & no_header))
@@ -193,7 +193,7 @@ BOOST_ARCHIVE_DECL yaml_iarchive_impl<Archive>::~yaml_iarchive_impl()
 }
 
 template <class Archive>
-BOOST_ARCHIVE_DECL void
+YAML_ARCHIVE_API void
 yaml_iarchive_impl<Archive>::load_binary(void* address, std::size_t count)
 {
     typedef typename std::istream::char_type CharType;

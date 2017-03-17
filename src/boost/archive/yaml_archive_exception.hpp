@@ -16,12 +16,11 @@
 
 //  See http://www.boost.org for updates, documentation, and revision history.
 
-#include <boost/assert.hpp>
-#include <exception>
-
 #include <boost/archive/archive_exception.hpp>
-#include <boost/archive/detail/decl.hpp>
+#include <boost/archive/detail/yaml_decl.hpp>
+#include <boost/assert.hpp>
 #include <boost/config.hpp>
+#include <exception>
 
 #include <boost/archive/detail/abi_prefix.hpp> // must be the last header
 
@@ -40,11 +39,11 @@ class BOOST_SYMBOL_VISIBLE yaml_archive_exception
         yaml_archive_tag_mismatch,
         yaml_archive_tag_name_error
     } exception_code;
-    BOOST_ARCHIVE_DECL yaml_archive_exception(exception_code c,
-                                              const char*    e1 = NULL,
-                                              const char*    e2 = NULL);
-    BOOST_ARCHIVE_DECL yaml_archive_exception(yaml_archive_exception const&);
-    virtual BOOST_ARCHIVE_DECL ~yaml_archive_exception()
+    YAML_ARCHIVE_API yaml_archive_exception(exception_code c,
+                                            const char*    e1 = NULL,
+                                            const char*    e2 = NULL);
+    YAML_ARCHIVE_API yaml_archive_exception(yaml_archive_exception const&);
+    virtual YAML_ARCHIVE_API ~yaml_archive_exception()
         BOOST_NOEXCEPT_OR_NOTHROW;
 };
 

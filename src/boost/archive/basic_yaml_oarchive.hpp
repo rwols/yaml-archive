@@ -17,6 +17,7 @@
 //  See http://www.boost.org for updates, documentation, and revision history.
 
 #include <boost/archive/detail/common_oarchive.hpp>
+#include <boost/archive/detail/yaml_decl.hpp>
 #include <boost/config.hpp>
 #include <boost/mpl/assert.hpp>
 #include <boost/serialization/collection_size_type.hpp>
@@ -53,13 +54,13 @@ class BOOST_SYMBOL_VISIBLE basic_yaml_oarchive
   protected:
     friend class detail::interface_oarchive<Archive>;
 #endif
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void indent();
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void init();
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void windup();
+    YAML_AWARCHIVE_API void indent();
+    YAML_AWARCHIVE_API void init();
+    YAML_AWARCHIVE_API void windup();
     // helpers used below
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void save_start(const char* name);
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void save_end(const char* name);
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void end_preamble();
+    YAML_AWARCHIVE_API void save_start(const char* name);
+    YAML_AWARCHIVE_API void save_end(const char* name);
+    YAML_AWARCHIVE_API void end_preamble();
 
 #if BOOST_VERSION > 105800
 
@@ -85,17 +86,14 @@ class BOOST_SYMBOL_VISIBLE basic_yaml_oarchive
 
     // specific overrides for attributes - not name value pairs so we
     // want to trap them before the above "fall through"
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void save_override(const class_id_type& t);
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-    save_override(const class_id_optional_type& t);
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-    save_override(const class_id_reference_type& t);
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void save_override(const object_id_type& t);
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-    save_override(const object_reference_type& t);
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void save_override(const version_type& t);
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void save_override(const class_name_type& t);
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL void save_override(const tracking_type& t);
+    YAML_AWARCHIVE_API void save_override(const class_id_type& t);
+    YAML_AWARCHIVE_API void save_override(const class_id_optional_type& t);
+    YAML_AWARCHIVE_API void save_override(const class_id_reference_type& t);
+    YAML_AWARCHIVE_API void save_override(const object_id_type& t);
+    YAML_AWARCHIVE_API void save_override(const object_reference_type& t);
+    YAML_AWARCHIVE_API void save_override(const version_type& t);
+    YAML_AWARCHIVE_API void save_override(const class_name_type& t);
+    YAML_AWARCHIVE_API void save_override(const tracking_type& t);
 
 #else // BOOST_VERSION <= 105800
 
@@ -118,34 +116,34 @@ class BOOST_SYMBOL_VISIBLE basic_yaml_oarchive
         this->This()->save_end(t.name());
     }
 
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL
+    YAML_AWARCHIVE_API
     void save_override(const class_id_type& t, int);
 
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL
+    YAML_AWARCHIVE_API
     void save_override(const class_id_optional_type& t, int);
 
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL
+    YAML_AWARCHIVE_API
     void save_override(const class_id_reference_type& t, int);
 
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL
+    YAML_AWARCHIVE_API
     void save_override(const object_id_type& t, int);
 
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL
+    YAML_AWARCHIVE_API
     void save_override(const object_reference_type& t, int);
 
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL
+    YAML_AWARCHIVE_API
     void save_override(const version_type& t, int);
 
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL
+    YAML_AWARCHIVE_API
     void save_override(const class_name_type& t, int);
 
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL
+    YAML_AWARCHIVE_API
     void save_override(const tracking_type& t, int);
 
 #endif // BOOST_VERSION
 
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL basic_yaml_oarchive(unsigned int flags);
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL ~basic_yaml_oarchive();
+    YAML_AWARCHIVE_API basic_yaml_oarchive(unsigned int flags);
+    YAML_AWARCHIVE_API ~basic_yaml_oarchive();
 };
 
 } // namespace archive

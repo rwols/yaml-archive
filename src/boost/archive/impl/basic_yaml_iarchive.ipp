@@ -27,7 +27,7 @@ namespace archive {
 // implementation of yaml_text_archive
 
 template <class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
+YAML_AWARCHIVE_API void
 basic_yaml_iarchive<Archive>::load_start(const char* name)
 {
     // name == nullptr happens when we're in the process of serializing a
@@ -43,8 +43,7 @@ basic_yaml_iarchive<Archive>::load_start(const char* name)
 }
 
 template <class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
-basic_yaml_iarchive<Archive>::load_end(const char* name)
+YAML_AWARCHIVE_API void basic_yaml_iarchive<Archive>::load_end(const char* name)
 {
     // name == nullptr happens when we're in the process of serializing a
     // pointer or enum and we are now serializing the "dereferenced" object.
@@ -54,7 +53,7 @@ basic_yaml_iarchive<Archive>::load_end(const char* name)
 }
 
 template <class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
+YAML_AWARCHIVE_API void
 #if BOOST_VERSION > 105800
 basic_yaml_iarchive<Archive>::load_override(object_id_type& t)
 #else // BOOST_VERSION <= 105800
@@ -65,7 +64,7 @@ basic_yaml_iarchive<Archive>::load_override(object_id_type& t, int)
 }
 
 template <class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
+YAML_AWARCHIVE_API void
 #if BOOST_VERSION > 105800
 basic_yaml_iarchive<Archive>::load_override(version_type& t)
 #else // BOOST_VERSION <= 105800
@@ -76,7 +75,7 @@ basic_yaml_iarchive<Archive>::load_override(version_type& t, int)
 }
 
 template <class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
+YAML_AWARCHIVE_API void
 #if BOOST_VERSION > 105800
 basic_yaml_iarchive<Archive>::load_override(class_id_type& t)
 #else // BOOST_VERSION <= 105800
@@ -87,7 +86,7 @@ basic_yaml_iarchive<Archive>::load_override(class_id_type& t, int)
 }
 
 template <class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL void
+YAML_AWARCHIVE_API void
 #if BOOST_VERSION > 105800
 basic_yaml_iarchive<Archive>::load_override(tracking_type& t)
 #else // BOOST_VERSION <= 105800
@@ -98,14 +97,13 @@ basic_yaml_iarchive<Archive>::load_override(tracking_type& t, int)
 }
 
 template <class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL
+YAML_AWARCHIVE_API
 basic_yaml_iarchive<Archive>::basic_yaml_iarchive(unsigned int flags)
     : detail::common_iarchive<Archive>(flags), depth(0)
 {
 }
 template <class Archive>
-BOOST_ARCHIVE_OR_WARCHIVE_DECL
-    basic_yaml_iarchive<Archive>::~basic_yaml_iarchive()
+YAML_AWARCHIVE_API basic_yaml_iarchive<Archive>::~basic_yaml_iarchive()
 {
 }
 
