@@ -49,6 +49,13 @@ namespace detail {
 template <class Archive> class interface_oarchive;
 } // namespace detail
 
+/**
+ * @brief      YAML output archive for a narrow character stream.
+ *
+ * Don't use this class directly. Instead, use boost::archive::yaml_oarchive.
+ *
+ * @tparam     Archive  The derived archive class.
+ */
 template <class Archive>
 class BOOST_SYMBOL_VISIBLE yaml_oarchive_impl
     : public basic_text_oprimitive<std::ostream>,
@@ -110,12 +117,16 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive_impl
 namespace boost {
 namespace archive {
 
-// we use the following because we can't use
-// typedef yaml_oarchive_impl<yaml_oarchive_impl<...> > yaml_oarchive;
-
-// do not derive from this class.  If you want to extend this functionality
-// via inhertance, derived from yaml_oarchive_impl instead.  This will
-// preserve correct static polymorphism.
+/**
+ * @brief      Concrete YAML output archive for a narrow character stream.
+ *
+ * Use this class to output your classes to a YAML archive.
+ * Do not derive from this class.  If you want to extend this functionality via
+ * inhertance, derive from yaml_oarchive_impl instead. This will preserve
+ * correct static polymorphism.
+ *
+ * @tparam     Archive  The derived archive class.
+ */
 #if BOOST_VERSION < 105600
 class BOOST_SYMBOL_VISIBLE yaml_oarchive
     : public yaml_oarchive_impl<yaml_oarchive>,
@@ -127,6 +138,16 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive
 {
 #endif
   public:
+    /**
+     * @brief      Constructor.
+     *
+     * @param      os     The output stream.
+     * @param[in]  flags  The flags.
+     *
+     * @see boost::archive::yaml_iarchive for its input counter-part.
+     * @see http://www.boost.org/doc/libs/1_63_0/boost/archive/basic_archive.hpp
+     * for the available flags.
+     */
     yaml_oarchive(std::ostream& os, unsigned int flags = 0)
         : yaml_oarchive_impl<yaml_oarchive>(os, flags)
     {

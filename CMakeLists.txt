@@ -19,9 +19,16 @@ option(yaml-archive_BUILD_UNIT_TESTS
     "Build the unit tests?" 
     ${yaml-archive_WE_ARE_ROOT})
 
-option(yaml-archive_BUILD_DOCUMENTATION 
-    "Build the documentation?" 
-    ${yaml-archive_WE_ARE_ROOT})
+find_package(Doxygen)
+if (${DOXYGEN_FOUND} AND ${yaml-archive_WE_ARE_ROOT})
+    option(yaml-archive_BUILD_DOCUMENTATION 
+        "Build the documentation?" 
+        ON)
+else()
+    option(yaml-archive_BUILD_DOCUMENTATION 
+        "Build the documentation?" 
+        OFF)
+endif()
 
 set(yaml-archive_LIB_DESTINATION lib
     CACHE PATH
@@ -57,5 +64,5 @@ endif()
 ################################################################################
 
 if (yaml-archive_BUILD_DOCUMENTATION)
-    # ...
+    add_subdirectory(doc)
 endif()

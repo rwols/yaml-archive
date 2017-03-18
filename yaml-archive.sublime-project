@@ -9,10 +9,6 @@
 			"variants":
 			[
 				{
-					"name": "",
-					"shell_cmd": "cmake --build . --target "
-				},
-				{
 					"name": "install/strip",
 					"shell_cmd": "cmake --build . --target install/strip"
 				},
@@ -131,6 +127,34 @@
 				{
 					"name": "test/wide/test",
 					"shell_cmd": "cmake --build . --target test/wide/test"
+				},
+				{
+					"name": "doc/install/strip",
+					"shell_cmd": "cmake --build . --target doc/install/strip"
+				},
+				{
+					"name": "doc/install",
+					"shell_cmd": "cmake --build . --target doc/install"
+				},
+				{
+					"name": "doc/list_install_components",
+					"shell_cmd": "cmake --build . --target doc/list_install_components"
+				},
+				{
+					"name": "doc/rebuild_cache",
+					"shell_cmd": "cmake --build . --target doc/rebuild_cache"
+				},
+				{
+					"name": "doc/install/local",
+					"shell_cmd": "cmake --build . --target doc/install/local"
+				},
+				{
+					"name": "doc/test",
+					"shell_cmd": "cmake --build . --target doc/test"
+				},
+				{
+					"name": "doc",
+					"shell_cmd": "cmake --build . --target doc"
 				},
 				{
 					"name": "libyaml-archive",
