@@ -1,5 +1,9 @@
 include(CMakeParseArguments)
 
+# Find Boost.Test.
+set(Boost_USE_STATIC_LIBS OFF)
+find_package(Boost 1.54 REQUIRED COMPONENTS unit_test_framework)
+
 function(add_archive_test name exe ext)
   add_test(NAME ${name}_${ext} COMMAND ${exe} --run_test=${name})
 endfunction(add_archive_test)
@@ -114,10 +118,6 @@ function(target_create_boost_archive_test_suite)
   # ALWAYS dynamically link with Boost.Test.
   target_compile_definitions(${exe} PRIVATE BOOST_TEST_DYN_LINK)
   target_compile_definitions(${exe} PRIVATE BOOST_TEST_NO_LIB)
-
-  # Find Boost.Test.
-  set(Boost_USE_STATIC_LIBS OFF)
-  find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
   # For the config.hpp file.
   target_include_directories(${exe} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
@@ -430,5 +430,10 @@ target_compile_options(demo_yaml PRIVATE -ftemplate-backtrace-limit=0)
 #   )
 
 add_subdirectory(narrow)
-add_subdirectory(wide)
+
+if (NOT WIN32 AND Boost_VERSION VERSION_LESS 105600)
+  message(WARNING "Boost version is too old. Skipping wide char unit tests.")
+else()
+  add_subdirectory(wide)
+endif()
 

@@ -9,8 +9,8 @@
 			"variants":
 			[
 				{
-					"name": "",
-					"shell_cmd": "cmake --build . --target "
+					"name": "ninja: warning",
+					"shell_cmd": "cmake --build . --target ninja: warning"
 				},
 				{
 					"name": "install/strip",
