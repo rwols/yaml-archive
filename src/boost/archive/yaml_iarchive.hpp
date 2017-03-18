@@ -195,6 +195,15 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
 {
 #endif
   public:
+    /**
+     * @brief      Constructor.
+     *
+     * @param      is     The input stream
+     * @param[in]  flags  Modifier flags
+     *
+     * @see http://www.boost.org/doc/libs/1_63_0/boost/archive/basic_archive.hpp
+     * for the available flags.
+     */
     yaml_iarchive(std::istream& is, unsigned int flags = 0)
         : yaml_iarchive_impl<yaml_iarchive>(is, flags)
     {

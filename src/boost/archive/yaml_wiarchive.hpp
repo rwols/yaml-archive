@@ -1,3 +1,15 @@
+/** @file
+ *
+ * @brief Defines wide concrete input archives.
+ *
+ * @author    Raoul Wols
+ *
+ * @date      2017
+ *
+ * @copyright See LICENSE.md
+ *
+ */
+
 #ifndef BOOST_ARCHIVE_YAML_WIARCHIVE_HPP
 #define BOOST_ARCHIVE_YAML_WIARCHIVE_HPP
 
@@ -6,16 +18,6 @@
 #pragma once
 #endif
 
-/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
-// yaml_wiarchive.hpp
-
-// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com .
-// Use, modification and distribution is subject to the Boost Software
-// License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
-// http://www.boost.org/LICENSE_1_0.txt)
-
-//  See http://www.boost.org for updates, documentation, and revision history.
-
 #include <boost/config.hpp>
 #ifdef BOOST_NO_STD_WSTREAMBUF
 #error "wide char i/o not supported on this platform"
@@ -23,13 +25,13 @@
 
 #include <istream>
 
-#include <boost/version.hpp>
 #include <boost/archive/basic_text_iprimitive.hpp>
 #include <boost/archive/basic_yaml_iarchive.hpp>
 #include <boost/archive/detail/auto_link_warchive.hpp>
 #include <boost/archive/detail/register_archive.hpp>
 #include <boost/serialization/item_version_type.hpp>
 #include <boost/smart_ptr/scoped_ptr.hpp>
+#include <boost/version.hpp>
 #if BOOST_VERSION < 105600
 #include <boost/archive/shared_ptr_helper.hpp>
 #endif
@@ -51,6 +53,13 @@ template <class Archive> class interface_iarchive;
 template <class CharType> class basic_yaml_grammar;
 typedef basic_yaml_grammar<wchar_t> yaml_wgrammar;
 
+/**
+ * @brief      YAML input archive for a wide character stream.
+ *
+ * Don't use this class directly. Instead, use boost::archive::yaml_wiarchive.
+ *
+ * @tparam     Archive  The derived archive class.
+ */
 template <class Archive>
 class BOOST_SYMBOL_VISIBLE yaml_wiarchive_impl
     : public basic_text_iprimitive<std::wistream>,
@@ -126,6 +135,30 @@ class BOOST_SYMBOL_VISIBLE yaml_wiarchive_impl
 namespace boost {
 namespace archive {
 
+/**
+ * @brief      Concrete YAML input archive for a wide character stream.
+ *
+ * Use this class to load your classes from a YAML archive.
+ * Do not derive from this class.  If you want to extend this functionality via
+ * inheritance, derive from yaml_wiarchive_impl instead. This will preserve
+ * correct static polymorphism.
+ *
+ * @see boost::archive::yaml_woarchive for its output counter-part.
+ *
+ * @code
+ * #include <boost/archive/yaml_wiarchive.hpp>
+ * #include <boost/serialization/nvp.hpp>
+ * #include <iostream>
+ * #include <string>
+ * int main()
+ * {
+ *     std::wstring world;
+ *     boost::archive::yaml_wiarchive yaml(std::wcin);
+ *     yaml >> boost::serialization::make_nvp("hello", world);
+ *     return 0;
+ * }
+ * @endcode
+ */
 #if BOOST_VERSION < 105600
 class BOOST_SYMBOL_VISIBLE yaml_wiarchive
     : public yaml_wiarchive_impl<yaml_wiarchive>,
@@ -137,6 +170,15 @@ class BOOST_SYMBOL_VISIBLE yaml_wiarchive
 {
 #endif
   public:
+    /**
+     * @brief      Constructor.
+     *
+     * @param      is     The input stream
+     * @param[in]  flags  Modifier flags
+     *
+     * @see http://www.boost.org/doc/libs/1_63_0/boost/archive/basic_archive.hpp
+     * for the available flags.
+     */
     yaml_wiarchive(std::wistream& is, unsigned int flags = 0)
         : yaml_wiarchive_impl<yaml_wiarchive>(is, flags)
     {
