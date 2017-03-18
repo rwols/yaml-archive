@@ -10,7 +10,8 @@
 import sys
 import subprocess
 import os
-import shutil
+# import shutil
+from distutils.spawn import find_executable
 
 root_dir = subprocess.check_output(['git', 'rev-parse' ,'--show-toplevel']).decode('utf-8').strip()
 sys.path.append(root_dir)
@@ -48,12 +49,12 @@ class GitStasher(object):
             print_msg('Failed to pop unstaged changes! (Unknown exception)')
 
 def do_clang_format():
-    if not shutil.which('clang-format'):
+    if not find_executable('clang-format'):
         print_msg('clang-format not present, skipping formatting.')
         return
     os.chdir(root_dir)
     for file in get_changed_files():
-        if not f.endswith(('.h','.c', '.hh', '.cc', '.hpp', '.hpp', '.hxx', '.cxx')):
+        if not file.endswith(('.h','.c', '.hh', '.cc', '.hpp', '.hpp', '.hxx', '.cxx')):
             continue
         try:
             print_msg('Formatting "{}"'.format(file))
@@ -97,6 +98,7 @@ def main():
     except build.SystemCallError as e:
         exit_status = -1
     except Exception as e:
+        print(str(e))
         exit_status = -2
     if exit_status != 0:
         print_msg('There were build and/or test errors.\n\tPlease fix them and then try committing again.')
