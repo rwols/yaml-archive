@@ -15,6 +15,8 @@
 #include <iostream>
 #include <string>
 
+#define BOOST_ARCHIVE_SOURCE
+
 #include <boost/config.hpp>
 #include <cstdio> // remove
 #if defined(BOOST_NO_STDC_NAMESPACE)

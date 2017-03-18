@@ -73,6 +73,7 @@ target_include_directories(yaml-archive PUBLIC ${Boost_INCLUDE_DIR})
 target_link_libraries(yaml-archive PUBLIC ${Boost_LIBRARIES})
 
 if (MSVC)
+    target_compile_definitions(yaml-archive PRIVATE _SCL_SECURE_NO_WARNINGS)
     target_compile_definitions(yaml-archive PRIVATE _CRT_SECURE_NO_WARNINGS)
     target_compile_options(yaml-archive PRIVATE /MP)
 endif()

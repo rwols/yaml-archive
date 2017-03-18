@@ -362,7 +362,9 @@ endfunction(target_create_boost_polymorphic_archive_test_suite)
 add_executable(demo_yaml demo_yaml.cpp)
 set_property(TARGET demo_yaml PROPERTY CXX_STANDARD 11)
 target_link_libraries(demo_yaml PRIVATE yaml-archive)
-target_compile_options(demo_yaml PRIVATE -ftemplate-backtrace-limit=0)
+if (MSVC)
+  target_compile_definitions(demo_yaml PRIVATE _CRT_SECURE_NO_WARNINGS)
+endif()
 
 # target_create_boost_archive_test_suite(
 #   LIBRARY_TARGET yaml-archive
