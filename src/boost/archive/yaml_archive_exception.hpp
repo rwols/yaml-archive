@@ -43,11 +43,11 @@ class BOOST_SYMBOL_VISIBLE yaml_archive_exception
         yaml_archive_tag_mismatch,
         yaml_archive_tag_name_error
     } exception_code;
-    YAML_ARCHIVE_API yaml_archive_exception(exception_code c,
-                                            const char*    e1 = NULL,
-                                            const char*    e2 = NULL);
-    YAML_ARCHIVE_API yaml_archive_exception(yaml_archive_exception const&);
-    virtual YAML_ARCHIVE_API ~yaml_archive_exception()
+    YAML_AWARCHIVE_API yaml_archive_exception(exception_code c,
+                                              const char*    e1 = NULL,
+                                              const char*    e2 = NULL);
+    YAML_AWARCHIVE_API yaml_archive_exception(yaml_archive_exception const&);
+    virtual YAML_AWARCHIVE_API ~yaml_archive_exception()
         BOOST_NOEXCEPT_OR_NOTHROW;
 };
 

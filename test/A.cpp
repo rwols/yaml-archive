@@ -1,4 +1,4 @@
-/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
+﻿/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
 // A.cpp    simple class test
 
 // (C) Copyright 2002 Robert Ramey - http://www.rrsd.com .
@@ -68,7 +68,7 @@ A::A()
       l(static_cast<enum h>(std::rand() % 3)), m(std::rand()), n(std::rand()),
       o(std::rand()), p(std::rand()), q(std::rand()),
 #ifndef BOOST_NO_CWCHAR
-      r(L'😊'),
+      r(L'€'),
 #endif
       c('x'), s(0xff & std::rand()), t(0xff & std::rand()), u(std::rand()),
       v(std::rand()), w((float)std::rand()), x((double)std::rand())

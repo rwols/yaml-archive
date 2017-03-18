@@ -18,13 +18,15 @@
 #include <boost/assert.hpp>
 
 #define BOOST_ARCHIVE_SOURCE
+#define BOOST_WARCHIVE_SOURCE
+
 #include <boost/archive/yaml_archive_exception.hpp>
 #include <boost/serialization/config.hpp>
 
 namespace boost {
 namespace archive {
 
-YAML_ARCHIVE_API
+YAML_AWARCHIVE_API
 yaml_archive_exception::yaml_archive_exception(exception_code c, const char* e1,
                                                const char* e2)
     : archive_exception(other_exception, e1, e2)
@@ -55,14 +57,14 @@ yaml_archive_exception::yaml_archive_exception(exception_code c, const char* e1,
     }
 }
 
-YAML_ARCHIVE_API
+YAML_AWARCHIVE_API
 yaml_archive_exception::yaml_archive_exception(
     yaml_archive_exception const& oth)
     : archive_exception(oth)
 {
 }
 
-YAML_ARCHIVE_API
+YAML_AWARCHIVE_API
 yaml_archive_exception::~yaml_archive_exception() BOOST_NOEXCEPT_OR_NOTHROW {}
 
 } // archive
