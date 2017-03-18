@@ -13,6 +13,11 @@
 #include <boost/serialization/tracking.hpp>
 #include <boost/test/unit_test.hpp>
 
+#ifdef BOOST_MSVC
+#pragma warning(push)
+#pragma warning(disable : 4308)
+#endif
+
 #define TEST_CLASS(N, TRACKING)                                                \
     class N                                                                    \
     {                                                                          \
@@ -47,23 +52,26 @@ BOOST_FIXTURE_TEST_CASE(tracking1, io_fixture)
     AN an;
     AS as;
     AA aa;
+    using boost::serialization::make_nvp;
     {
-        output() << NVP(an) << NVP(an) << NVP(as) << NVP(as) << NVP(aa)
-                 << NVP(aa);
+        output() << make_nvp("an1", an) << make_nvp("an2", an)
+                 << make_nvp("as1", as) << make_nvp("as2", as)
+                 << make_nvp("aa1", aa) << make_nvp("aa2", aa);
     }
-    BOOST_CHECK(an.count == 2);
-    BOOST_CHECK(as.count == 2);
-    BOOST_CHECK(aa.count == 1);
+    BOOST_CHECK_EQUAL(an.count, 2);
+    BOOST_CHECK_EQUAL(as.count, 2);
+    BOOST_CHECK_EQUAL(aa.count, 1);
     AN::count = 0;
     AS::count = 0;
     AA::count = 0;
     {
-        input() >> NVP(an) >> NVP(an) >> NVP(as) >> NVP(as) >> NVP(aa) >>
-            NVP(aa);
+        input() >> make_nvp("an1", an) >> make_nvp("an2", an) >>
+            make_nvp("as1", as) >> make_nvp("as2", as) >> make_nvp("aa1", aa) >>
+            make_nvp("aa2", aa);
     }
-    BOOST_CHECK(an.count == 2);
-    BOOST_CHECK(as.count == 2);
-    BOOST_CHECK(aa.count == 1);
+    BOOST_CHECK_EQUAL(an.count, 2);
+    BOOST_CHECK_EQUAL(as.count, 2);
+    BOOST_CHECK_EQUAL(aa.count, 1);
 }
 
 BOOST_FIXTURE_TEST_CASE(tracking2, io_fixture)
@@ -71,13 +79,15 @@ BOOST_FIXTURE_TEST_CASE(tracking2, io_fixture)
     PAN* pan = new PAN;
     PAS* pas = new PAS;
     PAA* paa = new PAA;
+    using boost::serialization::make_nvp;
     {
-        output() << NVP(pan) << NVP(pan) << NVP(pas) << NVP(pas) << NVP(paa)
-                 << NVP(paa);
+        output() << make_nvp("pan1", pan) << make_nvp("pan2", pan)
+                 << make_nvp("pas1", pas) << make_nvp("pas2", pas)
+                 << make_nvp("paa1", paa) << make_nvp("paa2", paa);
     }
-    BOOST_CHECK(pan->count == 2);
-    BOOST_CHECK(pas->count == 1);
-    BOOST_CHECK(paa->count == 1);
+    BOOST_CHECK_EQUAL(pan->count, 2);
+    BOOST_CHECK_EQUAL(pas->count, 1);
+    BOOST_CHECK_EQUAL(paa->count, 1);
     delete pan;
     delete pas;
     delete paa;
@@ -88,10 +98,15 @@ BOOST_FIXTURE_TEST_CASE(tracking2, io_fixture)
     PAS::count = 0;
     PAA::count = 0;
     {
-        input() >> NVP(pan) >> NVP(pan) >> NVP(pas) >> NVP(pas) >> NVP(paa) >>
-            NVP(paa);
+        input() >> make_nvp("pan1", pan) >> make_nvp("pan2", pan) >>
+            make_nvp("pas1", pas) >> make_nvp("pas2", pas) >>
+            make_nvp("paa1", paa) >> make_nvp("paa2", paa);
     }
-    BOOST_CHECK(pan->count == 2);
-    BOOST_CHECK(pas->count == 1);
-    BOOST_CHECK(paa->count == 1);
+    BOOST_CHECK_EQUAL(pan->count, 2);
+    BOOST_CHECK_EQUAL(pas->count, 1);
+    BOOST_CHECK_EQUAL(paa->count, 1);
 }
+
+#ifdef BOOST_MSVC
+#pragma warning(pop)
+#endif
