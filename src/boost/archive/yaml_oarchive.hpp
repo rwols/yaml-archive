@@ -1,3 +1,15 @@
+/** @file
+ *
+ * @brief Defines narrow concrete output archives.
+ *
+ * @author    Raoul Wols
+ *
+ * @date      2017
+ *
+ * @copyright See LICENSE.md
+ *
+ */
+
 #ifndef BOOST_ARCHIVE_YAML_OARCHIVE_HPP
 #define BOOST_ARCHIVE_YAML_OARCHIVE_HPP
 
@@ -5,16 +17,6 @@
 #if defined(_MSC_VER)
 #pragma once
 #endif
-
-/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
-// yaml_oarchive.hpp
-
-// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com .
-// Use, modification and distribution is subject to the Boost Software
-// License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
-// http://www.boost.org/LICENSE_1_0.txt)
-
-//  See http://www.boost.org for updates, documentation, and revision history.
 
 #include <ostream>
 
@@ -90,14 +92,39 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive_impl
 #ifndef BOOST_NO_STD_WSTRING
     YAML_ARCHIVE_API void save(const std::wstring& ws);
 #endif
-    YAML_ARCHIVE_API
-    yaml_oarchive_impl(std::ostream& os, unsigned int flags);
-    YAML_ARCHIVE_API
-    ~yaml_oarchive_impl();
+
+    YAML_ARCHIVE_API yaml_oarchive_impl(std::ostream& os, unsigned int flags);
+    YAML_ARCHIVE_API ~yaml_oarchive_impl();
 
   public:
-    YAML_ARCHIVE_API
-    void save_binary(const void* address, std::size_t count);
+    /**
+     * @brief      Save bytes to the YAML archive.
+     *
+     * The binary data is realized as an unqouted base64 encoded string.
+     *
+     * @param[in]  address  The address
+     * @param[in]  count    The number of bytes
+     *
+     * @warning You should **never** use this method. Instead, use
+     * boost::serialization::make_binary_object. See the code example below.
+     *
+     * @code
+     * #include <boost/archive/yaml_oarchive.hpp>
+     * #include <boost/serialization/binary_object.hpp>
+     * #include <boost/serialization/nvp.hpp>
+     * #include <iostream>
+     * int main()
+     * {
+     *     char data[150];
+     *     boost::archive::yaml_oarchive oa(std::cout);
+     *     using boost::serialization::make_nvp;
+     *     using boost::serialization::make_binary_object;
+     *     oa << make_nvp("data", make_binary_object(data, sizeof(data)));
+     *     return 0;
+     * }
+     * @endcode
+     */
+    YAML_ARCHIVE_API void save_binary(const void* address, std::size_t count);
 };
 
 } // namespace archive
@@ -122,10 +149,24 @@ namespace archive {
  *
  * Use this class to output your classes to a YAML archive.
  * Do not derive from this class.  If you want to extend this functionality via
- * inhertance, derive from yaml_oarchive_impl instead. This will preserve
+ * inheritance, derive from yaml_oarchive_impl instead. This will preserve
  * correct static polymorphism.
  *
- * @tparam     Archive  The derived archive class.
+ * @see boost::archive::yaml_iarchive for its input counter-part.
+ *
+ * @code
+ * #include <boost/archive/yaml_oarchive.hpp>
+ * #include <boost/serialization/nvp.hpp>
+ * #include <iostream>
+ * #include <string>
+ * int main()
+ * {
+ *     std::string world("world");
+ *     boost::archive::yaml_oarchive yaml(std::cout);
+ *     yaml << boost::serialization::make_nvp("hello", world);
+ *     return 0;
+ * }
+ * @endcode
  */
 #if BOOST_VERSION < 105600
 class BOOST_SYMBOL_VISIBLE yaml_oarchive
@@ -141,10 +182,9 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive
     /**
      * @brief      Constructor.
      *
-     * @param      os     The output stream.
-     * @param[in]  flags  The flags.
+     * @param      os     The output stream
+     * @param[in]  flags  Modifier flags
      *
-     * @see boost::archive::yaml_iarchive for its input counter-part.
      * @see http://www.boost.org/doc/libs/1_63_0/boost/archive/basic_archive.hpp
      * for the available flags.
      */
@@ -152,6 +192,7 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive
         : yaml_oarchive_impl<yaml_oarchive>(os, flags)
     {
     }
+
     ~yaml_oarchive() {}
 };
 
