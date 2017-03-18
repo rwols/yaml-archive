@@ -12,6 +12,13 @@ The general workflow to make changes is as follows:
 7. Wait for a code review.
 8. If we agree on the changes, I'll merge into master. If not, go to step 4.
 
+# The Pre-Commit Hook
+Look at the Python script `pre-commit.py`. Use that script as your pre-commit
+hook for git in order to make sure that whatever you commit, it at least
+compiles and runs all tests succesfully on your machine. Wether your code runs
+on different machines is a whole new can of worms, but that is what Travis-CI
+and Appveyor are for.
+
 # Style Guide
 The style guide is very simple: Just apply `clang-format` with the
 `.clang-format` file at the root of the project. If you don't have access to
