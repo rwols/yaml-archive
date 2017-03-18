@@ -91,6 +91,7 @@ def do_build():
 def main():
     exit_status = 0
     try:
+        do_clang_format()
         with GitStasher() as stash:
             exit_status = do_build()
     except build.SystemCallError as e:
