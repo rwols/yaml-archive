@@ -1,3 +1,15 @@
+/** @file
+ *
+ * @brief Common base class for yaml_iarchive and yaml_wiarchive.
+ *
+ * @author    Raoul Wols
+ *
+ * @date      2017
+ *
+ * @copyright See LICENSE.md
+ *
+ */
+
 #ifndef BOOST_ARCHIVE_BASIC_YAML_IARCHIVE_HPP
 #define BOOST_ARCHIVE_BASIC_YAML_IARCHIVE_HPP
 
@@ -6,23 +18,13 @@
 #pragma once
 #endif
 
-/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
-// basic_yaml_iarchive.hpp
-
-// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com .
-// Use, modification and distribution is subject to the Boost Software
-// License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
-// http://www.boost.org/LICENSE_1_0.txt)
-
-//  See http://www.boost.org for updates, documentation, and revision history.
-
-#include <boost/version.hpp>
 #include <boost/archive/detail/common_iarchive.hpp>
 #include <boost/archive/detail/yaml_decl.hpp>
 #include <boost/config.hpp>
 #include <boost/mpl/assert.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/string.hpp>
+#include <boost/version.hpp>
 
 #include <boost/archive/detail/abi_prefix.hpp> // must be the last header
 
@@ -38,8 +40,16 @@ namespace detail {
 template <class Archive> class interface_iarchive;
 } // namespace detail
 
-/////////////////////////////////////////////////////////////////////////
-// class basic_yaml_iarchive - read serialized objects from a input text stream
+/**
+ * @brief      Read serialized objects from an input YAML stream.
+ *
+ * @warning    **Everything** that you want to read from the archive must be
+ *             wrapped inside boost::serialization::make_nvp or the
+ *             BOOST_SERIALIZATION_NVP macro. Include the file
+ *             boost/serialization/nvp.hpp for that.
+ *
+ * @tparam     Archive  The derived archive class
+ */
 template <class Archive>
 class BOOST_SYMBOL_VISIBLE basic_yaml_iarchive
     : public detail::common_iarchive<Archive>
