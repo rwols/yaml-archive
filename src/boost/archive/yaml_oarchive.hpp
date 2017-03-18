@@ -116,10 +116,10 @@ class BOOST_SYMBOL_VISIBLE yaml_oarchive_impl
      * int main()
      * {
      *     char data[150];
-     *     boost::archive::yaml_oarchive oa(std::cout);
+     *     boost::archive::yaml_oarchive yaml(std::cout);
      *     using boost::serialization::make_nvp;
      *     using boost::serialization::make_binary_object;
-     *     oa << make_nvp("data", make_binary_object(data, sizeof(data)));
+     *     yaml << make_nvp("data", make_binary_object(data, sizeof(data)));
      *     return 0;
      * }
      * @endcode
