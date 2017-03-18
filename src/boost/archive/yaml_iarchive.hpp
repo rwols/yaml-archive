@@ -1,6 +1,6 @@
 /** @file
  *
- * @brief Defines narrow concrete input archives.
+ * @brief Declares narrow concrete input archives.
  *
  * @author    Raoul Wols
  *

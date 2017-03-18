@@ -1,6 +1,6 @@
 /** @file
  *
- * @brief Defines wide concrete output archives.
+ * @brief Declares wide concrete output archives.
  *
  * @author    Raoul Wols
  *
