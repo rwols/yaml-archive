@@ -30,8 +30,6 @@
 #pragma warning(pop)
 #endif
 
-// for head_iterator test
-//#include <boost/bind.hpp>
 #include <boost/archive/impl/basic_yaml_grammar.hpp>
 #include <boost/archive/iterators/yaml_unescape.hpp>
 #include <boost/archive/yaml_archive_exception.hpp>
@@ -194,7 +192,6 @@ bool basic_yaml_grammar<CharType>::parse(
     unsigned int depth, typename basic_yaml_grammar<CharType>::IStream& is,
     const rule_t& rule_, CharType delimiter) const
 {
-
     std::basic_string<CharType> arg;
     CharType                    val;
     if (is.fail())
@@ -236,9 +233,7 @@ bool basic_yaml_grammar<CharType>::parse_start_tag(unsigned int depth,
     depth *= 2;
     while (depth != 0)
     {
-        typename basic_yaml_grammar<CharType>::IStream::int_type result =
-            is.get();
-        if (!std::isspace(result) || is.fail())
+        if (!std::isspace(is.get()) || is.fail())
         {
             return false;
         }
@@ -248,7 +243,6 @@ bool basic_yaml_grammar<CharType>::parse_start_tag(unsigned int depth,
     CharType                    val;
     bool                        extracting_meta = false;
     bool                        after_colon = false;
-    typename IStream::int_type  result;
     do
     {
         val = static_cast<CharType>(is.get());

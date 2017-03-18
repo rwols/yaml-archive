@@ -16,7 +16,7 @@
 
 #define BOOST_WARCHIVE_SOURCE
 
-#define BOOST_SPIRIT_DEBUG
+// #define BOOST_SPIRIT_DEBUG
 #ifdef BOOST_SPIRIT_DEBUG
 #include <boost/spirit/home/classic/debug/parser_names.hpp>
 #endif
