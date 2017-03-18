@@ -361,7 +361,7 @@ endfunction(target_create_boost_polymorphic_archive_test_suite)
 
 add_executable(demo_yaml demo_yaml.cpp)
 set_property(TARGET demo_yaml PROPERTY CXX_STANDARD 11)
-target_link_libraries(demo_yaml PRIVATE yaml-archive-better)
+target_link_libraries(demo_yaml PRIVATE yaml-archive)
 target_compile_options(demo_yaml PRIVATE -ftemplate-backtrace-limit=0)
 
 # target_create_boost_archive_test_suite(
@@ -391,7 +391,7 @@ target_compile_options(demo_yaml PRIVATE -ftemplate-backtrace-limit=0)
 #   )
 
 # target_create_boost_archive_test_suite(
-#   LIBRARY_TARGET yaml-archive-better
+#   LIBRARY_TARGET yaml-archive
 #   INPUT_ARCHIVE_HEADER boost/archive/yaml_iarchive.hpp 
 #   OUTPUT_ARCHIVE_HEADER boost/archive/yaml_oarchive.hpp
 #   INPUT_ARCHIVE_FULLY_QUALIFIED_NAME boost::archive::yaml_iarchive 
@@ -404,7 +404,7 @@ target_compile_options(demo_yaml PRIVATE -ftemplate-backtrace-limit=0)
 #   )
 
 # target_create_boost_archive_test_suite(
-#   LIBRARY_TARGET yaml-archive-better
+#   LIBRARY_TARGET yaml-archive
 #   INPUT_ARCHIVE_HEADER boost/archive/yaml_wiarchive.hpp 
 #   OUTPUT_ARCHIVE_HEADER boost/archive/yaml_woarchive.hpp
 #   INPUT_ARCHIVE_FULLY_QUALIFIED_NAME boost::archive::yaml_wiarchive 

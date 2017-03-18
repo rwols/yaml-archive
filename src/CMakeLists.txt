@@ -1,5 +1,5 @@
 
-add_library(yaml-archive-better
+add_library(yaml-archive
     boost/archive/impl/yaml_grammar.cpp
     boost/archive/impl/yaml_wgrammar.cpp
     boost/archive/yaml_archive_exception.cpp
@@ -9,7 +9,7 @@ add_library(yaml-archive-better
     boost/archive/yaml_woarchive.cpp
     )
 
-# set_target_properties(yaml-archive-better PROPERTIES CXX_STANDARD 11)
+# set_target_properties(yaml-archive PROPERTIES CXX_STANDARD 11)
 
 set(public_headers
     "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/iterators/yaml_escape.hpp"
@@ -38,7 +38,7 @@ set(private_headers
     "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/impl/yaml_wiarchive_impl.ipp"
     "${CMAKE_CURRENT_SOURCE_DIR}/boost/archive/impl/yaml_woarchive_impl.ipp")
 
-set_target_properties(yaml-archive-better
+set_target_properties(yaml-archive
     PROPERTIES
         CXX_STANDARD 
             11
@@ -46,12 +46,12 @@ set_target_properties(yaml-archive-better
             "${public_headers}"
     )
 
-target_include_directories(yaml-archive-better PUBLIC  
+target_include_directories(yaml-archive PUBLIC  
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>  
     $<INSTALL_INTERFACE:include>
 )
 
-target_sources(yaml-archive-better PUBLIC "${public_headers}" "${private_headers}")
+target_sources(yaml-archive PUBLIC "${public_headers}" "${private_headers}")
 
 # Link with boost serialization
 if (BUILD_SHARED_LIBS)
@@ -59,25 +59,25 @@ if (BUILD_SHARED_LIBS)
     # If we are a shared library, make sure we link with the shared library
     # variant of Boost.Serialization. Users don't have to repeat this because
     # we make this definition public.
-    target_compile_definitions(yaml-archive-better PUBLIC BOOST_SERIALIZATION_DYN_LINK)
+    target_compile_definitions(yaml-archive PUBLIC BOOST_SERIALIZATION_DYN_LINK)
 else()
     set(Boost_USE_STATIC_LIBS ON)
 endif()
-target_compile_definitions(yaml-archive-better PUBLIC BOOST_SERIALIZATION_NO_LIB)
+target_compile_definitions(yaml-archive PUBLIC BOOST_SERIALIZATION_NO_LIB)
 
 # We support Boost versions >= 1.54.
 find_package(Boost 1.54 COMPONENTS serialization wserialization REQUIRED)
 
 # Link with Boost and add its include path to the search paths.
-target_include_directories(yaml-archive-better PUBLIC ${Boost_INCLUDE_DIR})
-target_link_libraries(yaml-archive-better PUBLIC ${Boost_LIBRARIES})
+target_include_directories(yaml-archive PUBLIC ${Boost_INCLUDE_DIR})
+target_link_libraries(yaml-archive PUBLIC ${Boost_LIBRARIES})
 
 if (MSVC)
-    target_compile_definitions(yaml-archive-better PRIVATE _CRT_SECURE_NO_WARNINGS)
-    target_compile_options(yaml-archive-better PRIVATE /MP)
+    target_compile_definitions(yaml-archive PRIVATE _CRT_SECURE_NO_WARNINGS)
+    target_compile_options(yaml-archive PRIVATE /MP)
 endif()
 
-install(TARGETS yaml-archive-better
+install(TARGETS yaml-archive
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
     PUBLIC_HEADER DESTINATION include)

@@ -1,5 +1,5 @@
 target_create_boost_archive_test_suite(
-  LIBRARY_TARGET yaml-archive-better
+  LIBRARY_TARGET yaml-archive
   INPUT_ARCHIVE_HEADER boost/archive/yaml_wiarchive.hpp 
   OUTPUT_ARCHIVE_HEADER boost/archive/yaml_woarchive.hpp
   INPUT_ARCHIVE_FULLY_QUALIFIED_NAME boost::archive::yaml_wiarchive 

@@ -49,16 +49,16 @@
 					"shell_cmd": "cmake --build . --target src/list_install_components"
 				},
 				{
+					"name": "src/rebuild_cache",
+					"shell_cmd": "cmake --build . --target src/rebuild_cache"
+				},
+				{
 					"name": "src/install/local",
 					"shell_cmd": "cmake --build . --target src/install/local"
 				},
 				{
 					"name": "src/test",
 					"shell_cmd": "cmake --build . --target src/test"
-				},
-				{
-					"name": "src/rebuild_cache",
-					"shell_cmd": "cmake --build . --target src/rebuild_cache"
 				},
 				{
 					"name": "test/install/strip",
@@ -93,10 +93,6 @@
 					"shell_cmd": "cmake --build . --target test/narrow/install"
 				},
 				{
-					"name": "test/narrow/list_install_components",
-					"shell_cmd": "cmake --build . --target test/narrow/list_install_components"
-				},
-				{
 					"name": "test/narrow/rebuild_cache",
 					"shell_cmd": "cmake --build . --target test/narrow/rebuild_cache"
 				},
@@ -107,6 +103,10 @@
 				{
 					"name": "test/narrow/test",
 					"shell_cmd": "cmake --build . --target test/narrow/test"
+				},
+				{
+					"name": "test/narrow/list_install_components",
+					"shell_cmd": "cmake --build . --target test/narrow/list_install_components"
 				},
 				{
 					"name": "test/wide/install/strip",
@@ -133,8 +133,8 @@
 					"shell_cmd": "cmake --build . --target test/wide/test"
 				},
 				{
-					"name": "libyaml-archive-better",
-					"shell_cmd": "cmake --build . --target libyaml-archive-better.dylib"
+					"name": "libyaml-archive",
+					"shell_cmd": "cmake --build . --target libyaml-archive.dylib"
 				},
 				{
 					"name": "clean",
