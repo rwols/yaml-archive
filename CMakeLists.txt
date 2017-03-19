@@ -6,6 +6,11 @@
 #
 # Optionally, it will add the test subdirectory. The CMake file in that
 # directory will define test targets to be run by CTest.
+#
+# Optionally, it will add the doc subdirectory. The CMake file in that directory
+# will define the doc target to build the html documentation. Doxygen is
+# required to build the documentation. If doxygen is not found, the doc
+# target will not be available.
 
 cmake_minimum_required(VERSION 3.0)
 project(yaml-archive VERSION 0.1.0 LANGUAGES CXX)
