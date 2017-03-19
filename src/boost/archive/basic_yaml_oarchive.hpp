@@ -1,3 +1,15 @@
+/** @file
+ *
+ * @brief Common base class for yaml_oarchive and yaml_woarchive.
+ *
+ * @author    Raoul Wols
+ *
+ * @date      2017
+ *
+ * @copyright See LICENSE.md
+ *
+ */
+
 #ifndef BOOST_ARCHIVE_BASIC_YAML_OARCHIVE_HPP
 #define BOOST_ARCHIVE_BASIC_YAML_OARCHIVE_HPP
 
@@ -5,16 +17,6 @@
 #if defined(_MSC_VER)
 #pragma once
 #endif
-
-/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
-// basic_yaml_oarchive.hpp
-
-// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com .
-// Use, modification and distribution is subject to the Boost Software
-// License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
-// http://www.boost.org/LICENSE_1_0.txt)
-
-//  See http://www.boost.org for updates, documentation, and revision history.
 
 #include <boost/archive/detail/common_oarchive.hpp>
 #include <boost/archive/detail/yaml_decl.hpp>
@@ -39,8 +41,16 @@ namespace detail {
 template <class Archive> class interface_oarchive;
 } // namespace detail
 
-//////////////////////////////////////////////////////////////////////
-// class basic_yaml_oarchive - write serialized objects to a yaml output stream
+/**
+ * @brief      Write serialized objects to a YAML output stream.
+ *
+ * @warning    **Everything** that you want to stream to the archive must be
+ *             wrapped inside boost::serialization::make_nvp or the
+ *             BOOST_SERIALIZATION_NVP macro. Include the file
+ *             boost/serialization/nvp.hpp for that.
+ *
+ * @tparam     Archive  The derived archive class
+ */
 template <class Archive>
 class BOOST_SYMBOL_VISIBLE basic_yaml_oarchive
     : public detail::common_oarchive<Archive>

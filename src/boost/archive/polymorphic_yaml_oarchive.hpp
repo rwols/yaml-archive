@@ -1,39 +1,40 @@
+/** @file
+ *
+ * @brief Declares narrow concrete polymorphic output archives.
+ *
+ * @author    Raoul Wols
+ *
+ * @date      2017
+ *
+ * @copyright See LICENSE.md
+ *
+ */
+
 #ifndef BOOST_ARCHIVE_POLYMORPHIC_YAML_OARCHIVE_HPP
 #define BOOST_ARCHIVE_POLYMORPHIC_YAML_OARCHIVE_HPP
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER)
-# pragma once
+#pragma once
 #endif
 
-/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
-// polymorphic_yaml_oarchive.hpp
-
-// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com . 
-// Use, modification and distribution is subject to the Boost Software
-// License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
-// http://www.boost.org/LICENSE_1_0.txt)
-
-//  See http://www.boost.org for updates, documentation, and revision history.
-
-#include <boost/config.hpp>
-#include <boost/archive/yaml_oarchive.hpp>
 #include <boost/archive/detail/polymorphic_oarchive_route.hpp>
+#include <boost/archive/yaml_oarchive.hpp>
+#include <boost/config.hpp>
 
-namespace boost { 
+namespace boost {
 namespace archive {
 
-typedef detail::polymorphic_oarchive_route<
-    yaml_oarchive_impl<yaml_oarchive> 
-> polymorphic_yaml_oarchive;
+/**
+ * @brief A YAML narrow output archive suitable for DLL boundaries.
+ */
+typedef detail::polymorphic_oarchive_route<yaml_oarchive_impl<yaml_oarchive>>
+    polymorphic_yaml_oarchive;
 
 } // namespace archive
 } // namespace boost
 
 // required by export
-BOOST_SERIALIZATION_REGISTER_ARCHIVE(
-    boost::archive::polymorphic_yaml_oarchive
-)
+BOOST_SERIALIZATION_REGISTER_ARCHIVE(boost::archive::polymorphic_yaml_oarchive)
 
 #endif // BOOST_ARCHIVE_POLYMORPHIC_YAML_OARCHIVE_HPP
-

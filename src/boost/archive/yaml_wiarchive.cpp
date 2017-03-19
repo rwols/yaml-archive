@@ -1,15 +1,17 @@
-/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
-// yaml_wiarchive.cpp:
-
-// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com . 
-// Use, modification and distribution is subject to the Boost Software
-// License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
-// http://www.boost.org/LICENSE_1_0.txt)
-
-//  See http://www.boost.org for updates, documentation, and revision history.
+/** @file
+ *
+ * @brief Defines wide concrete input archives.
+ *
+ * @author    Raoul Wols
+ *
+ * @date      2017
+ *
+ * @copyright See LICENSE.md
+ *
+ */
 
 #if (defined _MSC_VER) && (_MSC_VER == 1200)
-#  pragma warning (disable : 4786) // too long name, harmless warning
+#pragma warning(disable : 4786) // too long name, harmless warning
 #endif
 
 #include <boost/config.hpp>
@@ -18,9 +20,9 @@
 #else
 
 #define BOOST_WARCHIVE_SOURCE
-#include <boost/serialization/config.hpp>
-#include <boost/archive/yaml_wiarchive.hpp>
 #include <boost/archive/detail/archive_serializer_map.hpp>
+#include <boost/archive/yaml_wiarchive.hpp>
+#include <boost/serialization/config.hpp>
 
 // explicitly instantiate for this type of yaml stream
 #include <boost/archive/impl/archive_serializer_map.ipp>
@@ -31,8 +33,8 @@ namespace boost {
 namespace archive {
 
 template class detail::archive_serializer_map<yaml_wiarchive>;
-template class basic_yaml_iarchive<yaml_wiarchive> ;
-template class yaml_wiarchive_impl<yaml_wiarchive> ;
+template class basic_yaml_iarchive<yaml_wiarchive>;
+template class yaml_wiarchive_impl<yaml_wiarchive>;
 
 } // namespace archive
 } // namespace boost

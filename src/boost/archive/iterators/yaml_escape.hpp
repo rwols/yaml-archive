@@ -1,3 +1,15 @@
+/** @file
+ *
+ * @brief Escape iterators
+ *
+ * @author    Raoul Wols
+ *
+ * @date      2017
+ *
+ * @copyright See LICENSE.md
+ *
+ */
+
 #ifndef BOOST_ARCHIVE_ITERATORS_YAML_ESCAPE_HPP
 #define BOOST_ARCHIVE_ITERATORS_YAML_ESCAPE_HPP
 
@@ -6,25 +18,12 @@
 #pragma once
 #endif
 
-/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
-// yaml_escape.hpp
-
-// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com .
-// Use, modification and distribution is subject to the Boost Software
-// License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
-// http://www.boost.org/LICENSE_1_0.txt)
-
-//  See http://www.boost.org for updates, documentation, and revision history.
-
 #include <boost/archive/iterators/escape.hpp>
 #include <boost/assert.hpp>
 
 namespace boost {
 namespace archive {
 namespace iterators {
-
-/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
-// insert escapes into yaml text
 
 template <class Base> class yaml_escape : public escape<yaml_escape<Base>, Base>
 {
@@ -54,26 +53,6 @@ char yaml_escape<Base>::fill(const char*& bstart, const char*& bend)
         bstart = "\\\"";
         bend = bstart + 2;
         break;
-    // case '<':
-    //     bstart = "&lt;";
-    //     bend = bstart + 4;
-    //     break;
-    // case '>':
-    //     bstart = "&gt;";
-    //     bend = bstart + 4;
-    //     break;
-    // case '&':
-    //     bstart = "&amp;";
-    //     bend = bstart + 5;
-    //     break;
-    // case '"':
-    //     bstart = "&quot;";
-    //     bend = bstart + 6;
-    //     break;
-    // case '\'':
-    //     bstart = "&apos;";
-    //     bend = bstart + 6;
-    //     break;
     default:
         return current_value;
     }
@@ -90,26 +69,6 @@ wchar_t yaml_escape<Base>::fill(const wchar_t*& bstart, const wchar_t*& bend)
         bstart = L"\\\"";
         bend = bstart + 2;
         break;
-    // case '<':
-    //     bstart = L"&lt;";
-    //     bend = bstart + 4;
-    //     break;
-    // case '>':
-    //     bstart = L"&gt;";
-    //     bend = bstart + 4;
-    //     break;
-    // case '&':
-    //     bstart = L"&amp;";
-    //     bend = bstart + 5;
-    //     break;
-    // case '"':
-    //     bstart = L"&quot;";
-    //     bend = bstart + 6;
-    //     break;
-    // case '\'':
-    //     bstart = L"&apos;";
-    //     bend = bstart + 6;
-    //     break;
     default:
         return current_value;
     }

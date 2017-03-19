@@ -1,3 +1,16 @@
+/** @file
+ *
+ * @brief Port from Boost 1.63, as boost/archive/detail/decl.hpp changed its
+ *        interface in 1.59.
+ *
+ * @author    Raoul Wols
+ *
+ * @date      2017
+ *
+ * @copyright See LICENSE.md
+ *
+ */
+
 #ifndef BOOST_ARCHIVE_DETAIL_YAML_DECL_HPP
 #define BOOST_ARCHIVE_DETAIL_YAML_DECL_HPP
 

@@ -1,3 +1,15 @@
+/** @file
+ *
+ * @brief Declares narrow concrete input archives.
+ *
+ * @author    Raoul Wols
+ *
+ * @date      2017
+ *
+ * @copyright See LICENSE.md
+ *
+ */
+
 #ifndef BOOST_ARCHIVE_YAML_IARCHIVE_HPP
 #define BOOST_ARCHIVE_YAML_IARCHIVE_HPP
 
@@ -6,25 +18,15 @@
 #pragma once
 #endif
 
-/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
-// yaml_iarchive.hpp
-
-// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com .
-// Use, modification and distribution is subject to the Boost Software
-// License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
-// http://www.boost.org/LICENSE_1_0.txt)
-
-//  See http://www.boost.org for updates, documentation, and revision history.
-
 #include <istream>
 
-#include <boost/version.hpp>
 #include <boost/archive/basic_text_iprimitive.hpp>
 #include <boost/archive/basic_yaml_iarchive.hpp>
 #include <boost/archive/detail/auto_link_archive.hpp>
 #include <boost/archive/detail/register_archive.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/serialization/item_version_type.hpp>
+#include <boost/version.hpp>
 #if BOOST_VERSION < 105600
 #include <boost/archive/shared_ptr_helper.hpp>
 #endif
@@ -46,6 +48,13 @@ template <class Archive> class interface_iarchive;
 template <class CharType> class basic_yaml_grammar;
 typedef basic_yaml_grammar<char> yaml_grammar;
 
+/**
+ * @brief      YAML input archive for a narrow character stream.
+ *
+ * Don't use this class directly. Instead, use boost::archive::yaml_iarchive.
+ *
+ * @tparam     Archive  The derived archive class.
+ */
 template <class Archive>
 class BOOST_SYMBOL_VISIBLE yaml_iarchive_impl
     : public basic_text_iprimitive<std::istream>,
@@ -105,6 +114,33 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive_impl
     YAML_ARCHIVE_API ~yaml_iarchive_impl();
 
   public:
+    /**
+     * @brief      Load bytes from the YAML archive.
+     *
+     * The binary data is assumed to be an unqouted base64 encoded string.
+     *
+     * @param[out] address  The address
+     * @param[in]  count    The number of bytes
+     *
+     * @warning You should **never** use this method. Instead, use
+     * boost::serialization::make_binary_object. See the code example below.
+     *
+     * @code
+     * #include <boost/archive/yaml_iarchive.hpp>
+     * #include <boost/serialization/binary_object.hpp>
+     * #include <boost/serialization/nvp.hpp>
+     * #include <iostream>
+     * int main()
+     * {
+     *     char data[150];
+     *     boost::archive::yaml_iarchive yaml(std::cin);
+     *     using boost::serialization::make_nvp;
+     *     using boost::serialization::make_binary_object;
+     *     yaml >> make_nvp("data", make_binary_object(data, sizeof(data)));
+     *     return 0;
+     * }
+     * @endcode
+     */
     YAML_ARCHIVE_API void load_binary(void* address, std::size_t count);
 };
 
@@ -124,6 +160,30 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive_impl
 namespace boost {
 namespace archive {
 
+/**
+ * @brief      Concrete YAML input archive for a narrow character stream.
+ *
+ * Use this class to load your classes from a YAML archive.
+ * Do not derive from this class.  If you want to extend this functionality via
+ * inheritance, derive from yaml_iarchive_impl instead. This will preserve
+ * correct static polymorphism.
+ *
+ * @see boost::archive::yaml_oarchive for its output counter-part.
+ *
+ * @code
+ * #include <boost/archive/yaml_iarchive.hpp>
+ * #include <boost/serialization/nvp.hpp>
+ * #include <iostream>
+ * #include <string>
+ * int main()
+ * {
+ *     std::string world;
+ *     boost::archive::yaml_iarchive yaml(std::cin);
+ *     yaml >> boost::serialization::make_nvp("hello", world);
+ *     return 0;
+ * }
+ * @endcode
+ */
 #if BOOST_VERSION < 105600
 class BOOST_SYMBOL_VISIBLE yaml_iarchive
     : public yaml_iarchive_impl<yaml_iarchive>,
@@ -135,6 +195,15 @@ class BOOST_SYMBOL_VISIBLE yaml_iarchive
 {
 #endif
   public:
+    /**
+     * @brief      Constructor.
+     *
+     * @param      is     The input stream
+     * @param[in]  flags  Modifier flags
+     *
+     * @see http://www.boost.org/doc/libs/1_63_0/boost/archive/basic_archive.hpp
+     * for the available flags.
+     */
     yaml_iarchive(std::istream& is, unsigned int flags = 0)
         : yaml_iarchive_impl<yaml_iarchive>(is, flags)
     {
