@@ -9,17 +9,39 @@ UseTab: Never  # spaces.
 # except namespaces and don't indent the braces themselves.
 BreakBeforeBraces: Custom
 BraceWrapping:
-  AfterClass: true # Wrap class definitions.
-  AfterControlStatement: true # Wrap control statements (if/for/while/switch/..).
-  AfterEnum: true # Wrap enum definitions.
-  AfterFunction: true # Wrap function definitions.
-  AfterNamespace: false # Don't wrap namespace definitions.
-  AfterObjCDeclaration: true # Wrap ObjC definitions (@autoreleasepool, interfaces, ..).
-  AfterStruct: true # Wrap struct definitions.
-  AfterUnion: true # Wrap union definitions.
-  BeforeCatch: true # Wrap before catch.
-  BeforeElse: true # Wrap before else.
-  IndentBraces: false # Don't indent the wrapped braces themselves.
+
+  # Wrap class definitions.
+  AfterClass: true
+
+  # Wrap control statements (if/for/while/switch/..).
+  AfterControlStatement: true
+
+  # Wrap enum definitions.
+  AfterEnum: true
+
+  # Wrap function definitions.
+  AfterFunction: true
+
+  # Don't wrap namespace definitions.
+  AfterNamespace: false
+
+  # Wrap ObjC definitions (@autoreleasepool, interfaces, ..).
+  AfterObjCDeclaration: true
+
+  # Wrap struct definitions.
+  AfterStruct: true
+
+  # Wrap union definitions.
+  AfterUnion: true
+
+  # Wrap before catch.
+  BeforeCatch: true
+
+  # Wrap before else.
+  BeforeElse: true
+
+  # Don't indent the wrapped braces themselves.
+  IndentBraces: false
 
 # Allow more compact code.
 AllowAllParametersOfDeclarationOnNextLine: true
