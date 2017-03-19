@@ -1,3 +1,12 @@
+# This is the main CMake file for the yaml-archive project.
+#
+# It sets some options and adds the src directory as a cmake subdirectory. The
+# CMake file in the src directory is responsible for defining the yaml-archive
+# target.
+#
+# Optionally, it will add the test subdirectory. The CMake file in that
+# directory will define test targets to be run by CTest.
+
 cmake_minimum_required(VERSION 3.0)
 project(yaml-archive VERSION 0.1.0 LANGUAGES CXX)
 set(yaml-archive_WE_ARE_ROOT OFF CACHE INTERNAL "")
