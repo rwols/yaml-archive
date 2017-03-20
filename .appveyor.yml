@@ -39,15 +39,16 @@ install:
   # 1.58.0 (C:\Libraries\boost_1_58_0)
   # 1.56.0 (C:\Libraries\boost)
   # See: https://www.appveyor.com/docs/installed-software/#languages-libraries-frameworks
-  - cmd: set PATH=%PATH%;C:\Libraries\boost_1_%BOOST_VERSION_MINOR%_0\lib32-msvc-14.0
-  - cmd: echo %PATH%
+  # Need to adjust the PATH to make these DLLs visible to our test executables.
   - python build.py before-install install
 
 before_build: python build.py before-build
 build_script: python build.py build
 after_build:  python build.py after_build
 before_test:  python build.py before_test
-test_script:  python build.py test
+test_script:
+  - cmd: echo %PATH%
+  - python build.py test
 after_test:   python build.py after-test
 on_success:   python build.py after-success
 on_failure:   python build.py after-failure

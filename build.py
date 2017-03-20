@@ -294,10 +294,6 @@ class AppveyorBuild(BuildBase):
 
     def before_install(self):
         super(AppveyorBuild, self).before_install()
-        # Appveyor doesn't call git clone --recursive
-        # but calls git clone instead, so we have to update our submodules
-        # manually.
-        utils.check_call('git', 'submodule', 'update', '--init', '--recursive')
 
     def install(self):
         # Appveyor has the following boost libraries installed:
@@ -309,6 +305,16 @@ class AppveyorBuild(BuildBase):
         # 1.56.0 (C:\Libraries\boost)
         # See: https://www.appveyor.com/docs/installed-software/#languages-libraries-frameworks
         super(AppveyorBuild, self).install()
+        platorm = os.environ['PLATFORM']
+        boost_libs = ''
+        if platform == 'x86':
+            boost_libs = os.path.join(self.boost_dir, 'lib32-msvc-14.0')
+        elif platform == 'x64':
+            boost_libs = os.path.join(self.boost_dir, 'lib64-msvc-14.0')
+        else:
+            print('!!! Unknown platform: %s' % platform)
+        assert os.path.isdir(boost_libs)
+        os.environ['PATH'] = "\%PATH\%;%s" % boost_libs
 
     def before_build(self):
         print('Changing directory to {}'.format(self.build_dir))
