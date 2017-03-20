@@ -26,11 +26,7 @@ using ::strlen;
 #include <boost/archive/iterators/yaml_escape.hpp>
 
 #ifndef BOOST_NO_CWCHAR
-#if BOOST_VERSION < 106100
-#include <boost/archive/iterators/yaml_mb_from_wchar.hpp>
-#else // BOOST_VERSION >= 106100
 #include <boost/archive/iterators/mb_from_wchar.hpp>
-#endif // BOOST_VERSION
 #include <boost/archive/wcslen.hpp>
 #endif // BOOST_NO_CWCHAR
 
