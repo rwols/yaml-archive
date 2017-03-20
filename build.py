@@ -1,11 +1,20 @@
 #!/usr/bin/env python
-
-# Copyright Raoul Wols 2017
-# Modified from original by Rene Rivera 2016 of github.com/boostorg/release-tools
-#
-# Distributed under the Boost Software License, Version 1.0.
-# (See accompanying file LICENSE_1_0.txt or copy at
-# http://www.boost.org/LICENSE_1_0.txt)
+##
+## Build Script for command-line, Travis-CI and Appveyor
+##
+## Copyright Raoul Wols 2017
+## Modified from original by Rene Rivera 2016 located at
+## github.com/boostorg/release-tools
+##
+## Distributed under the Boost Software License, Version 1.0.
+## (See accompanying file LICENSE.md or copy at
+## http://www.boost.org/LICENSE_1_0.txt)
+## 
+## Usage example for command-line building:
+## 
+## $ ./build.py before-install install
+## $ ./build.py before-build build after-build
+## $ ./build.py before-test test after-test
 
 import httplib
 import argparse
