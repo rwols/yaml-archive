@@ -291,6 +291,13 @@ class AppveyorBuild(BuildBase):
         super(AppveyorBuild, self).__init__(debug_level)
         self.build_type = os.getenv('CONFIGURATION')
         self.boost_dir = 'C:/Libraries/boost_{}'.format(self.boost_version_underscores)
+        platform = os.getenv('PLATFORM')
+        if platform == 'x86':
+            self.platform = '32'
+        elif platform == 'x64':
+            self.platform = '64'
+        else:
+            self.platform = 'UNKNOWN'
 
     def before_install(self):
         super(AppveyorBuild, self).before_install()
@@ -305,22 +312,18 @@ class AppveyorBuild(BuildBase):
         # 1.56.0 (C:\Libraries\boost)
         # See: https://www.appveyor.com/docs/installed-software/#languages-libraries-frameworks
         super(AppveyorBuild, self).install()
-        platform = os.environ['PLATFORM']
-        boost_libs = ''
-        if platform == 'x86':
-            boost_libs = os.path.join(self.boost_dir, 'lib32-msvc-14.0')
-        elif platform == 'x64':
-            boost_libs = os.path.join(self.boost_dir, 'lib64-msvc-14.0')
-        else:
-            print('!!! Unknown platform: %s' % platform)
-        assert os.path.isdir(boost_libs)
-        os.environ['PATH'] = "%%PATH%%;%s" % boost_libs
 
     def before_build(self):
         print('Changing directory to {}'.format(self.build_dir))
         os.chdir(self.build_dir)
+        generator = '"Visual Studio 14 2015'
+        if self.platform == '64':
+            generator += ' Win64'
+        generator += '"'
         utils.check_call('cmake', 
-            self.root_dir, '-DBOOST_ROOT={}'.format(self.boost_dir),
+            self.root_dir, 
+            '-G', generator, 
+            '-DBOOST_ROOT={}'.format(self.boost_dir),
             '-DBUILD_SHARED_LIBS={}'.format(self.build_shared_libs),
             '-DCMAKE_BUILD_TYPE={}'.format(self.build_type))
 
@@ -332,7 +335,15 @@ class AppveyorBuild(BuildBase):
     def test(self):
         print('Changing directory to {}'.format(self.build_dir))
         os.chdir(self.build_dir)
-        utils.check_call('ctest', '--output-on-failure', '--build-config', self.build_type)
+        platform = os.environ['PLATFORM']
+        boost_libs = 'lib' + self.platform + '-msvc-14.0'
+        boost_libs = os.path.join(self.boost_dir, boost_libs)
+        assert os.path.isdir(boost_libs)
+        PATH = "%%PATH%%;%s" % boost_libs
+        utils.check_call('ctest', 
+            '--output-on-failure', 
+            '--build-config', self.build_type, 
+            env=dict(os.environ, PATH=PATH))
 
     def download_file(self, url):
         utils.check_call('appveyor', 'DownloadFile', url)
