@@ -1,13 +1,12 @@
 
 add_library(yaml-archive
-    boost/archive/detail/utf8_codecvt_facet.cpp
-    boost/archive/impl/yaml_grammar.cpp
-    boost/archive/impl/yaml_wgrammar.cpp
-    boost/archive/yaml_archive_exception.cpp
-    boost/archive/yaml_iarchive.cpp
-    boost/archive/yaml_oarchive.cpp
-    boost/archive/yaml_wiarchive.cpp
-    boost/archive/yaml_woarchive.cpp
+    boost/archive/impl/yaml_grammar
+    boost/archive/impl/yaml_wgrammar
+    boost/archive/yaml_archive_exception
+    boost/archive/yaml_iarchive
+    boost/archive/yaml_oarchive
+    boost/archive/yaml_wiarchive
+    boost/archive/yaml_woarchive
     )
 
 # set_target_properties(yaml-archive PROPERTIES CXX_STANDARD 11)
