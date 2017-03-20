@@ -1,5 +1,6 @@
 
 add_library(yaml-archive
+    boost/archive/detail/utf8_codecvt_facet.cpp
     boost/archive/impl/yaml_grammar.cpp
     boost/archive/impl/yaml_wgrammar.cpp
     boost/archive/yaml_archive_exception.cpp
