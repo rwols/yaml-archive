@@ -32,47 +32,41 @@ configuration:
   - Release
 
 before_build:
-  - set SOURCE_DIR=%APPVEYOR_BUILD_FOLDER%
-  - set BUILD_DIR=%SOURCE_DIR%\build
+  # Appveyor has the following boost libraries installed:
+  # 1.63.0 (C:\Libraries\boost_1_63_0)
+  # 1.62.0 (C:\Libraries\boost_1_62_0)
+  # 1.60.0 (C:\Libraries\boost_1_60_0)
+  # 1.59.0 (C:\Libraries\boost_1_59_0)
+  # 1.58.0 (C:\Libraries\boost_1_58_0)
+  # 1.56.0 (C:\Libraries\boost)
+  # See: https://www.appveyor.com/docs/installed-software/#languages-libraries-frameworks
+  # Need to adjust the PATH to make these DLLs visible to our test executables.
+
+  # BOOST_VERSION_MINOR is set in the environment matrix in this YAML file.
   - set BOOST_ROOT=C:\Libraries\boost_1_%BOOST_VERSION_MINOR%_0
+
+  # PLATFORM is the value set by the platform key in this YAML file.
   - if %PLATFORM%==x86 (set BOOST_LIBS=%BOOST_ROOT%\lib32-msvc-14.0)
   - if %PLATFORM%==x64 (set BOOST_LIBS=%BOOST_ROOT%\lib64-msvc-14.0)
   - if %PLATFORM%==x86 (set "GENERATOR=Visual Studio 14 2015")
   - if %PLATFORM%==x64 (set "GENERATOR=Visual Studio 14 2015 Win64")
+
+  # Adjust the PATH so that the boost DLLs are visible to the linker.
   - set "PATH=%PATH%;%BOOST_LIBS%"
-  - echo %PATH%
+
+  # APPVEYOR_BUILD_FOLDER is the path where yaml-archive is cloned to.
+  - set BUILD_DIR=%APPVEYOR_BUILD_FOLDER%\build
   - mkdir %BUILD_DIR%
   - cd %BUILD_DIR%
-  - cmake %SOURCE_DIR% -G"%GENERATOR%" -DBOOST_ROOT=%BOOST_ROOT% -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DBUILD_SHARED_LIBS=%BUILD_SHARED_LIBS%
+  
+  # Configure the project. CONFIGURATION is the value set by the configuration
+  # key in this YAML file.
+  - cmake %APPVEYOR_BUILD_FOLDER% -G"%GENERATOR%" -DBOOST_ROOT=%BOOST_ROOT% -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DBUILD_SHARED_LIBS=%BUILD_SHARED_LIBS%
 
 build_script:
+  # Build the library and the test executables for CTest.
   - cmake --build %BUILD_DIR% --target ALL_BUILD --config %CONFIGURATION%
 
 test_script:
-  - ctest -C %CONFIGURATION%
-
-# init:
-#   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-
-# install:
-#   # Appveyor has the following boost libraries installed:
-#   # 1.63.0 (C:\Libraries\boost_1_63_0)
-#   # 1.62.0 (C:\Libraries\boost_1_62_0)
-#   # 1.60.0 (C:\Libraries\boost_1_60_0)
-#   # 1.59.0 (C:\Libraries\boost_1_59_0)
-#   # 1.58.0 (C:\Libraries\boost_1_58_0)
-#   # 1.56.0 (C:\Libraries\boost)
-#   # See: https://www.appveyor.com/docs/installed-software/#languages-libraries-frameworks
-#   # Need to adjust the PATH to make these DLLs visible to our test executables.
-#   - python build.py before-install install
-
-# before_build: python build.py before-build
-# build_script: python build.py build
-# after_build:  python build.py after_build
-# before_test:  python build.py before_test
-# test_script:  python build.py test
-# after_test:   python build.py after-test
-# on_success:   python build.py after-success
-# on_failure:   python build.py after-failure
-# on_finish:
-#   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+  # Run all unit tests.
+  - ctest -C %CONFIGURATION% --output-on-failure
