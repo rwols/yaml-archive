@@ -54,4 +54,5 @@ test_script:  python build.py test
 after_test:   python build.py after-test
 on_success:   python build.py after-success
 on_failure:   python build.py after-failure
-on_finish:    $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+on_finish:
+  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
