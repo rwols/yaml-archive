@@ -32,23 +32,23 @@ configuration:
   - Release
 
 before_build:
-  - cmd: set SOURCE_DIR=%APPVEYOR_BUILD_FOLDER%
-  - cmd: set BUILD_DIR=%SOURCE_DIR%\build
-  - cmd: set BOOST_ROOT=C:\Libraries\boost_1_%BOOST_VERSION_MINOR%_0
-  - cmd: if %PLATFORM%==x86 ( set BOOST_LIBS=%BOOST_ROOT%\lib32-msvc-14.0 )
-  - cmd: if %PLATFORM%==x64 ( set BOOST_LIBS=%BOOST_ROOT%\lib64-msvc-14.0 )
-  - cmd: if %PLATFORM%==x86 ( set GENERATOR="Visual Studio 14 2015" )
-  - cmd: if %PLATFORM%==x64 ( set GENERATOR="Visual Studio 14 2015 Win64")
-  - cmd: set PATH="%PATH%;%BOOST_LIBS%"
-  - cmd: mkdir %BUILD_DIR%
-  - cmd: cd %BUILD_DIR%
-  - cmd: cmake %SOURCE_DIR% -G"%GENERATOR%" -DBOOST_ROOT=%BOOST_ROOT% -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DBUILD_SHARED_LIBS=%BUILD_SHARED_LIBS%
+  - set SOURCE_DIR=%APPVEYOR_BUILD_FOLDER%
+  - set BUILD_DIR=%SOURCE_DIR%\build
+  - set BOOST_ROOT=C:\Libraries\boost_1_%BOOST_VERSION_MINOR%_0
+  - if %PLATFORM%==x86 ( set BOOST_LIBS=%BOOST_ROOT%\lib32-msvc-14.0 )
+  - if %PLATFORM%==x64 ( set BOOST_LIBS=%BOOST_ROOT%\lib64-msvc-14.0 )
+  - if %PLATFORM%==x86 ( set GENERATOR="Visual Studio 14 2015" )
+  - if %PLATFORM%==x64 ( set GENERATOR="Visual Studio 14 2015 Win64")
+  - set PATH="%PATH%;%BOOST_LIBS%"
+  - mkdir %BUILD_DIR%
+  - cd %BUILD_DIR%
+  - cmake %SOURCE_DIR% -G"%GENERATOR%" -DBOOST_ROOT=%BOOST_ROOT% -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DBUILD_SHARED_LIBS=%BUILD_SHARED_LIBS%
 
 build_script:
-  - cmd: cmake --build %BUILD_DIR% --target ALL_BUILD --config %CONFIGURATION%
+  - cmake --build %BUILD_DIR% --target ALL_BUILD --config %CONFIGURATION%
 
 test_script:
-  - cmd: ctest -C %CONFIGURATION%
+  - ctest -C %CONFIGURATION%
 
 # init:
 #   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
