@@ -37,9 +37,9 @@ before_build:
   - set BOOST_ROOT=C:\Libraries\boost_1_%BOOST_VERSION_MINOR%_0
   - if %PLATFORM%==x86 (set BOOST_LIBS=%BOOST_ROOT%\lib32-msvc-14.0)
   - if %PLATFORM%==x64 (set BOOST_LIBS=%BOOST_ROOT%\lib64-msvc-14.0)
-  - if %PLATFORM%==x86 (set GENERATOR="Visual Studio 14 2015")
-  - if %PLATFORM%==x64 (set GENERATOR="Visual Studio 14 2015 Win64")
-  # - set PATH="%PATH%;%BOOST_LIBS%"
+  - if %PLATFORM%==x86 (set "GENERATOR=Visual Studio 14 2015")
+  - if %PLATFORM%==x64 (set "GENERATOR=Visual Studio 14 2015 Win64")
+  - set "PATH=%PATH%;%BOOST_LIBS%"
   - echo %PATH%
   - mkdir %BUILD_DIR%
   - cd %BUILD_DIR%
