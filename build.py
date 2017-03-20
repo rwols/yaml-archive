@@ -322,7 +322,7 @@ class AppveyorBuild(BuildBase):
         generator += '"'
         utils.check_call('cmake', 
             self.root_dir, 
-            '-G', generator, 
+            '-G{}'.format(generator), 
             '-DBOOST_ROOT={}'.format(self.boost_dir),
             '-DBUILD_SHARED_LIBS={}'.format(self.build_shared_libs),
             '-DCMAKE_BUILD_TYPE={}'.format(self.build_type))
