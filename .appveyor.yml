@@ -17,6 +17,10 @@ environment:
     - BOOST_VERSION_MINOR: 60
       BUILD_SHARED_LIBS: OFF
 
+
+# Build with VS2015
+image: Visual Studio 2015
+
 # Build both 32 and 64 bit versions.
 platform:
   - x86
