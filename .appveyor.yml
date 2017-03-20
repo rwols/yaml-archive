@@ -45,22 +45,34 @@ before_build:
   # BOOST_VERSION_MINOR is set in the environment matrix in this YAML file.
   - set BOOST_ROOT=C:\Libraries\boost_1_%BOOST_VERSION_MINOR%_0
 
-  # PLATFORM is the value set by the platform key in this YAML file.
-  - if %PLATFORM%==x86 (set BOOST_LIBS=%BOOST_ROOT%\lib32-msvc-14.0)
-  - if %PLATFORM%==x64 (set BOOST_LIBS=%BOOST_ROOT%\lib64-msvc-14.0)
-  - if %PLATFORM%==x86 (set "GENERATOR=Visual Studio 14 2015")
-  - if %PLATFORM%==x64 (set "GENERATOR=Visual Studio 14 2015 Win64")
-
-  # Adjust the PATH so that the boost DLLs are visible to the linker.
-  - set "PATH=%PATH%;%BOOST_LIBS%"
-
   # APPVEYOR_BUILD_FOLDER is the path where yaml-archive is cloned to.
   - set BUILD_DIR=%APPVEYOR_BUILD_FOLDER%\build
+
+  # PLATFORM is the value set by the platform key in this YAML file.
+  # CONFIGURATION is the value set by the configuration key in this YAML file.
+  # BUILD_SHARED_LIBS is set in the environment matrix in this YAML file.
+  - |
+    if %PLATFORM%==x86 (
+        if %BUILD_SHARED_LIBS%==ON (
+            set BOOST_LIBS=%BOOST_ROOT%\lib32-msvc-14.0
+            set "PATH=%PATH%;%BOOST_LIBS%"
+            set "PATH=%PATH%;%BUILD_DIR%\src\%CONFIGURATION%"
+        )
+        set "GENERATOR=Visual Studio 14 2015"
+    )
+  - |
+    if %PLATFORM%==x64 (
+        if %BUILD_SHARED_LIBS%==ON (
+            set BOOST_LIBS=%BOOST_ROOT%\lib64-msvc-14.0
+            set "PATH=%PATH%;%BOOST_LIBS%"
+            set "PATH=%PATH%;%BUILD_DIR%\src\%CONFIGURATION%"
+        )
+      set "GENERATOR=Visual Studio 14 2015 Win64"
+    )
+
+  # Configure the project.
   - mkdir %BUILD_DIR%
   - cd %BUILD_DIR%
-  
-  # Configure the project. CONFIGURATION is the value set by the configuration
-  # key in this YAML file.
   - cmake %APPVEYOR_BUILD_FOLDER% -G"%GENERATOR%" -DBOOST_ROOT=%BOOST_ROOT% -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DBUILD_SHARED_LIBS=%BUILD_SHARED_LIBS%
 
 build_script:
