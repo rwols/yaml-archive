@@ -2,6 +2,29 @@
 	"build_systems":
 	[
 		{
+			"name": "yaml-archive experimental",
+			"target": "cmake_build",
+			"config": "Debug",
+			"build_dir": "${project_path}/build",
+			"source_dir": "${project_path}",
+			"vars":
+			{
+				"CMAKE_BUILD_TYPE": "Debug",
+				"BUILD_SHARED_LIBS": true
+			},
+			"env":
+			{
+				"LD_LIBRARY_PATH": "/usr/local/boost/stage/lib"
+			},
+			"windows":
+			{
+				"env":
+				{
+					"PATH": "%PATH%;C:/libraries/boost/stage/lib"
+				}
+			}
+		},
+		{
 			"file_regex": "(.+[^:]):(\\d+):(\\d+): (?:fatal )?((?:error|warning): .+)$",
 			"name": "yaml-archive",
 			"shell_cmd": "cmake --build .",
@@ -9,8 +32,8 @@
 			"variants":
 			[
 				{
-					"name": "ninja: warning",
-					"shell_cmd": "cmake --build . --target ninja: warning"
+					"name": "",
+					"shell_cmd": "cmake --build . --target "
 				},
 				{
 					"name": "install/strip",

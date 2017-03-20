@@ -27,6 +27,9 @@ configuration:
   - Debug
   - Release
 
+init:
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
 install:
   # Appveyor has the following boost libraries installed:
   # 1.63.0 (C:\Libraries\boost_1_63_0)
@@ -48,4 +51,4 @@ test_script:  python build.py test
 after_test:   python build.py after-test
 on_success:   python build.py after-success
 on_failure:   python build.py after-failure
-on_finish:
+on_finish:    $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
