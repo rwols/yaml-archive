@@ -314,7 +314,7 @@ class AppveyorBuild(BuildBase):
         else:
             print('!!! Unknown platform: %s' % platform)
         assert os.path.isdir(boost_libs)
-        os.environ['PATH'] = "\%PATH\%;%s" % boost_libs
+        os.environ['PATH'] = "%%PATH%%;%s" % boost_libs
 
     def before_build(self):
         print('Changing directory to {}'.format(self.build_dir))
