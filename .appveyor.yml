@@ -74,7 +74,7 @@ build_script:
 
 test_script:
   # Make sure the test executables can find yaml-archive.dll.
-  if %BUILD_SHARED_LIBS%==ON (set "PATH=%PATH%;%BUILD_DIR%\src\%CONFIGURATION%")
+  - if %BUILD_SHARED_LIBS%==ON (set "PATH=%PATH%;%BUILD_DIR%\src\%CONFIGURATION%")
 
   # Run all unit tests.
   - ctest -C %CONFIGURATION% --output-on-failure
