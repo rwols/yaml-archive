@@ -12,9 +12,9 @@ environment:
       BUILD_SHARED_LIBS: ON
     - BOOST_VERSION_MINOR: 63
       BUILD_SHARED_LIBS: OFF
-    - BOOST_VERSION_MINOR: 60
+    - BOOST_VERSION_MINOR: 62
       BUILD_SHARED_LIBS: ON
-    - BOOST_VERSION_MINOR: 60
+    - BOOST_VERSION_MINOR: 62
       BUILD_SHARED_LIBS: OFF
 
 
@@ -47,17 +47,15 @@ before_build:
 
   # PLATFORM is the value set by the platform key in this YAML file.
   # BUILD_SHARED_LIBS is set in the environment matrix in this YAML file.
-  # Microsoft Batch language does not support a logical "and" (wow...). One way
-  # to solve this is to just put two if statements after another. If the first
-  # is true, it will check the second if statement. If the second if statement
-  # is true, it will run the if-block.
-  - if %PLATFORM%==x86 if %BUILD_SHARED_LIBS%==ON (set BOOST_LIBS=%BOOST_ROOT%\lib32-msvc-14.0)
-  - if %PLATFORM%==x64 if %BUILD_SHARED_LIBS%==ON (set BOOST_LIBS=%BOOST_ROOT%\lib64-msvc-14.0)
+  - if %PLATFORM%==x86 (set BOOST_LIBS=%BOOST_ROOT%\lib32-msvc-14.0)
+  - if %PLATFORM%==x64 (set BOOST_LIBS=%BOOST_ROOT%\lib64-msvc-14.0)
   - if %PLATFORM%==x86 (set "GENERATOR=Visual Studio 14 2015")
   - if %PLATFORM%==x64 (set "GENERATOR=Visual Studio 14 2015 Win64")
 
   # Adjust the PATH so that the boost DLLs are visible to the linker.
-  - if %BUILD_SHARED_LIBS%==ON (set "PATH=%PATH%;%BOOST_LIBS%")
+  # Boost.Test is always linked dynamically, so we always have to adjust this
+  # path.
+  - set "PATH=%PATH%;%BOOST_LIBS%"
 
   # APPVEYOR_BUILD_FOLDER is the path where yaml-archive is cloned to.
   - set BUILD_DIR=%APPVEYOR_BUILD_FOLDER%\build
@@ -74,7 +72,7 @@ build_script:
 
 test_script:
   # Make sure the test executables can find yaml-archive.dll.
-  - if %BUILD_SHARED_LIBS%==ON (set "PATH=%PATH%;%BUILD_DIR%\src\%CONFIGURATION%")
+  - set "PATH=%PATH%;%BUILD_DIR%\src\%CONFIGURATION%"
 
   # Run all unit tests.
   - ctest -C %CONFIGURATION% --output-on-failure
