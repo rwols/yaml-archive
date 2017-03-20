@@ -305,7 +305,7 @@ class AppveyorBuild(BuildBase):
         # 1.56.0 (C:\Libraries\boost)
         # See: https://www.appveyor.com/docs/installed-software/#languages-libraries-frameworks
         super(AppveyorBuild, self).install()
-        platorm = os.environ['PLATFORM']
+        platform = os.environ['PLATFORM']
         boost_libs = ''
         if platform == 'x86':
             boost_libs = os.path.join(self.boost_dir, 'lib32-msvc-14.0')
